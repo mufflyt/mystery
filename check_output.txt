@@ -1,0 +1,724 @@
+* using log directory ‘/Users/tylermuffly/Dropbox (Personal)/tyler/..Rcheck’
+* using R version 4.4.0 (2024-04-24)
+* using platform: x86_64-apple-darwin20
+* R was compiled by
+    Apple clang version 14.0.0 (clang-1400.0.29.202)
+    GNU Fortran (GCC) 12.2.0
+* running under: macOS Ventura 13.6.9
+* using session charset: UTF-8
+* checking for file ‘./DESCRIPTION’ ... OK
+* this is package ‘tyler’ version ‘1.2.0’
+* package encoding: UTF-8
+* checking package namespace information ... OK
+* checking package dependencies ... OK
+* checking if this is a source package ... OK
+* checking if there is a namespace ... OK
+* checking for executable files ... WARNING
+Found the following executable files:
+  .git/objects/13/c583a4dffc9e76a731cacd8f697df2d9e693fb
+  .git/objects/96/5c2a30a68b7b9465c1980d222c2ec2ce6268c7
+  .git/objects/ac/e05ef5eb301fc6e00060562a449f5cf658b870
+  .git/objects/f5/2efd0170b84d966b80cffbebb42f74625c4ba8
+Source packages should not contain undeclared executable files.
+See section ‘Package structure’ in the ‘Writing R Extensions’ manual.
+* checking for hidden files and directories ... NOTE
+Found the following hidden files and directories:
+  .DS_Store
+  .Rhistory
+  .github/.DS_Store
+  .github/.gitignore
+  .gitignore
+  .secrets
+  R/.DS_Store
+  R/.gitignore
+  data/.DS_Store
+  man/.DS_Store
+  revdep/.gitignore
+  vignettes/.gitignore
+  ..Rcheck
+  .Rproj.user
+  .cache
+  .git
+  .github
+These were most likely included in error. See section ‘Package
+structure’ in the ‘Writing R Extensions’ manual.
+* checking for portable file names ... OK
+* checking for sufficient/correct file permissions ... OK
+* checking whether package ‘tyler’ can be installed ... WARNING
+Found the following significant warnings:
+  Note: possible error in 'nppes_save_data_to_csv(cleaned_data, ': unused argument (append = TRUE) 
+See ‘/Users/tylermuffly/Dropbox (Personal)/tyler/..Rcheck/00install.out’ for details.
+Information on the location(s) of code generating the ‘Note’s can be
+obtained by re-running with environment variable R_KEEP_PKG_SOURCE set
+to ‘yes’.
+* checking installed package size ... NOTE
+  installed size is 21.1Mb
+  sub-directories of 1Mb or more:
+    extdata  19.9Mb
+* checking package directory ... OK
+* checking DESCRIPTION meta-information ... NOTE
+Checking should be performed on sources prepared by ‘R CMD build’.
+* checking top-level files ... OK
+* checking for left-over files ... OK
+* checking index information ... OK
+* checking package subdirectories ... WARNING
+Found the following directory with the name of a check directory:
+  ./..Rcheck
+Most likely, these were included erroneously.
+* checking code files for non-ASCII characters ... WARNING
+Found the following file with non-ASCII characters:
+  R/plot_and_save_emmeans.R
+Portable packages must use only ASCII characters in their R code and
+NAMESPACE directives, except perhaps in comments.
+Use \uxxxx escapes for other characters.
+Function ‘tools::showNonASCIIfile’ can help in finding non-ASCII
+characters in files.
+* checking R files for syntax errors ... OK
+* checking whether the package can be loaded ... OK
+* checking whether the package can be loaded with stated dependencies ... OK
+* checking whether the package can be unloaded cleanly ... OK
+* checking whether the namespace can be loaded with stated dependencies ... OK
+* checking whether the namespace can be unloaded cleanly ... OK
+* checking loading without being on the library search path ... OK
+* checking dependencies in R code ... WARNING
+'::' or ':::' imports not declared from:
+  ‘duckplyr’ ‘lmerTest’ ‘robustlmm’ ‘vroom’ ‘writexl’
+'library' or 'require' calls not declared from:
+  ‘DBI’ ‘beepr’ ‘censusapi’ ‘conflicted’ ‘dplyr’ ‘duckdb’ ‘easyr’
+  ‘kableExtra’ ‘knitr’ ‘lmerTest’ ‘logger’ ‘readr’ ‘robustlmm’ ‘sf’
+  ‘tidyr’ ‘tidyverse’
+'library' or 'require' calls in package code:
+  ‘DBI’ ‘beepr’ ‘censusapi’ ‘conflicted’ ‘dplyr’ ‘duckdb’ ‘easyr’
+  ‘kableExtra’ ‘knitr’ ‘lmerTest’ ‘logger’ ‘readr’ ‘robustlmm’ ‘sf’
+  ‘tidyr’ ‘tidyverse’
+  Please use :: or requireNamespace() instead.
+  See section 'Suggested packages' in the 'Writing R Extensions' manual.
+Namespaces in Imports field not imported from:
+  ‘devtools’ ‘effects’ ‘genderdata’ ‘gridExtra’ ‘imager’ ‘knitr’
+  ‘leaflet.extras’ ‘lubridate’ ‘mockery’ ‘rainbow’ ‘rmarkdown’ ‘scales’
+  ‘testthat’ ‘tigris’ ‘zipcodeR’
+  All declared Imports should be used.
+Missing or unexported objects:
+  ‘sf::filter’ ‘tyler::createBaseMap’ ‘tyler::create_base_map’
+  ‘tyler::generate_acog_districts_sf’
+* checking S3 generic/method consistency ... OK
+* checking replacement functions ... OK
+* checking foreign function calls ... OK
+* checking R code for possible problems ... NOTE
+calculate_distribution: no visible binding for global variable ‘total’
+calculate_intersection_overlap_and_save: no visible binding for global
+  variable ‘.’
+calculate_intersection_overlap_and_save: no visible binding for global
+  variable ‘GEOID’
+calculate_intersection_overlap_and_save: no visible binding for global
+  variable ‘intersect_area’
+calculate_intersection_overlap_and_save: no visible binding for global
+  variable ‘bg_area’
+check_normality: no visible global function definition for ‘sd’
+city_state_assign_scenarios: no visible binding for global variable
+  ‘specialty_primary’
+city_state_assign_scenarios: no visible binding for global variable
+  ‘city’
+city_state_assign_scenarios: no visible binding for global variable
+  ‘state_code’
+city_state_assign_scenarios: no visible binding for global variable
+  ‘case_assigned’
+city_state_assign_scenarios: no visible binding for global variable
+  ‘cases_repeated’
+city_state_sample_specialists: no visible global function definition
+  for ‘log_warn’
+city_state_sample_specialists: no visible binding for global variable
+  ‘city’
+city_state_sample_specialists: no visible binding for global variable
+  ‘state_code’
+city_state_sample_specialists: no visible binding for global variable
+  ‘specialty_primary’
+city_state_sample_specialists: no visible binding for global variable
+  ‘num_generalists’
+city_state_sample_specialists: no visible binding for global variable
+  ‘num_specialists1’
+clean_phase_1_results: no visible binding for global variable ‘npi’
+clean_phase_1_results: no visible binding for global variable
+  ‘practice_name’
+clean_phase_1_results: no visible binding for global variable ‘dr_name’
+clean_phase_1_results: no visible binding for global variable
+  ‘insurance’
+clean_phase_1_results: no visible binding for global variable
+  ‘phone_number’
+clean_phase_1_results: no visible binding for global variable
+  ‘state_name’
+clean_phase_1_results: no visible binding for global variable
+  ‘random_id’
+clean_phase_1_results: no visible binding for global variable
+  ‘academic’
+clean_phase_1_results: no visible binding for global variable
+  ‘id_number’
+convert_list_to_df_expanded : <anonymous>: no visible global function
+  definition for ‘:=’
+convert_list_to_df_expanded : <anonymous>: no visible binding for
+  global variable ‘.’
+count_unique_physicians: no visible binding for global variable
+  ‘insurance’
+count_unique_physicians: no visible binding for global variable
+  ‘reason_for_exclusions’
+count_unique_physicians: no visible binding for global variable
+  ‘business_days_until_appointment’
+count_unique_physicians: no visible binding for global variable ‘phone’
+create_and_plot_interaction: no visible binding for global variable
+  ‘response_var’
+create_and_plot_interaction: no visible binding for global variable
+  ‘var_interest’
+create_and_plot_interaction: no visible binding for global variable
+  ‘int_var’
+create_and_plot_interaction: no visible global function definition for
+  ‘na.omit’
+create_and_plot_interaction: no visible global function definition for
+  ‘predict’
+create_and_plot_interaction: no visible binding for global variable
+  ‘pred’
+create_and_plot_interaction: no visible binding for global variable
+  ‘mean_pred’
+create_and_save_physician_dot_map: no visible binding for global
+  variable ‘lat’
+create_and_save_physician_dot_map: no visible global function
+  definition for ‘runif’
+create_and_save_physician_dot_map: no visible binding for global
+  variable ‘long’
+create_and_save_physician_dot_map: no visible binding for global
+  variable ‘ACOG_District’
+create_density_plot: no visible global function definition for ‘:=’
+create_forest_plot: no visible binding for global variable
+  ‘Coefficient’
+create_forest_plot: no visible binding for global variable ‘Variable’
+create_forest_plot: no visible binding for global variable ‘Lower_CI’
+create_forest_plot: no visible binding for global variable ‘Upper_CI’
+create_individual_isochrone_plots: no visible binding for global
+  variable ‘drive_time’
+create_insurance_by_insurance_scatter_plot: no visible binding for
+  global variable ‘insurance’
+create_insurance_by_insurance_scatter_plot: no visible binding for
+  global variable ‘business_days_until_appointment’
+create_insurance_by_insurance_scatter_plot: no visible global function
+  definition for ‘:=’
+create_isochrones_for_dataframe: no visible global function definition
+  for ‘is’
+create_isochrones_for_dataframe: no visible global function definition
+  for ‘tail’
+create_line_plot: no visible global function definition for ‘:=’
+create_scatter_plot: no visible global function definition for ‘:=’
+find_common_columns_in_years_of_open_payments_data : <anonymous>: no
+  visible binding for global variable ‘name’
+find_common_columns_in_years_of_open_payments_data : <anonymous>: no
+  visible global function definition for ‘:=’
+fit_mixed_model_with_logging: no visible global function definition for
+  ‘pnorm’
+fit_mixed_model_with_logging: no visible binding for global variable
+  ‘P_Value’
+fit_mixed_model_with_logging: no visible binding for global variable
+  ‘IRR’
+fit_mixed_model_with_logging: no visible binding for global variable
+  ‘CI_Lower’
+fit_mixed_model_with_logging: no visible binding for global variable
+  ‘CI_Upper’
+fit_poisson_models: no visible binding for global variable ‘P_Value’
+genderize_physicians: no visible binding for global variable ‘name’
+genderize_physicians: no visible binding for global variable
+  ‘first_name’
+genderize_physicians: no visible binding for global variable ‘year_min’
+genderize_physicians: no visible binding for global variable ‘year_max’
+genderize_physicians: no visible binding for global variable
+  ‘proportion_female’
+genderize_physicians: no visible binding for global variable
+  ‘proportion_male’
+generate_latex_equation: no visible global function definition for
+  ‘log_message’
+generate_overall_table: no visible global function definition for ‘str’
+generate_overall_table: no visible global function definition for
+  ‘tableby.control’
+hrr: no visible binding for global variable ‘hrrcity’
+hrr_generate_maps: no visible binding for global variable ‘grid_id’
+hrr_generate_maps: no visible binding for global variable
+  ‘physician_count’
+install_missing_packages: no visible global function definition for
+  ‘installed.packages’
+install_missing_packages: no visible global function definition for
+  ‘install.packages’
+linear_regression_race_drive_time_generate_summary_sentence: no visible
+  binding for global variable ‘Driving Time (minutes)’
+linear_regression_race_drive_time_generate_summary_sentence: no visible
+  binding for global variable ‘Year’
+linear_regression_race_drive_time_generate_summary_sentence: no visible
+  global function definition for ‘lm’
+load_data: no visible binding for global variable ‘ID’
+load_data: no visible global function definition for ‘str’
+logistic_regression: no visible binding for global variable ‘P_Value’
+nppes_collect_and_clean_data: no visible binding for global variable
+  ‘Provider Credential Text’
+nppes_collect_and_clean_data: no visible binding for global variable
+  ‘Provider Business Mailing Address Postal Code’
+nppes_collect_and_clean_data: no visible binding for global variable
+  ‘Provider Business Practice Location Address Postal Code’
+nppes_collect_and_clean_data: no visible binding for global variable
+  ‘Provider Gender Code’
+nppes_collect_and_clean_data: no visible binding for global variable
+  ‘NPI’
+nppes_get_data_for_one_year: no visible global function definition for
+  ‘nppes_get_total_row_count’
+nppes_get_data_for_one_year: no visible global function definition for
+  ‘nppes_get_chunk’
+nppes_get_data_for_one_year: possible error in
+  nppes_save_data_to_csv(cleaned_data, output_csv_path, append = TRUE):
+  unused argument (append = TRUE)
+nppes_process_npi_table_chunk: no visible binding for global variable
+  ‘NPI’
+nppes_process_npi_table_chunk: no visible binding for global variable
+  ‘Entity Type Code’
+nppes_process_npi_table_chunk: no visible binding for global variable
+  ‘Provider First Name’
+nppes_process_npi_table_chunk: no visible binding for global variable
+  ‘Provider Middle Name’
+nppes_process_npi_table_chunk: no visible binding for global variable
+  ‘Provider Last Name (Legal Name)’
+nppes_process_npi_table_chunk: no visible binding for global variable
+  ‘Provider Other First Name’
+nppes_process_npi_table_chunk: no visible binding for global variable
+  ‘Provider Other Last Name’
+nppes_process_npi_table_chunk: no visible binding for global variable
+  ‘Provider Other Middle Name’
+nppes_process_npi_table_chunk: no visible binding for global variable
+  ‘Provider First Line Business Practice Location Address’
+nppes_process_npi_table_chunk: no visible binding for global variable
+  ‘Provider Business Practice Location Address City Name’
+nppes_process_npi_table_chunk: no visible binding for global variable
+  ‘Provider Business Practice Location Address State Name’
+nppes_process_npi_table_chunk: no visible binding for global variable
+  ‘Provider Business Practice Location Address Postal Code’
+nppes_process_npi_table_chunk: no visible binding for global variable
+  ‘Provider Business Practice Location Address Country Code (If outside
+  U.S.)’
+nppes_process_npi_table_chunk: no visible binding for global variable
+  ‘Provider Business Practice Location Address Telephone Number’
+nppes_process_npi_table_chunk: no visible binding for global variable
+  ‘Provider First Line Business Mailing Address’
+nppes_process_npi_table_chunk: no visible binding for global variable
+  ‘Provider Business Mailing Address City Name’
+nppes_process_npi_table_chunk: no visible binding for global variable
+  ‘Provider Business Mailing Address State Name’
+nppes_process_npi_table_chunk: no visible binding for global variable
+  ‘Provider Business Mailing Address Country Code (If outside U.S.)’
+nppes_process_npi_table_chunk: no visible binding for global variable
+  ‘Provider Business Mailing Address Postal Code’
+nppes_process_npi_table_chunk: no visible binding for global variable
+  ‘Provider Gender Code’
+nppes_process_npi_table_chunk: no visible binding for global variable
+  ‘Provider Credential Text’
+nppes_process_npi_table_chunk: no visible binding for global variable
+  ‘Provider Organization Name (Legal Business Name)’
+nppes_process_npi_table_chunk: no visible binding for global variable
+  ‘Healthcare Provider Taxonomy Code_1’
+nppes_process_npi_table_chunk: no visible binding for global variable
+  ‘Healthcare Provider Taxonomy Code_2’
+nppes_process_npi_table_chunk: no visible binding for global variable
+  ‘Is Sole Proprietor’
+nppes_process_npi_table_chunk: no visible binding for global variable
+  ‘Certification Date’
+open_payments_collect_and_convert: no visible binding for global
+  variable ‘Covered_Recipient_NPI’
+open_payments_collect_and_convert: no visible binding for global
+  variable ‘NPI’
+open_payments_processed_per_npi: no visible binding for global variable
+  ‘Covered_Recipient_NPI’
+open_payments_processed_per_npi : <anonymous>: no visible binding for
+  global variable ‘Covered_Recipient_NPI’
+poisson_wait_time_stats: no visible binding for global variable ‘ID’
+poisson_wait_time_stats: no visible binding for global variable ‘term’
+poisson_wait_time_stats: no visible binding for global variable
+  ‘estimate’
+poisson_wait_time_stats: no visible binding for global variable
+  ‘conf.low’
+poisson_wait_time_stats: no visible binding for global variable
+  ‘conf.high’
+poisson_wait_time_stats: no visible binding for global variable
+  ‘p.value’
+process_and_save_isochrones: no visible binding for global variable
+  ‘postmastr.name.x’
+race_drive_time_generate_summary_sentence: no visible binding for
+  global variable ‘Driving Time (minutes)’
+race_drive_time_generate_summary_sentence: no visible global function
+  definition for ‘var’
+race_drive_time_generate_summary_sentence: no visible binding for
+  global variable ‘Year’
+retrieve_clinician_data: no visible binding for global variable ‘npi’
+retrieve_clinician_data: no visible binding for global variable
+  ‘clinician_data’
+save_quality_check_table: no visible binding for global variable ‘npi’
+save_quality_check_table: no visible binding for global variable ‘name’
+scrape_physicians_data_with_tor: no visible global function definition
+  for ‘use_proxy’
+scrape_physicians_data_with_tor: no visible binding for global variable
+  ‘temp_dir’
+scrape_physicians_data_with_tor: no visible global function definition
+  for ‘tail’
+search_and_process_npi : search_npi: no visible binding for global
+  variable ‘taxonomies_desc’
+search_and_process_npi : <anonymous>: no visible global function
+  definition for ‘capture.output’
+search_by_taxonomy: no visible binding for global variable
+  ‘addresses_country_name’
+search_by_taxonomy: no visible binding for global variable
+  ‘basic_credential’
+search_by_taxonomy: no visible binding for global variable
+  ‘basic_last_name’
+search_by_taxonomy: no visible binding for global variable
+  ‘taxonomies_desc’
+search_by_taxonomy: no visible binding for global variable
+  ‘basic_last_updated’
+search_by_taxonomy: no visible binding for global variable
+  ‘basic_status’
+search_by_taxonomy: no visible binding for global variable
+  ‘basic_name_prefix’
+search_by_taxonomy: no visible binding for global variable
+  ‘basic_name_suffix’
+search_by_taxonomy: no visible binding for global variable
+  ‘basic_certification_date’
+search_by_taxonomy: no visible binding for global variable
+  ‘other_names_type’
+search_by_taxonomy: no visible binding for global variable
+  ‘other_names_code’
+search_by_taxonomy: no visible binding for global variable
+  ‘other_names_credential’
+search_by_taxonomy: no visible binding for global variable
+  ‘other_names_first_name’
+search_by_taxonomy: no visible binding for global variable
+  ‘other_names_last_name’
+search_by_taxonomy: no visible binding for global variable
+  ‘other_names_prefix’
+search_by_taxonomy: no visible binding for global variable
+  ‘other_names_suffix’
+search_by_taxonomy: no visible binding for global variable
+  ‘other_names_middle_name’
+search_by_taxonomy: no visible binding for global variable
+  ‘identifiers_code’
+search_by_taxonomy: no visible binding for global variable
+  ‘identifiers_desc’
+search_by_taxonomy: no visible binding for global variable
+  ‘identifiers_identifier’
+search_by_taxonomy: no visible binding for global variable
+  ‘identifiers_state’
+search_by_taxonomy: no visible binding for global variable
+  ‘identifiers_issuer’
+search_by_taxonomy: no visible binding for global variable
+  ‘taxonomies_code’
+search_by_taxonomy: no visible binding for global variable
+  ‘taxonomies_taxonomy_group’
+search_by_taxonomy: no visible binding for global variable
+  ‘taxonomies_state’
+search_by_taxonomy: no visible binding for global variable
+  ‘taxonomies_license’
+search_by_taxonomy: no visible binding for global variable
+  ‘addresses_country_code’
+search_by_taxonomy: no visible binding for global variable
+  ‘addresses_address_purpose’
+search_by_taxonomy: no visible binding for global variable
+  ‘addresses_address_type’
+search_by_taxonomy: no visible binding for global variable
+  ‘addresses_address_2’
+search_by_taxonomy: no visible binding for global variable
+  ‘addresses_fax_number’
+search_by_taxonomy: no visible binding for global variable
+  ‘endpoints_endpointType’
+search_by_taxonomy: no visible binding for global variable
+  ‘endpoints_endpointTypeDescription’
+search_by_taxonomy: no visible binding for global variable
+  ‘endpoints_endpoint’
+search_by_taxonomy: no visible binding for global variable
+  ‘endpoints_affiliation’
+search_by_taxonomy: no visible binding for global variable
+  ‘endpoints_useDescription’
+search_by_taxonomy: no visible binding for global variable
+  ‘endpoints_contentTypeDescription’
+search_by_taxonomy: no visible binding for global variable
+  ‘endpoints_country_code’
+search_by_taxonomy: no visible binding for global variable
+  ‘endpoints_country_name’
+search_by_taxonomy: no visible binding for global variable
+  ‘endpoints_address_type’
+search_by_taxonomy: no visible binding for global variable
+  ‘endpoints_address_1’
+search_by_taxonomy: no visible binding for global variable
+  ‘endpoints_city’
+search_by_taxonomy: no visible binding for global variable
+  ‘endpoints_state’
+search_by_taxonomy: no visible binding for global variable
+  ‘endpoints_postal_code’
+search_by_taxonomy: no visible binding for global variable
+  ‘endpoints_use’
+search_by_taxonomy: no visible binding for global variable
+  ‘endpoints_endpointDescription’
+search_by_taxonomy: no visible binding for global variable
+  ‘endpoints_affiliationName’
+search_by_taxonomy: no visible binding for global variable
+  ‘endpoints_contentType’
+search_by_taxonomy: no visible binding for global variable
+  ‘endpoints_contentOtherDescription’
+search_by_taxonomy: no visible binding for global variable
+  ‘endpoints_address_2’
+search_by_taxonomy: no visible binding for global variable
+  ‘endpoints_useOtherDescription’
+search_by_taxonomy: no visible binding for global variable
+  ‘basic_first_name’
+search_by_taxonomy: no visible binding for global variable
+  ‘basic_middle_name’
+search_by_taxonomy: no visible binding for global variable
+  ‘basic_sole_proprietor’
+search_by_taxonomy: no visible binding for global variable
+  ‘basic_gender’
+search_by_taxonomy: no visible binding for global variable
+  ‘basic_enumeration_date’
+search_by_taxonomy: no visible binding for global variable
+  ‘addresses_state’
+search_npi: no visible binding for global variable ‘taxonomies_desc’
+split_and_save: no visible binding for global variable ‘insurance’
+split_and_save: no visible binding for global variable ‘doctor_id’
+states_where_physicians_were_NOT_contacted: no visible binding for
+  global variable ‘state’
+test_and_process_isochrones: no visible binding for global variable
+  ‘postmastr.name.x’
+validate_and_remove_invalid_npi: no visible binding for global variable
+  ‘npi’
+Undefined global functions or variables:
+  . := ACOG_District CI_Lower CI_Upper Certification Date Coefficient
+  Covered_Recipient_NPI Driving Time (minutes) Entity Type Code GEOID
+  Healthcare Provider Taxonomy Code_1 Healthcare Provider Taxonomy
+  Code_2 ID IRR Is Sole Proprietor Lower_CI NPI P_Value Provider
+  Business Mailing Address City Name Provider Business Mailing Address
+  Country Code (If outside U.S.) Provider Business Mailing Address
+  Postal Code Provider Business Mailing Address State Name Provider
+  Business Practice Location Address City Name Provider Business
+  Practice Location Address Country Code (If outside U.S.) Provider
+  Business Practice Location Address Postal Code Provider Business
+  Practice Location Address State Name Provider Business Practice
+  Location Address Telephone Number Provider Credential Text Provider
+  First Line Business Mailing Address Provider First Line Business
+  Practice Location Address Provider First Name Provider Gender Code
+  Provider Last Name (Legal Name) Provider Middle Name Provider
+  Organization Name (Legal Business Name) Provider Other First Name
+  Provider Other Last Name Provider Other Middle Name Upper_CI Variable
+  Year academic addresses_address_2 addresses_address_purpose
+  addresses_address_type addresses_country_code addresses_country_name
+  addresses_fax_number addresses_state basic_certification_date
+  basic_credential basic_enumeration_date basic_first_name basic_gender
+  basic_last_name basic_last_updated basic_middle_name
+  basic_name_prefix basic_name_suffix basic_sole_proprietor
+  basic_status bg_area business_days_until_appointment capture.output
+  case_assigned cases_repeated city clinician_data conf.high conf.low
+  doctor_id dr_name drive_time endpoints_address_1 endpoints_address_2
+  endpoints_address_type endpoints_affiliation
+  endpoints_affiliationName endpoints_city
+  endpoints_contentOtherDescription endpoints_contentType
+  endpoints_contentTypeDescription endpoints_country_code
+  endpoints_country_name endpoints_endpoint
+  endpoints_endpointDescription endpoints_endpointType
+  endpoints_endpointTypeDescription endpoints_postal_code
+  endpoints_state endpoints_use endpoints_useDescription
+  endpoints_useOtherDescription estimate first_name grid_id hrrcity
+  id_number identifiers_code identifiers_desc identifiers_identifier
+  identifiers_issuer identifiers_state install.packages
+  installed.packages insurance int_var intersect_area is lat lm
+  log_message log_warn long mean_pred na.omit name npi nppes_get_chunk
+  nppes_get_total_row_count num_generalists num_specialists1
+  other_names_code other_names_credential other_names_first_name
+  other_names_last_name other_names_middle_name other_names_prefix
+  other_names_suffix other_names_type p.value phone phone_number
+  physician_count pnorm postmastr.name.x practice_name pred predict
+  proportion_female proportion_male random_id reason_for_exclusions
+  response_var runif sd specialty_primary state state_code state_name
+  str tableby.control tail taxonomies_code taxonomies_desc
+  taxonomies_license taxonomies_state taxonomies_taxonomy_group
+  temp_dir term total use_proxy var var_interest year_max year_min
+Consider adding
+  importFrom("methods", "is")
+  importFrom("stats", "lm", "na.omit", "pnorm", "predict", "runif", "sd",
+             "var")
+  importFrom("utils", "capture.output", "install.packages",
+             "installed.packages", "str", "tail")
+to your NAMESPACE file (and ensure that your DESCRIPTION Imports field
+contains 'methods').
+* checking Rd files ... OK
+* checking Rd metadata ... OK
+* checking Rd cross-references ... OK
+* checking for missing documentation entries ... WARNING
+Undocumented code objects:
+  ‘acog_presidents’ ‘cityStateToLatLong’ ‘physicians’
+Undocumented data sets:
+  ‘acog_presidents’ ‘cityStateToLatLong’ ‘physicians’
+All user-level objects in a package should have documentation entries.
+See chapter ‘Writing R documentation files’ in the ‘Writing R
+Extensions’ manual.
+* checking for code/documentation mismatches ... WARNING
+Data codoc mismatches from Rd file 'ACOG_Districts.Rd':
+Variables in data frame 'ACOG_Districts'
+  Code: ACOG_District State State_Abbreviations Subregion
+  Docs: ACOG_District name
+
+Data codoc mismatches from Rd file 'acgme.Rd':
+Variables in data frame 'acgme'
+  Code: accreditation_status address city coordinator_email_1
+        coordinator_name_1 coordinator_phone_1 director_date_appointed
+        director_name original_accreditation_date
+        participation_site_code_1 participation_site_code_10
+        participation_site_code_11 participation_site_code_12
+        participation_site_code_13 participation_site_code_14
+        participation_site_code_15 participation_site_code_16
+        participation_site_code_17 participation_site_code_18
+        participation_site_code_2 participation_site_code_3
+        participation_site_code_4 participation_site_code_5
+        participation_site_code_6 participation_site_code_7
+        participation_site_code_8 participation_site_code_9
+        participation_site_name_1 participation_site_name_10
+        participation_site_name_11 participation_site_name_12
+        participation_site_name_13 participation_site_name_14
+        participation_site_name_15 participation_site_name_16
+        participation_site_name_17 participation_site_name_18
+        participation_site_name_2 participation_site_name_3
+        participation_site_name_4 participation_site_name_5
+        participation_site_name_7 participation_site_name_8
+        participation_site_name_9 phone program_code program_name
+        rotation_months_y1_1 rotation_months_y1_10
+        rotation_months_y1_11 rotation_months_y1_12
+        rotation_months_y1_13 rotation_months_y1_14
+        rotation_months_y1_15 rotation_months_y1_16
+        rotation_months_y1_17 rotation_months_y1_18
+        rotation_months_y1_2 rotation_months_y1_3 rotation_months_y1_4
+        rotation_months_y1_5 rotation_months_y1_6 rotation_months_y1_7
+        rotation_months_y1_8 rotation_months_y1_9 rotation_months_y2_1
+        rotation_months_y2_10 rotation_months_y2_11
+        rotation_months_y2_12 rotation_months_y2_13
+        rotation_months_y2_14 rotation_months_y2_15
+        rotation_months_y2_16 rotation_months_y2_17
+        rotation_months_y2_18 rotation_months_y2_2 rotation_months_y2_3
+        rotation_months_y2_4 rotation_months_y2_5 rotation_months_y2_6
+        rotation_months_y2_7 rotation_months_y2_8 rotation_months_y2_9
+        rotation_months_y3_1 rotation_months_y3_10
+        rotation_months_y3_11 rotation_months_y3_12
+        rotation_months_y3_13 rotation_months_y3_14
+        rotation_months_y3_15 rotation_months_y3_16
+        rotation_months_y3_17 rotation_months_y3_18
+        rotation_months_y3_2 rotation_months_y3_3 rotation_months_y3_4
+        rotation_months_y3_5 rotation_months_y3_6 rotation_months_y3_7
+        rotation_months_y3_8 rotation_months_y3_9 rotation_months_y4_1
+        rotation_months_y4_10 rotation_months_y4_11
+        rotation_months_y4_12 rotation_months_y4_13
+        rotation_months_y4_14 rotation_months_y4_15
+        rotation_months_y4_16 rotation_months_y4_17
+        rotation_months_y4_18 rotation_months_y4_2 rotation_months_y4_3
+        rotation_months_y4_4 rotation_months_y4_5 rotation_months_y4_6
+        rotation_months_y4_7 rotation_months_y4_8 rotation_months_y4_9
+        rotation_required_1 rotation_required_10 rotation_required_11
+        rotation_required_12 rotation_required_13 rotation_required_14
+        rotation_required_15 rotation_required_16 rotation_required_17
+        rotation_required_18 rotation_required_2 rotation_required_3
+        rotation_required_4 rotation_required_5 rotation_required_6
+        rotation_required_7 rotation_required_8 rotation_required_9
+        sponsoring_institution_code sponsoring_institution_name state
+        website zip
+  Docs: Program directors name
+
+Data codoc mismatches from Rd file 'taxonomy.Rd':
+Variables in data frame 'taxonomy'
+  Code: Classification Code Specialization
+  Docs: NUCC Code Provider Type
+
+* checking Rd \usage sections ... WARNING
+Undocumented arguments in Rd file 'nppes_initialize_environment.Rd'
+  ‘setup_file’
+
+Undocumented arguments in Rd file 'tm_write2pdf.Rd'
+  ‘object’ ‘filename’
+Documented arguments not in \usage in Rd file 'tm_write2pdf.Rd':
+  ‘input_file_path’ ‘output_directory’ ‘title’ ‘selected_columns’
+  ‘label_translations’
+
+Functions with \usage entries need to have the appropriate \alias
+entries, and all their arguments documented.
+The \usage entries must correspond to syntactically valid R code.
+See chapter ‘Writing R documentation files’ in the ‘Writing R
+Extensions’ manual.
+* checking Rd contents ... OK
+* checking for unstated dependencies in examples ... OK
+* checking contents of ‘data’ directory ... WARNING
+Files not of a type allowed in a ‘data’ directory:
+  ‘search_taxonomy_2024-10-01_15-12-49_.rds’
+Please use e.g. ‘inst/extdata’ for non-R data files
+
+* checking data for non-ASCII characters ... NOTE
+  Note: found 94 marked UTF-8 strings
+* checking LazyData ... OK
+* checking data for ASCII and uncompressed saves ... OK
+* checking files in ‘vignettes’ ... WARNING
+Files in the 'vignettes' directory but no files in 'inst/doc':
+  ‘create_isochrones.Rmd’ ‘geocode.Rmd’ ‘get_census_data.Rmd’
+  ‘my-vignette.Rmd’ ‘search_and_process_npi.Rmd’
+  ‘validate_and_remove_invalid_npi.Rmd’
+* checking examples ... ERROR
+Running examples in ‘tyler-Ex.R’ failed
+The error most likely occurred in:
+
+> ### Name: calculate_descriptive_stats
+> ### Title: Calculate Descriptive Statistics with Robust Logging
+> ### Aliases: calculate_descriptive_stats
+> 
+> ### ** Examples
+> 
+> # Example: Calculate descriptive statistics for a column with logging
+> stats <- calculate_descriptive_stats(df, "business_days_until_appointment", verbose = TRUE)
+Function calculate_descriptive_stats called with the following inputs:
+  Column: business_days_until_appointment 
+  Dataframe has rows and columns
+Error in calculate_descriptive_stats(df, "business_days_until_appointment",  : 
+  Column not found in the dataframe: business_days_until_appointment
+Execution halted
+* checking for unstated dependencies in ‘tests’ ... OK
+* checking tests ...
+ ERROR
+Running the tests in ‘tests/testthat.R’ failed.
+Last 13 lines of output:
+  • `conflicts_prefer(rlang::flatten)`
+  Backtrace:
+      ▆
+   1. ├─base::library(jsonlite) at test-this_one_works.R:8:1
+   2. │ └─base (local) checkConflicts(package, pkgname, pkgpath, nogenerics, ns)
+   3. │   └─base (local) same.isFn(i)
+   4. │     └─base::vapply(...)
+   5. │       └─base (local) FUN(X[[i]], ...)
+   6. └─conflicted (local) `<fn>`()
+   7.   └─cli::cli_abort(...)
+   8.     └─rlang::abort(...)
+  
+  [ FAIL 2 | WARN 2 | SKIP 0 | PASS 162 ]
+  Error: Test failures
+  Execution halted
+* checking for unstated dependencies in vignettes ... OK
+* checking package vignettes ... WARNING
+Directory 'inst/doc' does not exist.
+Package vignettes without corresponding single PDF/HTML:
+  ‘create_isochrones.Rmd’
+  ‘geocode.Rmd’
+  ‘get_census_data.Rmd’
+  ‘my-vignette.Rmd’
+  ‘search_and_process_npi.Rmd’
+  ‘validate_and_remove_invalid_npi.Rmd’
+* checking re-building of vignette outputs ... OK
+* checking PDF version of manual ... WARNING
+LaTeX errors when creating PDF version.
+This typically indicates Rd problems.
+LaTeX errors found:
+! LaTeX Error: Something's wrong--perhaps a missing \item.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+* checking PDF version of manual without index ... ERROR
+Re-running with no redirection of stdout/stderr.
+* DONE
+Status: 3 ERRORs, 12 WARNINGs, 5 NOTEs

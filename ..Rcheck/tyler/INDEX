@@ -1,0 +1,171 @@
+ACOG_Districts          ACOG Districts Data
+MaxTable                Calculate the Maximum Value(s) and
+                        Corresponding Level(s) of a Factor Variable
+MinTable                Calculate the Minimum Value(s) and
+                        Corresponding Level(s) of a Factor Variable
+acgme                   ACGME OBGYN Residency Data
+arsenal_tables_write2word
+                        Writes an Arsenal table object to a Word
+                        document.
+calcpercentages         Calculate the Percentage of the Most Common
+                        Value in a Categorical Variable
+calculate_descriptive_stats
+                        Calculate Descriptive Statistics with Robust
+                        Logging
+calculate_distribution
+                        Calculate Demographic Distribution with Logging
+calculate_intersection_overlap_and_save
+                        Calculate intersection overlap and save results
+                        to shapefiles.
+calculate_proportion    Calculate the Proportion of Each Level in a
+                        Categorical Variable
+check_normality         Check Normality and Summarize Data
+city_state_assign_scenarios
+                        Assign Cases to Professionals by City and State
+city_state_sample_specialists
+                        Sample Generalists and Specialists by
+                        City-State Combination
+clean_phase_1_results   Clean Phase 1 Results Data
+clean_phase_2_data      Clean and process Phase 2 data
+convert_list_to_df_expanded
+                        Convert a List of Column Names to an Expanded
+                        Data Frame
+count_unique_physicians
+                        Count Unique Physicians Based on Insurance Type
+                        and Exclusion Reason
+create_and_plot_interaction
+                        Create and Plot Interaction Effects in GLMM
+create_and_save_physician_dot_map
+                        Create and Save a Leaflet Dot Map of Physicians
+create_block_group_overlap_map
+                        Function to create and export a map showing
+                        block group overlap with isochrones
+create_density_plot     Create a Density Plot for Mystery Caller
+                        Studies with Optional Transformations
+create_forest_plot      Create a Forest Plot for Significant Predictors
+                        with Logging
+create_formula          Create a Formula for Poisson Model
+create_individual_isochrone_plots
+                        Create Individual Isochrone Maps and Shapefiles
+create_insurance_by_insurance_scatter_plot
+                        Create a Scatter Plot Comparing Waiting Times
+                        Between Two Insurance Types
+create_isochrones       Memoized function to try a location with
+                        isoline calculations
+create_isochrones_for_dataframe
+                        Get isochrones for each point in a dataframe
+create_line_plot        Create a Line Plot with Optional
+                        Transformations and Grouping
+create_scatter_plot     Create a Scatter Plot for Mystery Caller
+                        Studies with Optional Transformations, Jitter,
+                        and Custom Labels
+create_summary_sentence
+                        Create a Summary Sentence with Logging
+determine_direction     Determine the Direction of Effects for
+                        Significant Variables with Logging
+find_common_columns_in_years_of_open_payments_data
+                        Find Common Columns in Years of Open Payments
+                        Data
+fips                    Data of FIPS codes
+fit_mixed_model_with_logging
+                        Fit a Mixed-Effects Model with Logging and
+                        Robust Error Handling
+fit_poisson_models      Fit Poisson Models and Extract P-Values with
+                        Logging
+format_pct              Format a Numeric Value as a Percentage
+genderize_physicians    Genderize Physicians Data
+generate_latex_equation
+                        Generate LaTeX Equation with Logging
+generate_leaflet_base_map
+                        Generate Leaflet Base Map
+geocode_unique_addresses
+                        Geocode Unique Addresses
+get_census_data         Get Census data of all state block groups
+hrr                     Get Hospital Referral Region Shapefile
+hrr_generate_maps       Generate Hexagon Maps for Hospital Referral
+                        Regions (HRR)
+install_missing_packages
+                        Install Missing CRAN Packages
+linear_regression_race_drive_time_generate_summary_sentence
+                        Generate Summary Sentence for Linear Regression
+                        on Race and Drive Time with Raw Proportions
+load_data               Load and Process Data from an RDS File with
+                        Robust Logging
+logistic_regression     Perform Logistic Regression on Multiple
+                        Predictors with Logging
+most_common_gender_training_academic
+                        Generate a Summary Sentence for the Most Common
+                        Gender, Specialty, Training, and Academic
+                        Affiliation
+nppes_collect_and_clean_data
+                        Collect and clean the processed data
+nppes_connect_to_duckdb
+                        Connect to DuckDB
+nppes_create_table_from_csv
+                        Create a table in DuckDB from a CSV file
+nppes_disconnect_from_duckdb
+                        Disconnect from DuckDB
+nppes_get_data_for_one_year
+                        Get NPPES Data for One Year with Chunked
+                        Processing
+nppes_initialize_environment
+                        Initialize the environment by loading necessary
+                        libraries and resolving conflicts
+nppes_process_npi_table_chunk
+                        Process an NPI table in DuckDB
+nppes_query_sample_data
+                        Query sample data from a DuckDB table
+nppes_save_data_to_csv
+                        Save the final data to CSV
+open_payments_collect_and_convert
+                        Collect and Convert Open Payments Data with
+                        Crosswalk Merging
+open_payments_processed_per_npi
+                        Process Payments Per NPI from CSV in Chunks and
+                        Write to CSV with Date in Filename
+open_payments_specialty_cleaning
+                        Clean and Filter Open Payments Data by
+                        Specialty
+physician_age           Calculate and Summarize Physician Age
+plot_and_save_emmeans   Plot and Save Estimated Marginal Means (EMMs)
+poisson_wait_time_stats
+                        Fit a Poisson Regression Model for Waiting
+                        Times by Group
+prepare_dataset         Prepare the Dataset by Excluding Certain
+                        Columns with Logging
+process_and_save_isochrones
+                        Process and Save Isochrones
+race_drive_time_generate_summary_sentence
+                        Generate Summary Sentence for Race and Drive
+                        Time
+remove_constant_vars    Remove Constant Variables from a Data Frame
+remove_near_zero_var    Remove Near-Zero Variance Variables from a Data
+                        Frame
+rename_columns_by_substring
+                        Rename columns based on substring matches
+retrieve_clinician_data
+                        Retrieve Clinician Data
+save_quality_check_table
+                        Save Quality Check Table
+scrape_physicians_data_with_tor
+                        Scrape Physicians' Data with Tor
+search_and_process_npi
+                        Search and Process NPI Numbers
+search_by_taxonomy      Search NPI Database by Taxonomy
+search_npi              Search NPI Numbers for Given Names
+split_and_save          Split data into multiple parts and save each
+                        part as separate Excel files
+states_where_physicians_were_NOT_contacted
+                        Summarize States Where Physicians Were NOT
+                        Contacted
+taxonomy                Taxonomy Codes for Obstetricians and
+                        Gynecologists
+test_and_process_isochrones
+                        Test and Process Isochrones
+tm_write2pdf            Generate overall table
+tyler-package           tyler: Common Functions for Mystery Caller or
+                        Audit Studies Evaluating Patient Access to Care
+validate_and_remove_invalid_npi
+                        Validate and Remove Invalid NPI Numbers
+write_output_csv        Write a Data Frame to CSV with Robust Logging
+                        and Error Handling

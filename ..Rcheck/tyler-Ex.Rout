@@ -1,0 +1,602 @@
+
+R version 4.4.0 (2024-04-24) -- "Puppy Cup"
+Copyright (C) 2024 The R Foundation for Statistical Computing
+Platform: x86_64-apple-darwin20
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> pkgname <- "tyler"
+> source(file.path(R.home("share"), "R", "examples-header.R"))
+> options(warn = 1)
+> library('tyler')
+> 
+> base::assign(".oldSearch", base::search(), pos = 'CheckExEnv')
+> base::assign(".old_wd", base::getwd(), pos = 'CheckExEnv')
+> cleanEx()
+> nameEx("ACOG_Districts")
+> ### * ACOG_Districts
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: ACOG_Districts
+> ### Title: ACOG Districts Data
+> ### Aliases: ACOG_Districts
+> ### Keywords: dataset
+> 
+> ### ** Examples
+> 
+> # Load the ACOG Districts Data
+> data(ACOG_Districts)
+> 
+> # View the first few rows of the dataset
+> head(ACOG_Districts)
+# A tibble: 6 × 4
+  State      ACOG_District Subregion     State_Abbreviations
+  <chr>      <chr>         <chr>         <chr>              
+1 Alabama    District VII  District VII  AL                 
+2 Alaska     District VIII District VIII AK                 
+3 Arizona    District VIII District VIII AZ                 
+4 Arkansas   District VII  District VII  AR                 
+5 California District IX   District IX   CA                 
+6 Colorado   District VIII District VIII CO                 
+> 
+> # Get a summary of the dataset
+> summary(ACOG_Districts)
+    State           ACOG_District       Subregion         State_Abbreviations
+ Length:52          Length:52          Length:52          Length:52          
+ Class :character   Class :character   Class :character   Class :character   
+ Mode  :character   Mode  :character   Mode  :character   Mode  :character   
+> 
+> # Perform data analysis and exploration
+> 
+> 
+> 
+> 
+> cleanEx()
+> nameEx("MaxTable")
+> ### * MaxTable
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: MaxTable
+> ### Title: Calculate the Maximum Value(s) and Corresponding Level(s) of a
+> ###   Factor Variable
+> ### Aliases: MaxTable
+> 
+> ### ** Examples
+> 
+> vec <- factor(c("A", "B", "A", "C", "B", "B"))
+> MaxTable(vec) # Returns "A"
+[1] "B"
+> MaxTable(vec, mult = TRUE) # Returns c("A", "B")
+[1] "B"
+> 
+> 
+> 
+> cleanEx()
+> nameEx("MinTable")
+> ### * MinTable
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: MinTable
+> ### Title: Calculate the Minimum Value(s) and Corresponding Level(s) of a
+> ###   Factor Variable
+> ### Aliases: MinTable
+> 
+> ### ** Examples
+> 
+> vec <- factor(c("A", "B", "A", "C", "B", "B"))
+> MinTable(vec) # Returns "C"
+[1] "C"
+> MinTable(vec, mult = TRUE) # Returns "C"
+[1] "C"
+> 
+> 
+> 
+> cleanEx()
+> nameEx("acgme")
+> ### * acgme
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: acgme
+> ### Title: ACGME OBGYN Residency Data
+> ### Aliases: acgme
+> ### Keywords: dataset
+> 
+> ### ** Examples
+> 
+> # Load the ACGME OBGYN Residency Data
+> data(acgme)
+> 
+> # View the first few rows of the dataset
+> head(acgme)
+# A tibble: 6 × 142
+  program_name                  address zip   city  state sponsoring_instituti…¹
+  <chr>                         <chr>   <chr> <chr> <chr> <chr>                 
+1 University of Alabama Medica… "Unive… 35249 Birm… Alab… 010498                
+2 USA Health Program            "Unive… 36604 Mobi… Alab… 010406                
+3 University of Arizona Colleg… "Banne… 85006 Phoe… Ariz… 038179                
+4 University of Arizona Colleg… "Unive… 85724 Tucs… Ariz… 030509                
+5 Creighton University School … "Creig… 85008 Phoe… Ariz… 309502                
+6 University of Arkansas for M… "Unive… 72205 Litt… Arka… 049501                
+# ℹ abbreviated name: ¹​sponsoring_institution_code
+# ℹ 136 more variables: sponsoring_institution_name <chr>, phone <chr>,
+#   original_accreditation_date <chr>, accreditation_status <chr>,
+#   director_name <chr>, director_date_appointed <chr>,
+#   coordinator_name_1 <chr>, coordinator_phone_1 <chr>,
+#   coordinator_email_1 <chr>, participation_site_code_1 <chr>,
+#   participation_site_name_1 <chr>, rotation_required_1 <chr>, …
+> 
+> # Get a summary of the dataset
+> summary(acgme)
+ program_name         address              zip                city          
+ Length:318         Length:318         Length:318         Length:318        
+ Class :character   Class :character   Class :character   Class :character  
+ Mode  :character   Mode  :character   Mode  :character   Mode  :character  
+                                                                            
+                                                                            
+                                                                            
+                                                                            
+    state           sponsoring_institution_code sponsoring_institution_name
+ Length:318         Length:318                  Length:318                 
+ Class :character   Class :character            Class :character           
+ Mode  :character   Mode  :character            Mode  :character           
+                                                                           
+                                                                           
+                                                                           
+                                                                           
+    phone           original_accreditation_date accreditation_status
+ Length:318         Length:318                  Length:318          
+ Class :character   Class :character            Class :character    
+ Mode  :character   Mode  :character            Mode  :character    
+                                                                    
+                                                                    
+                                                                    
+                                                                    
+ director_name      director_date_appointed coordinator_name_1
+ Length:318         Length:318              Length:318        
+ Class :character   Class :character        Class :character  
+ Mode  :character   Mode  :character        Mode  :character  
+                                                              
+                                                              
+                                                              
+                                                              
+ coordinator_phone_1 coordinator_email_1 participation_site_code_1
+ Length:318          Length:318          Length:318               
+ Class :character    Class :character    Class :character         
+ Mode  :character    Mode  :character    Mode  :character         
+                                                                  
+                                                                  
+                                                                  
+                                                                  
+ participation_site_name_1 rotation_required_1 rotation_months_y1_1
+ Length:318                Length:318          Min.   : 0.000      
+ Class :character          Class :character    1st Qu.: 9.425      
+ Mode  :character          Mode  :character    Median :11.750      
+                                               Mean   :10.277      
+                                               3rd Qu.:12.000      
+                                               Max.   :13.000      
+                                                                   
+ rotation_months_y2_1 rotation_months_y3_1 rotation_months_y4_1
+ Min.   : 0.000       Min.   : 0.000       Min.   : 0.000      
+ 1st Qu.: 8.000       1st Qu.: 7.000       1st Qu.: 8.000      
+ Median :10.550       Median : 9.000       Median :10.500      
+ Mean   : 9.581       Mean   : 8.895       Mean   : 9.696      
+ 3rd Qu.:12.000       3rd Qu.:11.000       3rd Qu.:12.000      
+ Max.   :13.000       Max.   :13.000       Max.   :13.000      
+                                                               
+ participation_site_code_2 participation_site_name_2 rotation_required_2
+ Length:318                Length:318                Length:318         
+ Class :character          Class :character          Class :character   
+ Mode  :character          Mode  :character          Mode  :character   
+                                                                        
+                                                                        
+                                                                        
+                                                                        
+ rotation_months_y1_2 rotation_months_y2_2 rotation_months_y3_2
+ Min.   : 0.000       Min.   : 0.0         Min.   : 0.000      
+ 1st Qu.: 0.000       1st Qu.: 0.0         1st Qu.: 0.500      
+ Median : 0.200       Median : 1.0         Median : 1.200      
+ Mean   : 1.494       Mean   : 1.9         Mean   : 2.066      
+ 3rd Qu.: 2.000       3rd Qu.: 3.0         3rd Qu.: 3.000      
+ Max.   :13.000       Max.   :12.0         Max.   :12.000      
+ NA's   :39           NA's   :39           NA's   :39          
+ rotation_months_y4_2 participation_site_code_3 participation_site_name_3
+ Min.   : 0.000       Length:318                Length:318               
+ 1st Qu.: 0.000       Class :character          Class :character         
+ Median : 1.000       Mode  :character          Mode  :character         
+ Mean   : 1.719                                                          
+ 3rd Qu.: 2.000                                                          
+ Max.   :12.000                                                          
+ NA's   :39                                                              
+ rotation_required_3 rotation_months_y1_3 rotation_months_y2_3
+ Length:318          Min.   : 0.0000      Min.   : 0.000      
+ Class :character    1st Qu.: 0.0000      1st Qu.: 0.000      
+ Mode  :character    Median : 0.0000      Median : 0.300      
+                     Mean   : 0.7106      Mean   : 1.009      
+                     3rd Qu.: 1.0000      3rd Qu.: 1.500      
+                     Max.   :12.0000      Max.   :10.000      
+                     NA's   :91           NA's   :91          
+ rotation_months_y3_3 rotation_months_y4_3 participation_site_code_4
+ Min.   :0.000        Min.   : 0.000       Length:318               
+ 1st Qu.:0.000        1st Qu.: 0.000       Class :character         
+ Median :1.000        Median : 0.000       Mode  :character         
+ Mean   :1.298        Mean   : 1.041                                
+ 3rd Qu.:2.000        3rd Qu.: 1.500                                
+ Max.   :9.000        Max.   :10.000                                
+ NA's   :91           NA's   :91                                    
+ participation_site_name_4 rotation_required_4 rotation_months_y1_4
+ Length:318                Length:318          Min.   :0.0000      
+ Class :character          Class :character    1st Qu.:0.0000      
+ Mode  :character          Mode  :character    Median :0.0000      
+                                               Mean   :0.3675      
+                                               3rd Qu.:0.1000      
+                                               Max.   :5.0000      
+                                               NA's   :149         
+ rotation_months_y2_4 rotation_months_y3_4 rotation_months_y4_4
+ Min.   :0.0000       Min.   :0.0000       Min.   : 0.0000     
+ 1st Qu.:0.0000       1st Qu.:0.0000       1st Qu.: 0.0000     
+ Median :0.0000       Median :0.5000       Median : 0.0000     
+ Mean   :0.6509       Mean   :0.8882       Mean   : 0.7787     
+ 3rd Qu.:1.0000       3rd Qu.:1.0000       3rd Qu.: 1.0000     
+ Max.   :5.0000       Max.   :6.0000       Max.   :12.0000     
+ NA's   :149          NA's   :149          NA's   :149         
+ participation_site_code_5 participation_site_name_5 rotation_required_5
+ Length:318                Length:318                Length:318         
+ Class :character          Class :character          Class :character   
+ Mode  :character          Mode  :character          Mode  :character   
+                                                                        
+                                                                        
+                                                                        
+                                                                        
+ rotation_months_y1_5 rotation_months_y2_5 rotation_months_y3_5
+ Min.   : 0.0000      Min.   : 0.0000      Min.   : 0.0000     
+ 1st Qu.: 0.0000      1st Qu.: 0.0000      1st Qu.: 0.0000     
+ Median : 0.0000      Median : 0.0000      Median : 0.5000     
+ Mean   : 0.2991      Mean   : 0.6487      Mean   : 0.9584     
+ 3rd Qu.: 0.0000      3rd Qu.: 1.0000      3rd Qu.: 1.0000     
+ Max.   :12.0000      Max.   :12.0000      Max.   :12.0000     
+ NA's   :205          NA's   :205          NA's   :205         
+ rotation_months_y4_5 participation_site_code_6 rotation_required_6
+ Min.   : 0.0000      Length:318                Length:318         
+ 1st Qu.: 0.0000      Class :character          Class :character   
+ Median : 0.1000      Mode  :character          Mode  :character   
+ Mean   : 0.6912                                                   
+ 3rd Qu.: 1.0000                                                   
+ Max.   :12.0000                                                   
+ NA's   :205                                                       
+ rotation_months_y1_6 rotation_months_y2_6 rotation_months_y3_6
+ Min.   :0.000        Min.   :0.0000       Min.   :0.0000      
+ 1st Qu.:0.000        1st Qu.:0.0000       1st Qu.:0.0000      
+ Median :0.000        Median :0.0000       Median :0.1000      
+ Mean   :0.175        Mean   :0.4789       Mean   :0.7421      
+ 3rd Qu.:0.000        3rd Qu.:0.6000       3rd Qu.:1.0000      
+ Max.   :2.500        Max.   :5.0000       Max.   :6.0000      
+ NA's   :242          NA's   :242          NA's   :242         
+ rotation_months_y4_6 participation_site_code_7 participation_site_name_7
+ Min.   :0.0000       Length:318                Length:318               
+ 1st Qu.:0.0000       Class :character          Class :character         
+ Median :0.3000       Mode  :character          Mode  :character         
+ Mean   :0.7474                                                          
+ 3rd Qu.:1.0000                                                          
+ Max.   :7.0000                                                          
+ NA's   :242                                                             
+ rotation_required_7 rotation_months_y1_7 rotation_months_y2_7
+ Length:318          Min.   :0.0000       Min.   :0.0000      
+ Class :character    1st Qu.:0.0000       1st Qu.:0.0000      
+ Mode  :character    Median :0.0000       Median :0.0000      
+                     Mean   :0.1907       Mean   :0.4628      
+                     3rd Qu.:0.0000       3rd Qu.:0.5000      
+                     Max.   :4.0000       Max.   :4.5000      
+                     NA's   :275          NA's   :275         
+ rotation_months_y3_7 rotation_months_y4_7 participation_site_code_8
+ Min.   :0.0000       Min.   :0.0000       Length:318               
+ 1st Qu.:0.0000       1st Qu.:0.0000       Class :character         
+ Median :0.5000       Median :0.2000       Mode  :character         
+ Mean   :0.8605       Mean   :0.7814                                
+ 3rd Qu.:1.0000       3rd Qu.:1.0000                                
+ Max.   :4.5000       Max.   :7.0000                                
+ NA's   :275          NA's   :275                                   
+ participation_site_name_8 rotation_required_8 rotation_months_y1_8
+ Length:318                Length:318          Min.   :0.0         
+ Class :character          Class :character    1st Qu.:0.0         
+ Mode  :character          Mode  :character    Median :0.0         
+                                               Mean   :0.3         
+                                               3rd Qu.:0.0         
+                                               Max.   :3.2         
+                                               NA's   :297         
+ rotation_months_y2_8 rotation_months_y3_8 rotation_months_y4_8
+ Min.   :0.0000       Min.   :0.0000       Min.   :0.000       
+ 1st Qu.:0.0000       1st Qu.:0.0000       1st Qu.:0.000       
+ Median :0.0000       Median :0.5000       Median :0.500       
+ Mean   :0.4857       Mean   :0.5524       Mean   :0.819       
+ 3rd Qu.:1.0000       3rd Qu.:1.0000       3rd Qu.:1.000       
+ Max.   :3.0000       Max.   :2.0000       Max.   :4.000       
+ NA's   :297          NA's   :297          NA's   :297         
+ participation_site_code_9 participation_site_name_9 rotation_required_9
+ Length:318                Length:318                Length:318         
+ Class :character          Class :character          Class :character   
+ Mode  :character          Mode  :character          Mode  :character   
+                                                                        
+                                                                        
+                                                                        
+                                                                        
+ rotation_months_y1_9 rotation_months_y2_9 rotation_months_y3_9
+ Min.   :0.00000      Min.   :0.0000       Min.   :0.0000      
+ 1st Qu.:0.00000      1st Qu.:0.0000       1st Qu.:0.0000      
+ Median :0.00000      Median :0.0000       Median :0.5000      
+ Mean   :0.06923      Mean   :0.2692       Mean   :0.5154      
+ 3rd Qu.:0.00000      3rd Qu.:0.4000       3rd Qu.:1.0000      
+ Max.   :0.90000      Max.   :1.0000       Max.   :1.0000      
+ NA's   :305          NA's   :305          NA's   :305         
+ rotation_months_y4_9 participation_site_code_10 participation_site_name_10
+ Min.   :0.0000       Length:318                 Length:318                
+ 1st Qu.:0.1000       Class :character           Class :character          
+ Median :1.0000       Mode  :character           Mode  :character          
+ Mean   :0.7769                                                            
+ 3rd Qu.:1.0000                                                            
+ Max.   :3.0000                                                            
+ NA's   :305                                                               
+ rotation_required_10 rotation_months_y1_10 rotation_months_y2_10
+ Length:318           Min.   :0.0000        Min.   :0.0000       
+ Class :character     1st Qu.:0.0000        1st Qu.:0.0000       
+ Mode  :character     Median :0.0000        Median :0.0000       
+                      Mean   :0.1111        Mean   :0.2333       
+                      3rd Qu.:0.0000        3rd Qu.:0.1000       
+                      Max.   :1.0000        Max.   :1.0000       
+                      NA's   :309           NA's   :309          
+ rotation_months_y3_10 rotation_months_y4_10 participation_site_code_11
+ Min.   :0.0000        Min.   :0.0000        Length:318                
+ 1st Qu.:0.1000        1st Qu.:0.0000        Class :character          
+ Median :0.7000        Median :1.0000        Mode  :character          
+ Mean   :0.5889        Mean   :0.6778                                  
+ 3rd Qu.:1.0000        3rd Qu.:1.0000                                  
+ Max.   :1.0000        Max.   :2.0000                                  
+ NA's   :309           NA's   :309                                     
+ participation_site_name_11 rotation_required_11 rotation_months_y1_11
+ Length:318                 Length:318           Min.   :0            
+ Class :character           Class :character     1st Qu.:0            
+ Mode  :character           Mode  :character     Median :0            
+                                                 Mean   :0            
+                                                 3rd Qu.:0            
+                                                 Max.   :0            
+                                                 NA's   :313          
+ rotation_months_y2_11 rotation_months_y3_11 rotation_months_y4_11
+ Min.   :0.0           Min.   :0.00          Min.   :0.0          
+ 1st Qu.:0.0           1st Qu.:0.10          1st Qu.:0.0          
+ Median :1.0           Median :0.70          Median :0.0          
+ Mean   :0.6           Mean   :0.56          Mean   :0.4          
+ 3rd Qu.:1.0           3rd Qu.:1.00          3rd Qu.:1.0          
+ Max.   :1.0           Max.   :1.00          Max.   :1.0          
+ NA's   :313           NA's   :313           NA's   :313          
+ participation_site_code_12 participation_site_name_12 rotation_required_12
+ Length:318                 Length:318                 Length:318          
+ Class :character           Class :character           Class :character    
+ Mode  :character           Mode  :character           Mode  :character    
+                                                                           
+                                                                           
+                                                                           
+                                                                           
+ rotation_months_y1_12 rotation_months_y2_12 rotation_months_y3_12
+ Min.   : 0.100        Min.   : 0.000        Min.   : 0.000       
+ 1st Qu.: 0.775        1st Qu.: 0.075        1st Qu.: 0.075       
+ Median : 6.000        Median : 5.050        Median : 5.050       
+ Mean   : 5.775        Mean   : 5.025        Mean   : 5.025       
+ 3rd Qu.:11.000        3rd Qu.:10.000        3rd Qu.:10.000       
+ Max.   :11.000        Max.   :10.000        Max.   :10.000       
+ NA's   :314           NA's   :314           NA's   :314          
+ rotation_months_y4_12 participation_site_code_13 participation_site_name_13
+ Min.   : 0.000        Length:318                 Length:318                
+ 1st Qu.: 0.075        Class :character           Class :character          
+ Median : 6.050        Mode  :character           Mode  :character          
+ Mean   : 6.025                                                             
+ 3rd Qu.:12.000                                                             
+ Max.   :12.000                                                             
+ NA's   :314                                                                
+ rotation_required_13 rotation_months_y1_13 rotation_months_y2_13
+ Length:318           Min.   :0             Min.   :0.0          
+ Class :character     1st Qu.:0             1st Qu.:0.1          
+ Mode  :character     Median :0             Median :0.2          
+                      Mean   :0             Mean   :0.2          
+                      3rd Qu.:0             3rd Qu.:0.3          
+                      Max.   :0             Max.   :0.4          
+                      NA's   :316           NA's   :316          
+ rotation_months_y3_13 rotation_months_y4_13 participation_site_code_14
+ Min.   :0.000         Min.   :0.000         Length:318                
+ 1st Qu.:0.025         1st Qu.:0.025         Class :character          
+ Median :0.050         Median :0.050         Mode  :character          
+ Mean   :0.050         Mean   :0.050                                   
+ 3rd Qu.:0.075         3rd Qu.:0.075                                   
+ Max.   :0.100         Max.   :0.100                                   
+ NA's   :316           NA's   :316                                     
+ participation_site_name_14 rotation_required_14 rotation_months_y1_14
+ Length:318                 Length:318           Min.   :0            
+ Class :character           Class :character     1st Qu.:0            
+ Mode  :character           Mode  :character     Median :0            
+                                                 Mean   :0            
+                                                 3rd Qu.:0            
+                                                 Max.   :0            
+                                                 NA's   :317          
+ rotation_months_y2_14 rotation_months_y3_14 rotation_months_y4_14
+ Min.   :0             Min.   :0.1           Min.   :0            
+ 1st Qu.:0             1st Qu.:0.1           1st Qu.:0            
+ Median :0             Median :0.1           Median :0            
+ Mean   :0             Mean   :0.1           Mean   :0            
+ 3rd Qu.:0             3rd Qu.:0.1           3rd Qu.:0            
+ Max.   :0             Max.   :0.1           Max.   :0            
+ NA's   :317           NA's   :317           NA's   :317          
+ participation_site_code_15 participation_site_name_15 rotation_required_15
+ Length:318                 Length:318                 Length:318          
+ Class :character           Class :character           Class :character    
+ Mode  :character           Mode  :character           Mode  :character    
+                                                                           
+                                                                           
+                                                                           
+                                                                           
+ rotation_months_y1_15 rotation_months_y2_15 rotation_months_y3_15
+ Min.   :0.1           Min.   :0             Min.   :0            
+ 1st Qu.:0.1           1st Qu.:0             1st Qu.:0            
+ Median :0.1           Median :0             Median :0            
+ Mean   :0.1           Mean   :0             Mean   :0            
+ 3rd Qu.:0.1           3rd Qu.:0             3rd Qu.:0            
+ Max.   :0.1           Max.   :0             Max.   :0            
+ NA's   :317           NA's   :317           NA's   :317          
+ rotation_months_y4_15 participation_site_code_16 participation_site_name_16
+ Min.   :0             Length:318                 Length:318                
+ 1st Qu.:0             Class :character           Class :character          
+ Median :0             Mode  :character           Mode  :character          
+ Mean   :0                                                                  
+ 3rd Qu.:0                                                                  
+ Max.   :0                                                                  
+ NA's   :317                                                                
+ rotation_required_16 rotation_months_y1_16 rotation_months_y2_16
+ Length:318           Min.   :0             Min.   :0            
+ Class :character     1st Qu.:0             1st Qu.:0            
+ Mode  :character     Median :0             Median :0            
+                      Mean   :0             Mean   :0            
+                      3rd Qu.:0             3rd Qu.:0            
+                      Max.   :0             Max.   :0            
+                      NA's   :317           NA's   :317          
+ rotation_months_y3_16 rotation_months_y4_16 participation_site_code_17
+ Min.   :0             Min.   :0             Length:318                
+ 1st Qu.:0             1st Qu.:0             Class :character          
+ Median :0             Median :0             Mode  :character          
+ Mean   :0             Mean   :0                                       
+ 3rd Qu.:0             3rd Qu.:0                                       
+ Max.   :0             Max.   :0                                       
+ NA's   :317           NA's   :317                                     
+ participation_site_name_17 rotation_required_17 rotation_months_y1_17
+ Length:318                 Length:318           Min.   :0            
+ Class :character           Class :character     1st Qu.:0            
+ Mode  :character           Mode  :character     Median :0            
+                                                 Mean   :0            
+                                                 3rd Qu.:0            
+                                                 Max.   :0            
+                                                 NA's   :317          
+ rotation_months_y2_17 rotation_months_y3_17 rotation_months_y4_17
+ Min.   :0             Min.   :0             Min.   :0            
+ 1st Qu.:0             1st Qu.:0             1st Qu.:0            
+ Median :0             Median :0             Median :0            
+ Mean   :0             Mean   :0             Mean   :0            
+ 3rd Qu.:0             3rd Qu.:0             3rd Qu.:0            
+ Max.   :0             Max.   :0             Max.   :0            
+ NA's   :317           NA's   :317           NA's   :317          
+ participation_site_code_18 participation_site_name_18 rotation_required_18
+ Length:318                 Length:318                 Length:318          
+ Class :character           Class :character           Class :character    
+ Mode  :character           Mode  :character           Mode  :character    
+                                                                           
+                                                                           
+                                                                           
+                                                                           
+ rotation_months_y1_18 rotation_months_y2_18 rotation_months_y3_18
+ Min.   :0             Min.   :0             Min.   :0.6          
+ 1st Qu.:0             1st Qu.:0             1st Qu.:0.6          
+ Median :0             Median :0             Median :0.6          
+ Mean   :0             Mean   :0             Mean   :0.6          
+ 3rd Qu.:0             3rd Qu.:0             3rd Qu.:0.6          
+ Max.   :0             Max.   :0             Max.   :0.6          
+ NA's   :317           NA's   :317           NA's   :317          
+ rotation_months_y4_18   website           program_code      
+ Min.   :0.3           Length:318         Min.   :2.200e+09  
+ 1st Qu.:0.3           Class :character   1st Qu.:2.202e+09  
+ Median :0.3           Mode  :character   Median :2.203e+09  
+ Mean   :0.3                              Mean   :2.203e+09  
+ 3rd Qu.:0.3                              3rd Qu.:2.204e+09  
+ Max.   :0.3                              Max.   :2.206e+09  
+ NA's   :317                                                 
+> 
+> # Perform data analysis and exploration
+> 
+> 
+> 
+> 
+> cleanEx()
+> nameEx("arsenal_tables_write2word")
+> ### * arsenal_tables_write2word
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: arsenal_tables_write2word
+> ### Title: Writes an Arsenal table object to a Word document.
+> ### Aliases: arsenal_tables_write2word
+> 
+> ### ** Examples
+> 
+> ## Not run: 
+> ##D arsenal_tables_write2word(my_table, "output_table")
+> ## End(Not run)
+> 
+> 
+> 
+> cleanEx()
+> nameEx("calcpercentages")
+> ### * calcpercentages
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: calcpercentages
+> ### Title: Calculate the Percentage of the Most Common Value in a
+> ###   Categorical Variable
+> ### Aliases: calcpercentages
+> 
+> ### ** Examples
+> 
+> # Example 1: Basic usage with a simple dataset
+> df <- data.frame(category = c("A", "B", "A", "C", "A", "B", "B", "A"))
+> result <- calcpercentages(df, "category")
+> print(result)
+  n
+1 1
+> 
+> # Example 2: Using a dataset with multiple most common values
+> df_tie <- data.frame(category = c("A", "B", "A", "B", "C", "C", "C", "A", "B"))
+> result <- calcpercentages(df_tie, "category")
+> print(result)
+  n
+1 1
+> 
+> # Example 3: Handling a dataset with missing values
+> df_na <- data.frame(category = c("A", NA, "A", "C", "A", "B", "B", NA))
+> result <- calcpercentages(df_na, "category")
+> print(result)
+  n
+1 1
+> 
+> 
+> 
+> 
+> cleanEx()
+> nameEx("calculate_descriptive_stats")
+> ### * calculate_descriptive_stats
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: calculate_descriptive_stats
+> ### Title: Calculate Descriptive Statistics with Robust Logging
+> ### Aliases: calculate_descriptive_stats
+> 
+> ### ** Examples
+> 
+> # Example: Calculate descriptive statistics for a column with logging
+> stats <- calculate_descriptive_stats(df, "business_days_until_appointment", verbose = TRUE)
+Function calculate_descriptive_stats called with the following inputs:
+  Column: business_days_until_appointment 
+  Dataframe has rows and columns
+Error in calculate_descriptive_stats(df, "business_days_until_appointment",  : 
+  Column not found in the dataframe: business_days_until_appointment
+Execution halted

@@ -1,0 +1,15 @@
+.Rproj.user
+.Rhistory
+.Rdata
+.httr-oauth
+.DS_Store
+.cache/
+R/geocode.R
+scripts/R/geocode.R
+docs
+inst/doc
+/Meta/
+^\\.secrets$
+^\\.cache$
+^docs$
+/doc/

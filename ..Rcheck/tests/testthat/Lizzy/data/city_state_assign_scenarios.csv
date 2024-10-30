@@ -1,0 +1,6 @@
+city,state_code,specialty_primary,case_assigned,cases_repeated
+Sample City,SC,General Dermatology,Alpha,Alpha
+Sample City,SC,General Dermatology,Alpha,Beta
+Sample City,SC,General Dermatology,Beta,Gamma
+Sample City,SC,General Dermatology,Gamma,Alpha
+Sample City,SC,General Dermatology,Beta,Beta
