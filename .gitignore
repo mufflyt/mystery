@@ -1,15 +1,45 @@
-.Rproj.user
+# RStudio files
+.Rproj.user/
 .Rhistory
 .Rdata
+.Ruserdata
+.Rapp.history
+
+# OAuth tokens and caches
 .httr-oauth
-.DS_Store
 .cache/
-R/geocode.R
-scripts/R/geocode.R
-docs
-inst/doc
-/Meta/
-^\\.secrets$
-^\\.cache$
-^docs$
-/doc/
+
+# macOS system files
+.DS_Store
+
+# R package and build files
+.Rbuildignore
+docs/            # pkgdown or other generated docs
+inst/doc/
+/Meta/           # Metadata from package builds
+*.tar.gz         # Package archives
+
+# Large media and data files
+*.tiff
+*.jpg
+*.png
+*.xls
+
+# Ignoring directories specific to project
+mock_data_test/
+custom_directory/
+
+# Logs and temporary files
+*.log
+*.out
+*.aux
+*.bak
+*~
+*.tmp
+
+# Compiled documentation and data artifacts
+man/*.Rd
+vignettes/*.html
+vignettes/*.pdf
+_site/
+_site_libs/
