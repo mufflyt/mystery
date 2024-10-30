@@ -1,5 +1,4 @@
 comment: false
-
 coverage:
   status:
     project:
@@ -12,3 +11,5 @@ coverage:
         target: auto
         threshold: 1%
         informational: true
+  paths:
+    - tests/testthat/    # Adjust if tests generate coverage elsewhere
