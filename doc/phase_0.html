@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Tyler Muffly, MD" />
+
+<meta name="date" content="2024-10-25" />
+
+<title>Phase 0: Physician Analysis Using NPI API and Patient-Facing Directory</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Phase 0: Physician Analysis Using NPI API
+and Patient-Facing Directory</h1>
+<h4 class="author">Tyler Muffly, MD</h4>
+<h4 class="date">2024-10-25</h4>
+
+
+
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>This vignette demonstrates the process of cleaning and merging data
+from multiple sources, including the NPI API, taxonomy searches, and
+patient-facing directories, to create a comprehensive dataset of spine
+surgeons. This dataset is then used to visualize the availability of
+surgeons across regions.</p>
+</div>
+<div id="setup-and-package-installation" class="section level1">
+<h1>Setup and Package Installation</h1>
+<p>We begin by setting up the environment and installing the necessary
+package.</p>
+</div>
+<div id="loading-patient-facing-directory-data" class="section level1">
+<h1>Loading Patient-Facing Directory Data</h1>
+<p>We first load the initial data from the patient-facing directory and
+perform an NPI search. This phase confirms the phone numbers and adds
+the NPI number for each entry.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># Loading data from the patient-facing directory</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="co"># This data represents phase 0, where phone numbers have already been confirmed.</span></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="co"># We will filter this data to ensure distinct entries based on name, degree, and state.</span></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>readr<span class="sc">::</span><span class="fu">read_csv</span>(</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>  <span class="fu">system.file</span>(<span class="st">&quot;extdata/ortho_spine/phase_0/spine_only.csv&quot;</span>, <span class="at">package =</span> <span class="st">&quot;tyler&quot;</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">distinct</span>(first, middle, last, degree, state, <span class="at">.keep_all =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<pre><code>## Rows: 656 Columns: 17
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr (15): name, member_status, all_address, address, academic, practice_spec...
+## dbl  (2): year_active_fellow, aaos_website_master_id
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre><code>## # A tibble: 656 × 17
+##    name            member_status year_active_fellow all_address address academic
+##    &lt;chr&gt;           &lt;chr&gt;                      &lt;dbl&gt; &lt;chr&gt;       &lt;chr&gt;   &lt;chr&gt;   
+##  1 Erik T Bendiks… Active Fellow               2008 university… univer… Academic
+##  2 Thomas P Ryan,… Active Fellow               2007 Health Par… Health… Academic
+##  3 Beck Deal McAl… Active Fellow               2016 Wake Fores… Wake F… Academic
+##  4 Hubert Lee Goo… Active Fellow               2006 Carolina S… Caroli… Academic
+##  5 James Joseph H… Active Fellow               1997 7 Vanderbi… 7 Vand… Academic
+##  6 Sergio Andres … Active Fellow               2009 Mission Sp… Missio… Academic
+##  7 Shyam M Shridh… Active Fellow               2013 University… Univer… Academic
+##  8 Evalina L Burg… Active Fellow               2008 University… Univer… Academic
+##  9 Samuel E Smith… Active Fellow               1994 University… Univer… Academic
+## 10 Joseph Pashko … Active Fellow               2017 University… Univer… Academic
+## # ℹ 646 more rows
+## # ℹ 11 more variables: practice_specialty &lt;chr&gt;, first &lt;chr&gt;, middle &lt;chr&gt;,
+## #   last &lt;chr&gt;, degree &lt;chr&gt;, phone &lt;chr&gt;, state &lt;chr&gt;, zip &lt;chr&gt;,
+## #   zip_code &lt;chr&gt;, Division &lt;chr&gt;, aaos_website_master_id &lt;dbl&gt;</code></pre>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># Load pre-searched NPI results (replace with actual search if needed)</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>ortho_spine_batch_npi_search <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  <span class="fu">system.file</span>(<span class="st">&quot;extdata/ortho_spine/phase_0/npi_results.csv&quot;</span>, <span class="at">package =</span> <span class="st">&quot;tyler&quot;</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>)</span></code></pre></div>
+<pre><code>## Rows: 5364 Columns: 64
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr  (58): basic_first_name, basic_last_name, basic_middle_name, basic_crede...
+## dbl   (2): npi, other_names_code
+## lgl   (1): taxonomies_primary
+## date  (3): basic_enumeration_date, basic_last_updated, basic_certification_date
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<!-- # Cleaning and Filtering NPI Search Results -->
+<!-- Next, we clean the NPI search results and filter the data to focus on spine surgeons based on the orthopaedic taxonomy. -->
+<!-- ```{r} -->
+<!-- # Clean NPI search results -->
+<!-- ortho_spine_batch_npi_search_cleaned <- ortho_spine_batch_npi_search %>% -->
+<!--   dplyr::distinct(npi, basic_first_name, basic_last_name, basic_credential, basic_gender, basic_enumeration_date, basic_status, taxonomies_code, .keep_all = TRUE) %>% -->
+<!--   readr::write_csv("ortho_spine/phase_0/ortho_spine_batch_npi_search_cleaned.csv") -->
+<!-- # Filter to include only orthopaedic spine surgeons -->
+<!-- ortho_spine_clean_npi_entries <- tyler::clean_npi_entries( -->
+<!--   npi_entries = ortho_spine_batch_npi_search_cleaned, -->
+<!--   basic_credentials = c("MD", "DO"), -->
+<!--   taxonomy_filter = "Orthopaedic" -->
+<!-- ) -->
+<!-- # Save cleaned NPI data to a CSV -->
+<!-- ortho_spine_clean_npi_entries <- ortho_spine_clean_npi_entries %>% -->
+<!--   distinct(npi, .keep_all = TRUE) %>% -->
+<!--   readr::write_csv("ortho_spine/phase_0/ortho_spine_batch_npi_search_cleaned_unique.csv") -->
+<!-- ``` -->
+</div>
+<div id="searching-for-spine-surgeons-by-taxonomy" class="section level1">
+<h1>Searching for Spine Surgeons by Taxonomy</h1>
+<p>We search for spine surgeons by their taxonomy code and clean the
+results to include only relevant data points. #
+<code>{r} # # Search for spine surgeons by taxonomy # spine_surgeons_by_taxonomy &lt;- tyler::search_by_taxonomy(taxonomy_to_search = &quot;Orthopaedic Surgery of the Spine&quot;) %&gt;% #   readr::write_csv(&quot;ortho_spine/phase_0/spine_surgeons_by_taxonomy.csv&quot;) #  # # Clean taxonomy search results # spine_surgeons_by_taxonomy_cleaned &lt;- spine_surgeons_by_taxonomy %&gt;% #   dplyr::distinct(npi, basic_first_name, basic_last_name, basic_gender, basic_enumeration_date, .keep_all = TRUE) %&gt;% #   dplyr::filter(!is.na(addresses_telephone_number)) %&gt;% #   dplyr::mutate(state = exploratory::statecode(addresses_state, output_type = &quot;name&quot;)) %&gt;% #   dplyr::mutate(zip_code = stringr::str_sub(addresses_postal_code, 1 ,5)) %&gt;% #   readr::write_csv(&quot;ortho_spine/phase_0/spine_surgeons_by_taxonomy_cleaned.csv&quot;) #</code></p>
+</div>
+<div id="merging-data-from-multiple-sources" class="section level1">
+<h1>Merging Data from Multiple Sources</h1>
+<p>We merge the cleaned NPI entries and the spine surgeons by taxonomy
+into a single dataset for further analysis.</p>
+<!-- # Explanation of the Merging Process: -->
+<!-- * Renaming Fields: We ensure that fields such as first name, last name, and middle name are consistently named across the two datasets. -->
+<!-- * Binding Rows: We combine the datasets row-wise, ensuring that spine surgeons from both the NPI and taxonomy searches are included. -->
+<!-- * Saving the Output: The final merged dataset is saved as taxonomy_and_aaos_data.csv for further analysis. -->
+<!-- ```{r} -->
+<!-- # Load the cleaned datasets -->
+<!-- spine_surgeons_by_taxonomy_cleaned <- readr::read_csv("ortho_spine/phase_0/spine_surgeons_by_taxonomy_cleaned.csv") -->
+<!-- ortho_spine_clean_npi_entries <- readr::read_csv("ortho_spine/phase_0/ortho_spine_batch_npi_search_cleaned_unique.csv") -->
+<!-- # Merge the datasets -->
+<!-- taxonomy_and_aaos_data <- ortho_spine_clean_npi_entries %>% -->
+<!--   dplyr::rename( -->
+<!--     first = basic_first_name, -->
+<!--     last = basic_last_name, -->
+<!--     middle = basic_middle_name, -->
+<!--     gender = basic_gender -->
+<!--   ) %>% -->
+<!--   dplyr::bind_rows(spine_surgeons_by_taxonomy_cleaned, .id = "ID") %>% -->
+<!--   dplyr::rename(phone_number = addresses_telephone_number, state_code = addresses_state) %>% -->
+<!--   readr::write_csv("ortho_spine/phase_0/taxonomy_and_aaos_data.csv") -->
+<!-- ``` -->
+<!-- # Visualizing the Data: Choropleth Map -->
+<!-- We create a choropleth map to visualize the distribution of spine surgeons across different U.S. states. This map will highlight the number of available physicians per state based on the merged dataset. -->
+<!-- ## Explanation of the Visualization Process: -->
+<!-- * State Counts: We group the dataset by state and count how many spine surgeons are available in each state. -->
+<!-- Merging with State Map Data: We merge the state-level counts with geographic data for the U.S. states. -->
+<!-- * Centroids: We calculate the centroids (geometric centers) of each state to position the surgeon count labels. -->
+<!-- * Choropleth Map: The map uses a gradient scale to visually represent the number of spine surgeons per state. Lighter colors represent fewer surgeons, while darker colors represent more surgeons. -->
+<!-- ```{r} -->
+<!-- # Preparing the merged dataset for mapping -->
+<!-- state_counts <- taxonomy_and_aaos_data %>% -->
+<!--   dplyr::mutate(state_code = exploratory::statecode(state_code, output_type = "name")) %>% -->
+<!--   dplyr::filter(!is.na(phone_number)) %>% -->
+<!--   dplyr::group_by(state_code) %>% -->
+<!--   dplyr::summarize(total_available = n()) -->
+<!-- # Map data for U.S. states -->
+<!-- us_states <- map_data("state") -->
+<!-- us_states$region <- tolower(us_states$region) -->
+<!-- state_counts$state_code <- tolower(state_counts$state_code) -->
+<!-- # Merging the state map data with the surgeon counts -->
+<!-- map_data_with_counts <- us_states %>% -->
+<!--   dplyr::left_join(state_counts, by = c("region" = "state_code")) -->
+<!-- # Calculate the centroids of each state for positioning the labels -->
+<!-- state_centroids <- map_data_with_counts %>% -->
+<!--   group_by(region) %>% -->
+<!--   summarise( -->
+<!--     long = mean(long), -->
+<!--     lat = mean(lat), -->
+<!--     total_available = mean(total_available, na.rm = TRUE) -->
+<!--   ) -->
+<!-- # Plot the choropleth map showing the distribution of available spine surgeons -->
+<!-- ggplot(map_data_with_counts, aes(long, lat, group = group, fill = total_available)) + -->
+<!--   geom_polygon(color = "gray30", size = 0.2) +  # Add borders to the states -->
+<!--   scale_fill_gradient(low = "lightyellow", high = "darkblue", na.value = "gray90", name = "Available Physicians") + -->
+<!--   geom_text(data = state_centroids, aes(x = long, y = lat, label = round(total_available, 0)), size = 4) +  # Add labels -->
+<!--   theme_void() +  # Remove axis and background -->
+<!--   labs(title = "Choropleth Map of ??? Physicians Available for Sampling by State",  -->
+<!--        subtitle = "Data for ??? Available as of 2024") -->
+<!-- ``` -->
+<!-- # Conclusion -->
+<!-- In this vignette, we demonstrated how to clean and process NPI data and taxonomy searches for spine surgeons. The final dataset can now be used for further analysis such as geographic distribution modeling, contacting surgeons for research studies, or building predictive models for spine surgeon availability by region. -->
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

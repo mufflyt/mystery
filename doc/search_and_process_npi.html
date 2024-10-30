@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Tyler Muffly, MD" />
+
+
+<title>Search and Process NPI Numbers</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Search and Process NPI Numbers</h1>
+<h4 class="author">Tyler Muffly, MD</h4>
+
+
+
+<div id="overview" class="section level1">
+<h1>Overview</h1>
+<p>The <code>search_and_process_npi</code> function is a tool for
+working with datasets containing National Provider Identifier (NPI)
+numbers. <code>search_and_process_npi</code> is a wrapper on the
+fantastic <code>npi</code> package. Thank you to the authors and
+maintainers of the <code>npi</code> package. NPI numbers provide a
+standardized way to identify and track healthcare providers, including
+physicians, across the United States. Government agencies, such as the
+Centers for Medicare &amp; Medicaid Services (CMS), use NPI-based data
+to plan and allocate healthcare resources, including provider
+reimbursements, medical services, and workforce distribution.</p>
+<p><code>search_and_process_npi</code> allows you to search for NPIs
+based on the first and last names of clinicians which is the start for
+many mystery caller projects after getting the names from a
+patient-facing directory of physicians. Getting the NPI number will
+unlock multiple demographics for the physicians (gender, medical school
+type, address) with a function like `retrieve_clinician_data``.</p>
+<div id="why-use-apis-for-healthcare-data" class="section level2">
+<h2>Why use APIs for healthcare data?</h2>
+<p>Accessing APIs to retrieve healthcare data can offer several
+advantages over downloading and joining data from multiple sources:</p>
+<ul>
+<li><ol style="list-style-type: decimal">
+<li>Real-Time Data: APIs often provide access to real-time or
+near-real-time data. Downloading static data files may result in using
+outdated information, while APIs can provide the latest data as it
+becomes available.</li>
+</ol></li>
+<li><ol start="2" style="list-style-type: decimal">
+<li>Data Integrity: APIs typically offer structured and validated data.
+When you access data via an API, you can be more confident in its
+quality and consistency. In contrast, downloading and joining data from
+various sources may introduce data integrity issues, such as missing or
+mismatched records.</li>
+</ol></li>
+<li><ol start="3" style="list-style-type: decimal">
+<li>Efficiency: APIs allow you to request specific subsets of data,
+reducing the amount of data transferred and processed. This can improve
+efficiency and reduce the processing time, especially when dealing with
+large datasets. Downloading and joining entire datasets can be
+time-consuming and resource-intensive.</li>
+</ol></li>
+<li><ol start="4" style="list-style-type: decimal">
+<li>Reduced Storage Requirements: Storing large datasets locally can be
+costly in terms of storage space. Accessing data through APIs means you
+don’t need to maintain a local copy of the entire dataset, saving
+storage costs and reducing the risk of data redundancy.</li>
+</ol></li>
+<li><ol start="5" style="list-style-type: decimal">
+<li>Scalability: APIs are designed to handle a high volume of
+requests.</li>
+</ol></li>
+<li><ol start="6" style="list-style-type: decimal">
+<li>Security and Privacy: Healthcare data often contains sensitive
+information, and APIs can provide better control over data access and
+authentication.</li>
+</ol></li>
+<li><ol start="7" style="list-style-type: decimal">
+<li>Data Source Aggregation: APIs can provide a centralized point of
+access to data from multiple sources.</li>
+</ol></li>
+<li><ol start="8" style="list-style-type: decimal">
+<li>Data Governance: APIs often come with documentation and usage
+policies, which can help ensure compliance with data governance and
+privacy regulations. It provides transparency in data usage, making it
+easier to adhere to legal and ethical standards.</li>
+</ol></li>
+<li><ol start="9" style="list-style-type: decimal">
+<li>Version Control: APIs are versioned, allowing users to specify the
+version of the API they want to use. This ensures backward compatibility
+and provides a level of stability in accessing data. When downloading
+and joining data files, version control can be more challenging.</li>
+</ol></li>
+<li><ol start="10" style="list-style-type: decimal">
+<li>Reduced Maintenance: APIs are maintained and updated by data
+providers. When using APIs, you rely on the provider to manage data
+updates, ensuring that you always have access to the latest
+information.</li>
+</ol></li>
+</ul>
+</div>
+</div>
+<div id="installation" class="section level1">
+<h1>Installation</h1>
+<p>Before you can use the <code>search_and_process_npi</code> function,
+make sure you have the <code>tyler</code> package installed. You can
+install it using the following command:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># install.packages(&quot;tyler&quot;)</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">library</span>(tyler)</span></code></pre></div>
+</div>
+<div id="example-usage" class="section level1">
+<h1>Example Usage</h1>
+<p>National Provider Identifier Search defaults to find individual
+people (individuals enumeration_type = “ind”), physicians (“MD”, “DO”)
+in the United States listed in the NPPES.</p>
+<div id="step-1-load-your-data" class="section level2">
+<h2>Step 1: Load Your Data</h2>
+<p>You can provide your data as either a dataframe or specify the path
+to a CSV, XLS, or XLSX file containing your data. The dataframe must
+have a column named <code>first</code> and another named
+<code>last</code> for surname. <code>acog_presidents</code> is an
+example data set that you can use for this case.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># Toy example using a dataframe</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>data_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  <span class="at">first =</span> <span class="fu">c</span>(<span class="st">&quot;John&quot;</span>, <span class="st">&quot;Jane&quot;</span>, <span class="st">&quot;Bob&quot;</span>),</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>  <span class="at">last =</span> <span class="fu">c</span>(<span class="st">&quot;Doe&quot;</span>, <span class="st">&quot;Smith&quot;</span>, <span class="st">&quot;Johnson&quot;</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>)</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="co"># Example using a CSV file</span></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>input_file <span class="ot">&lt;-</span> <span class="st">&quot;acog_presidents.csv&quot;</span></span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a><span class="co"># Note the file must have a column named &quot;first&quot; and a column named &quot;last&quot;.  </span></span></code></pre></div>
+</div>
+<div id="step-2-call-the-search_and_process_npi-function" class="section level2">
+<h2>Step 2: Call the <code>search_and_process_npi</code> Function</h2>
+<p>Now, let’s use the <code>search_and_process_npi</code> function to
+search for NPI numbers based on the first and last names in your data.
+This will cast a WIDE net with matches in <strong><em>all
+specialties</em></strong>.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># Example using a CSV file</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>output_result <span class="ot">&lt;-</span> <span class="fu">search_and_process_npi</span>(<span class="at">input_file =</span> input_file)</span></code></pre></div>
+</div>
+<div id="step-3-customize-your-search" class="section level2">
+<h2>Step 3: Customize Your Search</h2>
+<p>You can customize your NPI search by specifying parameters such as
+<code>enumeration_type</code>, <code>limit</code>,
+<code>country_code</code>, and <code>filter_credentials</code>. No Magic
+numbers :) This will take a long time to run. Best to run it overnight
+for over 2,000 searches. For the <code>acog_president</code> dataframe
+it will take about 10 minutes. Here’s how you can do it:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># Example with custom search parameters</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>result_df <span class="ot">&lt;-</span> <span class="fu">search_and_process_npi</span>(</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  <span class="at">input_data =</span> input_file,</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>  <span class="at">enumeration_type =</span> <span class="st">&quot;ind&quot;</span>,               <span class="co"># Search for individual NPIs</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>  <span class="at">limit =</span> <span class="dv">10</span>,                             <span class="co"># Set the search limit to 10 results per name pair</span></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>  <span class="at">country_code =</span> <span class="st">&quot;US&quot;</span>,                    <span class="co"># Filter for NPIs in the United States</span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>  <span class="at">filter_credentials =</span> <span class="fu">c</span>(<span class="st">&quot;MD&quot;</span>, <span class="st">&quot;DO&quot;</span>)      <span class="co"># Filter for specific credentials</span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>)</span></code></pre></div>
+<p>Do not be worried by this message during the API is accessed. It just
+means that there was <strong><em>no match</em></strong> for the
+NAMES.</p>
+<pre><code>ERROR : `df` must be an npi_results S3 object, not tbl_df. </code></pre>
+</div>
+<div id="step-4-access-the-results" class="section level2">
+<h2>Step 4: Access the Results</h2>
+<p>The function will return a data frame containing the processed NPI
+search results. You can access this data frame for further
+analysis.There are going to be a <strong><em>lot</em></strong> of
+duplicates so you will need to clean this thoughtfully.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># Access the result data frame</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>result_df</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="sc">&gt;</span> output_result</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>              npi basic_first_name basic_last_name basic_middle_name basic_credential basic_sole_proprietor basic_gender</span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>    <span class="dv">1</span><span class="sc">:</span> <span class="dv">1053601807</span>             RYAN       SCHLUETER            JEWELL               DO                   YES            M</span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>    <span class="dv">2</span><span class="sc">:</span> <span class="dv">1184186256</span>            LAURA          MARTIN         ELIZABETH               DO                    NO            F</span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>    <span class="dv">3</span><span class="sc">:</span> <span class="dv">1063703494</span>           LAUREN          BISHOP            ALICIA             M.D.                    NO            F</span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>    <span class="dv">4</span><span class="sc">:</span> <span class="dv">1740800705</span>           LAUREN          BISHOP         ELISABETH             M.D.                    NO            F</span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a>    </span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a>       basic_enumeration_date basic_last_updated basic_certification_date basic_status taxonomies_code</span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a>    <span class="dv">1</span><span class="sc">:</span>             <span class="dv">2011-04-13</span>         <span class="dv">2021-09-30</span>               <span class="dv">2021-09-30</span>            A      <span class="dv">207</span>VM0101X</span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a>    <span class="dv">2</span><span class="sc">:</span>             <span class="dv">2019-04-05</span>         <span class="dv">2023-03-16</span>               <span class="dv">2023-03-16</span>            A      <span class="dv">207</span>P00000X</span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a>    <span class="dv">3</span><span class="sc">:</span>             <span class="dv">2011-04-19</span>         <span class="dv">2023-03-16</span>               <span class="dv">2023-03-16</span>            A      <span class="dv">207</span>VE0102X</span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a>    <span class="dv">4</span><span class="sc">:</span>             <span class="dv">2020-04-20</span>         <span class="dv">2023-07-03</span>               <span class="dv">2023-07-03</span>            A      <span class="dv">207</span>Q00000X</span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a>    </span>
+<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a>                     taxonomies_taxonomy_group                                     taxonomies_desc taxonomies_state</span>
+<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a>    <span class="dv">1</span><span class="sc">:</span> <span class="dv">193400000</span>X <span class="sc">-</span> Single Specialty Group  Obstetrics <span class="sc">&amp;</span> Gynecology, Maternal <span class="sc">&amp;</span> Fetal Medicine               GA</span>
+<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a>    <span class="dv">2</span><span class="sc">:</span>                                                                      Emergency Medicine               MS</span>
+<span id="cb6-20"><a href="#cb6-20" tabindex="-1"></a>    <span class="dv">3</span><span class="sc">:</span>                                     Obstetrics <span class="sc">&amp;</span> Gynecology, Reproductive Endocrinology               NY</span>
+<span id="cb6-21"><a href="#cb6-21" tabindex="-1"></a>    <span class="dv">4</span><span class="sc">:</span>                                                                         Family Medicine               TX</span>
+<span id="cb6-22"><a href="#cb6-22" tabindex="-1"></a>    </span>
+<span id="cb6-23"><a href="#cb6-23" tabindex="-1"></a>           taxonomies_license taxonomies_primary basic_name_prefix basic_name_suffix</span>
+<span id="cb6-24"><a href="#cb6-24" tabindex="-1"></a>    <span class="dv">1</span><span class="sc">:</span>              <span class="dv">80379</span>               <span class="cn">TRUE</span>              <span class="sc">&lt;</span><span class="cn">NA</span><span class="sc">&gt;</span>              <span class="er">&lt;</span><span class="cn">NA</span><span class="sc">&gt;</span></span>
+<span id="cb6-25"><a href="#cb6-25" tabindex="-1"></a>    <span class="dv">2</span><span class="sc">:</span>              <span class="dv">29372</span>               <span class="cn">TRUE</span>               Dr.              <span class="sc">&lt;</span><span class="cn">NA</span><span class="sc">&gt;</span></span>
+<span id="cb6-26"><a href="#cb6-26" tabindex="-1"></a>    <span class="dv">3</span><span class="sc">:</span>          <span class="dv">302927-01</span>               <span class="cn">TRUE</span>               Dr.              <span class="sc">&lt;</span><span class="cn">NA</span><span class="sc">&gt;</span></span>
+<span id="cb6-27"><a href="#cb6-27" tabindex="-1"></a>    <span class="dv">4</span><span class="sc">:</span>              U5076               <span class="cn">TRUE</span>              <span class="sc">&lt;</span><span class="cn">NA</span><span class="sc">&gt;</span>              <span class="er">&lt;</span><span class="cn">NA</span><span class="sc">&gt;</span></span></code></pre></div>
+</div>
+<div id="step-5-analyze-the-results" class="section level2">
+<h2>Step 5: Analyze the Results</h2>
+<p>You can now analyze the NPI search results as needed for your
+specific use case. The <code>result_df</code> data frame contains
+information about NPIs that match your search criteria. Because these
+NPI numbers are directly from NPPES we do not need to run
+<code>validate_and_remove_invalid_npi</code>.</p>
+<pre><code># Remove selected columns from the &#39;output_result&#39; dataframe
+processed_result &lt;- output_result %&gt;%
+  dplyr::select(
+    -basic_middle_name, 
+    -basic_certification_date, 
+    -basic_name_prefix, 
+    -basic_name_suffix, 
+    -taxonomies_taxonomy_group, 
+    -taxonomies_license, 
+    -taxonomies_primary
+  ) %&gt;%
+
+  mutate(across(c(basic_first_name, basic_last_name, basic_credential), 
+      .fns = ~str_remove_all(., &quot;[[\\p{P}][\\p{S}]]&quot;))) %&gt;%
+  mutate(basic_credential = str_to_upper(basic_credential)) %&gt;%
+  filter(str_detect(basic_credential, &quot;MD|DO&quot;)) %&gt;%
+  mutate(basic_credential = str_sub(basic_credential,1 ,2)) %&gt;%
+  filter(basic_credential %in% c(&quot;DO&quot;, &quot;MD&quot;)) %&gt;%
+  filter(str_detect(taxonomies_desc, fixed(&quot;Gyn&quot;, ignore_case=TRUE))) %&gt;%
+  distinct(npi, .keep_all = TRUE)
+
+&gt; processed_result %&gt;% head(5)
+          npi basic_first_name basic_last_name basic_credential basic_sole_proprietor basic_gender basic_enumeration_date
+1: 1053601807             RYAN       SCHLUETER               DO                   YES            M             2011-04-13
+2: 1063703494           LAUREN          BISHOP               MD                    NO            F             2011-04-19
+3: 1376862383            JAMIE     SZCZEPANSKI               MD                    NO            F             2010-06-01
+4: 1457676405          JESSICA         SHIELDS               DO                    NO            F             2010-04-01
+5: 1366752107         CAROLINA          SUELDO               MD                    NO            F             2010-10-14
+   basic_last_updated basic_status taxonomies_code                                     taxonomies_desc taxonomies_state
+1:         2021-09-30            A      207VM0101X  Obstetrics &amp; Gynecology, Maternal &amp; Fetal Medicine               GA
+2:         2023-03-16            A      207VE0102X Obstetrics &amp; Gynecology, Reproductive Endocrinology               NY
+3:         2020-07-23            A      207V00000X                             Obstetrics &amp; Gynecology               NY
+4:         2019-07-18            A      207V00000X                             Obstetrics &amp; Gynecology               MA
+5:         2019-02-25            A      207V00000X                             Obstetrics &amp; Gynecology               FL</code></pre>
+<p>One key step in cleaning the data is filtering the taxonomies. This
+can be changed for different applications in various subspecialties.
+Note some people are tricky and list their taxonomy specialty as
+“Specialist” or something else super vague. We did create a code fix for
+this as well, shown below.</p>
+<pre><code># Filter out rows where &#39;taxonomies_desc&#39; contains the substring &quot;Gyn&quot; (case-insensitive).  This can be changed for different applications: &quot;Ortho&quot;, &quot;Rheum&quot;, &quot;Otolary&quot;, &quot;Heme&quot;, &quot;Anesthesi&quot;.  
+
+processed_result &lt;- processed_result %&gt;%
+  dplyr::filter(stringr::str_detect(taxonomies_desc, fixed(&quot;gyn&quot;, ignore_case = TRUE)) |
+  stringr::str_detect(taxonomies_desc, fixed(&quot;specialist&quot;, ignore_case = TRUE)))</code></pre>
+<p>Finally it would be helpful to join the results called
+<code>processed_result</code> with the input_file called
+<code>acog_presidents</code> and this code can be used to do so.</p>
+<pre><code>combined_acog_presidents &lt;- 
+  acog_presidents %&gt;%
+  dplyr::left_join(`processed_result`, by = c(&quot;first&quot; = &quot;basic_first_name&quot;, 
+                                              &quot;last&quot; = &quot;basic_last_name&quot;, 
+                                              &quot;honorrific&quot; = &quot;basic_credential&quot;), 
+                                              ignore.case=TRUE)</code></pre>
+</div>
+</div>
+<div id="conclusion" class="section level1">
+<h1>Conclusion</h1>
+<p>The <code>search_and_process_npi</code> function simplifies the task
+of searching for and processing NPI numbers in healthcare datasets.</p>
+</div>
+<div id="features-and-bugs" class="section level1">
+<h1>Features and bugs</h1>
+<p>If you have ideas for other features that would make name handling
+easier, or find a bug, the best approach is to either report it or add
+it!</p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,156 @@
+---
+title: "Phase 0: Physician Analysis Using NPI API and Patient-Facing Directory"
+author: "Tyler Muffly, MD"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Phase 0 Spine Surgeon Analysis}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+# Introduction
+This vignette demonstrates the process of cleaning and merging data from multiple sources, including the NPI API, taxonomy searches, and patient-facing directories, to create a comprehensive dataset of spine surgeons. This dataset is then used to visualize the availability of surgeons across regions.
+
+# Setup and Package Installation
+We begin by setting up the environment and installing the necessary package.
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# Load necessary libraries
+library(dplyr)
+library(ggplot2)
+library(readr)
+library(stringr)
+library(maps)
+library(tyler)       # Custom package; ensure it’s installed
+library(exploratory) 
+```
+
+# Loading Patient-Facing Directory Data
+We first load the initial data from the patient-facing directory and perform an NPI search. This phase confirms the phone numbers and adds the NPI number for each entry.
+```{r}
+# Loading data from the patient-facing directory
+# This data represents phase 0, where phone numbers have already been confirmed.
+# We will filter this data to ensure distinct entries based on name, degree, and state.
+readr::read_csv(
+  system.file("extdata/ortho_spine/phase_0/spine_only.csv", package = "tyler")
+) %>%
+  dplyr::distinct(first, middle, last, degree, state, .keep_all = TRUE)
+
+# Load pre-searched NPI results (replace with actual search if needed)
+ortho_spine_batch_npi_search <- readr::read_csv(
+  system.file("extdata/ortho_spine/phase_0/npi_results.csv", package = "tyler")
+)
+```
+
+<!-- # Cleaning and Filtering NPI Search Results -->
+<!-- Next, we clean the NPI search results and filter the data to focus on spine surgeons based on the orthopaedic taxonomy. -->
+<!-- ```{r} -->
+<!-- # Clean NPI search results -->
+<!-- ortho_spine_batch_npi_search_cleaned <- ortho_spine_batch_npi_search %>% -->
+<!--   dplyr::distinct(npi, basic_first_name, basic_last_name, basic_credential, basic_gender, basic_enumeration_date, basic_status, taxonomies_code, .keep_all = TRUE) %>% -->
+<!--   readr::write_csv("ortho_spine/phase_0/ortho_spine_batch_npi_search_cleaned.csv") -->
+
+<!-- # Filter to include only orthopaedic spine surgeons -->
+<!-- ortho_spine_clean_npi_entries <- tyler::clean_npi_entries( -->
+<!--   npi_entries = ortho_spine_batch_npi_search_cleaned, -->
+<!--   basic_credentials = c("MD", "DO"), -->
+<!--   taxonomy_filter = "Orthopaedic" -->
+<!-- ) -->
+
+<!-- # Save cleaned NPI data to a CSV -->
+<!-- ortho_spine_clean_npi_entries <- ortho_spine_clean_npi_entries %>% -->
+<!--   distinct(npi, .keep_all = TRUE) %>% -->
+<!--   readr::write_csv("ortho_spine/phase_0/ortho_spine_batch_npi_search_cleaned_unique.csv") -->
+<!-- ``` -->
+
+
+# Searching for Spine Surgeons by Taxonomy
+We search for spine surgeons by their taxonomy code and clean the results to include only relevant data points.
+# ```{r}
+# # Search for spine surgeons by taxonomy
+# spine_surgeons_by_taxonomy <- tyler::search_by_taxonomy(taxonomy_to_search = "Orthopaedic Surgery of the Spine") %>%
+#   readr::write_csv("ortho_spine/phase_0/spine_surgeons_by_taxonomy.csv")
+# 
+# # Clean taxonomy search results
+# spine_surgeons_by_taxonomy_cleaned <- spine_surgeons_by_taxonomy %>%
+#   dplyr::distinct(npi, basic_first_name, basic_last_name, basic_gender, basic_enumeration_date, .keep_all = TRUE) %>%
+#   dplyr::filter(!is.na(addresses_telephone_number)) %>%
+#   dplyr::mutate(state = exploratory::statecode(addresses_state, output_type = "name")) %>%
+#   dplyr::mutate(zip_code = stringr::str_sub(addresses_postal_code, 1 ,5)) %>%
+#   readr::write_csv("ortho_spine/phase_0/spine_surgeons_by_taxonomy_cleaned.csv")
+# ```
+
+# Merging Data from Multiple Sources
+We merge the cleaned NPI entries and the spine surgeons by taxonomy into a single dataset for further analysis.
+
+<!-- # Explanation of the Merging Process: -->
+<!-- * Renaming Fields: We ensure that fields such as first name, last name, and middle name are consistently named across the two datasets. -->
+<!-- * Binding Rows: We combine the datasets row-wise, ensuring that spine surgeons from both the NPI and taxonomy searches are included. -->
+<!-- * Saving the Output: The final merged dataset is saved as taxonomy_and_aaos_data.csv for further analysis. -->
+<!-- ```{r} -->
+<!-- # Load the cleaned datasets -->
+<!-- spine_surgeons_by_taxonomy_cleaned <- readr::read_csv("ortho_spine/phase_0/spine_surgeons_by_taxonomy_cleaned.csv") -->
+<!-- ortho_spine_clean_npi_entries <- readr::read_csv("ortho_spine/phase_0/ortho_spine_batch_npi_search_cleaned_unique.csv") -->
+
+<!-- # Merge the datasets -->
+<!-- taxonomy_and_aaos_data <- ortho_spine_clean_npi_entries %>% -->
+<!--   dplyr::rename( -->
+<!--     first = basic_first_name, -->
+<!--     last = basic_last_name, -->
+<!--     middle = basic_middle_name, -->
+<!--     gender = basic_gender -->
+<!--   ) %>% -->
+<!--   dplyr::bind_rows(spine_surgeons_by_taxonomy_cleaned, .id = "ID") %>% -->
+<!--   dplyr::rename(phone_number = addresses_telephone_number, state_code = addresses_state) %>% -->
+<!--   readr::write_csv("ortho_spine/phase_0/taxonomy_and_aaos_data.csv") -->
+<!-- ``` -->
+
+<!-- # Visualizing the Data: Choropleth Map -->
+<!-- We create a choropleth map to visualize the distribution of spine surgeons across different U.S. states. This map will highlight the number of available physicians per state based on the merged dataset. -->
+
+<!-- ## Explanation of the Visualization Process: -->
+<!-- * State Counts: We group the dataset by state and count how many spine surgeons are available in each state. -->
+<!-- Merging with State Map Data: We merge the state-level counts with geographic data for the U.S. states. -->
+<!-- * Centroids: We calculate the centroids (geometric centers) of each state to position the surgeon count labels. -->
+<!-- * Choropleth Map: The map uses a gradient scale to visually represent the number of spine surgeons per state. Lighter colors represent fewer surgeons, while darker colors represent more surgeons. -->
+
+<!-- ```{r} -->
+<!-- # Preparing the merged dataset for mapping -->
+<!-- state_counts <- taxonomy_and_aaos_data %>% -->
+<!--   dplyr::mutate(state_code = exploratory::statecode(state_code, output_type = "name")) %>% -->
+<!--   dplyr::filter(!is.na(phone_number)) %>% -->
+<!--   dplyr::group_by(state_code) %>% -->
+<!--   dplyr::summarize(total_available = n()) -->
+
+<!-- # Map data for U.S. states -->
+<!-- us_states <- map_data("state") -->
+<!-- us_states$region <- tolower(us_states$region) -->
+<!-- state_counts$state_code <- tolower(state_counts$state_code) -->
+
+<!-- # Merging the state map data with the surgeon counts -->
+<!-- map_data_with_counts <- us_states %>% -->
+<!--   dplyr::left_join(state_counts, by = c("region" = "state_code")) -->
+
+<!-- # Calculate the centroids of each state for positioning the labels -->
+<!-- state_centroids <- map_data_with_counts %>% -->
+<!--   group_by(region) %>% -->
+<!--   summarise( -->
+<!--     long = mean(long), -->
+<!--     lat = mean(lat), -->
+<!--     total_available = mean(total_available, na.rm = TRUE) -->
+<!--   ) -->
+
+<!-- # Plot the choropleth map showing the distribution of available spine surgeons -->
+<!-- ggplot(map_data_with_counts, aes(long, lat, group = group, fill = total_available)) + -->
+<!--   geom_polygon(color = "gray30", size = 0.2) +  # Add borders to the states -->
+<!--   scale_fill_gradient(low = "lightyellow", high = "darkblue", na.value = "gray90", name = "Available Physicians") + -->
+<!--   geom_text(data = state_centroids, aes(x = long, y = lat, label = round(total_available, 0)), size = 4) +  # Add labels -->
+<!--   theme_void() +  # Remove axis and background -->
+<!--   labs(title = "Choropleth Map of ??? Physicians Available for Sampling by State",  -->
+<!--        subtitle = "Data for ??? Available as of 2024") -->
+<!-- ``` -->
+
+<!-- # Conclusion -->
+<!-- In this vignette, we demonstrated how to clean and process NPI data and taxonomy searches for spine surgeons. The final dataset can now be used for further analysis such as geographic distribution modeling, contacting surgeons for research studies, or building predictive models for spine surgeon availability by region. -->
