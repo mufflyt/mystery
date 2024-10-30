@@ -25,7 +25,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          install.packages('remotes')
+          install.packages(c('remotes', 'maps'))
           remotes::install_deps(dependencies = TRUE)
 
       - name: Cache R packages

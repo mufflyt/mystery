@@ -80,7 +80,8 @@ Imports:
     rlang,
     webshot,
     lmerTest,
-    robustlmm
+    robustlmm,
+    maps
 Remotes: andrewallenbruce/provider, lmullen/genderdata
 LazyData: true
 Files: R/
