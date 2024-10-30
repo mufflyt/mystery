@@ -1,1 +1,49 @@
 geocode.R
+
+# RStudio files
+.Rproj.user/
+.Rhistory
+.RData
+.Ruserdata
+
+# macOS system files
+.DS_Store
+
+# Temporary files
+*~
+*.bak
+
+# Package build files
+/*.Rcheck/
+*.tar.gz
+
+# Compiled documentation
+docs/
+man/*.Rd
+
+# Vignettes and site artifacts
+vignettes/*.html
+vignettes/*.pdf
+_site/
+_site_libs/
+
+# pkgdown-generated site (optional, if using pkgdown for docs)
+docs/
+
+# Coverage and testing reports
+*.Rproj.user/
+.Rproj.user/
+coverage/
+tests/testthat/_snaps/
+
+# Logs
+.Rapp.history
+*.Rapp.history
+
+# Environment variables file
+.Renviron
+.env
+
+# Miscellaneous
+*.log
+*.aux
