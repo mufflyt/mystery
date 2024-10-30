@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Tyler Muffly, MD" />
+
+
+<title>Gathering Drive Time Isochrones</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Gathering Drive Time Isochrones</h1>
+<h4 class="author">Tyler Muffly, MD</h4>
+
+
+
+<div id="overview" class="section level1">
+<h1>Overview</h1>
+<p>The <code>create_isochrones_for_dataframe</code> function is a
+powerful tool that allows you to calculate isochrones for a given
+location using the <code>hereR</code> package. Isochrones represent
+areas that can be reached from a specific point within a certain travel
+time or distance. These visual representations are valuable for various
+applications, such as location analysis, logistics, and transportation
+planning. In this guide, we will walk you through how to use the
+<code>create_isochrones</code> function.</p>
+</div>
+<div id="geodesic-versus-drive-time-for-patient-travel" class="section level1">
+<h1>Geodesic versus Drive-Time for Patient Travel</h1>
+<p>The methods for calculating patient travel distance to hospitals can
+vary significantly. This paper aims to provide an overview of different
+methods and their characteristics. The primary factor influencing travel
+distance calculations is the choice of distance measure, specifically,
+whether it’s driving distance or straight-line distance. This
+distinction has a significant impact on the results.</p>
+<div id="straight-line-distance" class="section level3">
+<h3>Straight-Line Distance</h3>
+<p>A common practice in AHRQ is to calculate the shortest or
+“straight-line” distance (geodetic or great circle distance) between the
+patient location and the point of care (e.g., hospital or emergency
+department). This method is favored because it can be easily computed
+using statistical software like SAS®.</p>
+<ul>
+<li><strong>Agency for Healthcare Research and Quality (AHRQ):</strong>
+AHRQ employs an equation to convert straight-line distance to drive
+time. The equation includes various parameters like baseline distance,
+census division dummy variables, urban/rural location dummy variables,
+and error terms. AHRQ utilizes the <code>ggmap</code> package to geocode
+the addresses of hospitals. AHRQ also considers an alternative metric,
+which is the driving distance or driving times. These can be obtained
+from various mapping software such as Google Maps, MapQuest,
+OpenStreetMaps, and ArcGIS Network Analyst. AHRQ uses the patient
+location as the geographic centroid of the patient’s zip code. (<a href="https://hcup-us.ahrq.gov/reports/methods/MS2021-02-Distance-to-Hospital.jsp" class="uri">https://hcup-us.ahrq.gov/reports/methods/MS2021-02-Distance-to-Hospital.jsp</a>)</li>
+</ul>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="st">`</span><span class="at">Di=αBi+Ciβ+ LiΥ + εi</span><span class="st">`</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>  Where<span class="sc">:</span></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="sc">-</span> i indexes patients</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="sc">-</span> Di <span class="sc">:</span> driving distance</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="sc">-</span> Bi <span class="sc">:</span> baseline distance</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="sc">-</span> Ci <span class="sc">:</span> vector of census division dummy variables</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="sc">-</span> Li <span class="sc">:</span> vector of urban<span class="sc">/</span>rural location dummy variables</span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a><span class="sc">-</span> α <span class="sc">:</span> coefficient <span class="cf">for</span> baseline distance</span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="sc">-</span> β <span class="sc">:</span> vector of coefficients <span class="cf">for</span> census division dummy variables</span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a><span class="sc">-</span> Υ <span class="sc">:</span> vector of coefficients <span class="cf">for</span> urban<span class="sc">/</span>rural location dummy variables</span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a><span class="sc">-</span> εi <span class="sc">:</span> mean<span class="sc">-</span>zero error term</span></code></pre></div>
+<ul>
+<li><p><strong>March of Dimes Maternity Care Deserts:</strong> This
+organization also uses drive time as a metric for calculating travel
+distance. <a href="https://github.com/mufflyt/tyler/files/13433413/MaternityCareDesertsReport-TechnicalNotes.pdf">Reference</a></p></li>
+<li><p><strong>ESRI Methodology:</strong> ESRI has its methodology for
+creating drive-time areas, with certain limitations on travel times and
+distances. <a href="https://doc.arcgis.com/en/arcgis-online/analyze/create-drive-time-areas.htm">Reference</a>.
+Limitations:</p></li>
+<li><p>“You must be granted the network analysis privilege to use Create
+Drive-Time Areas.”,</p></li>
+<li><p>“Travel times cannot exceed 9 hours (540 minutes) when walking or
+5 hours (300 minutes) for all other travel times.”, * “Travel distances
+cannot exceed 27 miles (43.45 kilometers) when walking or 300 miles
+(482.8 kilometers) for all other travel distances.”</p></li>
+<li><p><strong>Veteran’s Administration:</strong> The Veteran’s
+Administration utilizes drive time in its calculations. <a href="https://www.federalregister.gov/documents/2020/07/15/2020-14341/update-to-access-standards-drive-time-calculations">Reference</a></p></li>
+<li><p><strong>Department of Transportation:</strong> The Department of
+Transportation provides tools for distance calculations. <a href="https://www.transportation.gov/priorities/equity/justice40/etc-explorer">Reference</a></p></li>
+</ul>
+</div>
+</div>
+<div id="potential-references-comparing-drive-time-vs.-geodesic" class="section level1">
+<h1>Potential References comparing Drive Time vs. Geodesic</h1>
+<ul>
+<li><p>Lidsky ME, Sun Z, Nussbaum DP, Adam MA, Speicher PJ, Blazer DG.
+“Going the extra mile: improved survival for pancreatic cancer patients
+traveling to high-volume centers.” Annals of Surgery.
+2017;266(2):333–8.</p></li>
+<li><p>Bliss RL, Katz JN, Wright EA, Losina E. “Estimating proximity to
+care: are straight line and zipcode centroid distances acceptable
+measures?” Medical Care. 2012;50(1):99–106.</p></li>
+<li><ul>
+<li><a href="https://github.com/mufflyt/tyler/files/13433577/isprs-archives-XLVIII-4-W7-2023-53-2023.pdf">isprs-archives-XLVIII-4-W7-2023-53-2023.pdf</a></li>
+</ul></li>
+</ul>
+<p>This comprehensive overview highlights the diversity in methods used
+to calculate patient travel distance to hospitals and the potential
+impact on healthcare outcomes.</p>
+<div id="prerequisites" class="section level2">
+<h2>Prerequisites</h2>
+<p>Before you start using the <code>create_isochrones</code> function,
+make sure you have completed the following steps:</p>
+<ol style="list-style-type: decimal">
+<li><p><strong>HERE API Key</strong>: You need to have a HERE API key.
+If you don’t have one, you can obtain it from the HERE Developer
+Portal.</p></li>
+<li><p><strong>Environment Variable</strong>: Set your HERE API key as
+an environment variable named <code>HERE_API_KEY</code>. This is
+essential for secure access to HERE services.</p></li>
+<li><p><strong>Load the <code>tyler</code> package</strong>: Ensure that
+you load the <code>tyler</code> package, which contains the
+<code>create_isochrones</code> function.</p></li>
+</ol>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">library</span>(tyler)</span></code></pre></div>
+<pre><code>## Warning: replacing previous import &#39;maps::map&#39; by &#39;purrr::map&#39; when loading
+## &#39;tyler&#39;</code></pre>
+</div>
+<div id="usage" class="section level2">
+<h2>Usage</h2>
+<p>Now that you have the prerequisites in place, let’s explore how to
+use the <code>create_isochrones_for_dataframe</code> function. We use
+the HERE API to calculate optimal routes and directions for various
+modes of transportation, including driving, walking, cycling, and public
+transit. It provides detailed turn-by-turn instructions, estimated
+travel times, and route alternatives. This is simpler than using an OSRM
+server running the AWS cloud, and the cost is minimal.</p>
+<div id="input-parameters" class="section level3">
+<h3>Input Parameters</h3>
+<p>The <code>create_isochrones</code> function accepts the following
+parameters: * <code>location</code>: An <code>sf</code> object
+representing the location for which isolines will be calculated. Need
+separate <code>lat</code> and <code>long</code> columns.<br />
+* <code>range</code>: A numeric vector of time ranges in seconds. These
+time ranges determine the extent of the isolines. *
+<code>posix_time</code>: A <code>POSIXct</code> object representing the
+date and time of calculation. The default is set to “2023-10-20
+08:00:00”. We chose this date because it is during Influenza season when
+most people see their physicians for a first appointment of the day at
+0800.</p>
+<p>You may need to split the geometry column into separate
+<code>lat</code> and <code>long</code> columns using this code:</p>
+<pre><code>geocoded_data1 &lt;- geocoded_data %&gt;%
+        dplyr::mutate(lat = sf::st_coordinates(.)[, &quot;Y&quot;],
+               long = sf::st_coordinates(.)[, &quot;X&quot;])
+
+readr::write_csv(geocoded_data1, &quot;/NPPES_November_filtered_data_for_geocoding_geocoded_addresses_not_sf.csv&quot;)</code></pre>
+<p>We do a join between the postmastr file
+<code>postmastr_clinician_data.csv</code> and the geocoded results file
+<code>geocoded_data_to_match_house_number</code>. This is because the
+HERE API does not allow you to pass a master ID number into the API and
+all the data is washed out during geocoding. The <code>postmastr</code>
+package allows you to parse the addresses on the
+<code>clinician_data</code> so that we can match the addresses together
+based on: state, house number, and zip code.</p>
+<p>This was all done in exploratory.io and then read back into
+<code>Gathering data.R</code>.</p>
+<pre><code>inner_join(`geocoded_data_to_match_house_number`, by = join_by(
+  `postmastr.pm.state` == `here.state_code`, 
+  `postmastr.pm.zip` == `here.postal_code`, 
+  `postmastr.pm.house` == `here.house_number`))</code></pre>
+<pre><code>inner_join_postmastr_clinician_data &lt;- readr::read_csv(&quot;data/inner_join_postmastr_clinician_data.csv&quot;)  %&gt;%
+  st_as_sf(coords = c(&quot;long&quot;, &quot;lat&quot;), crs = 4326) %&gt;%
+  dplyr::mutate(geometry = location)
+  
+create_isochrones_for_dataframe(inner_join_postmastr_clinician_data_sf, range = c(30*60, 60*60, 120*60, 180*60))</code></pre>
+</div>
+<div id="example" class="section level3">
+<h3>Example</h3>
+<p>I added in the code needed to read in RDS, xlsx, xls, and csv files.
+It can also read in sf files. They needed to have a column called
+‘location’ and another called <code>geometry</code>. Here’s an example
+of how to use the <code>create_isochrones_for_dataframe</code>
+function:</p>
+<pre><code>input_file &lt;- &quot;data/inner_join_postmastr_clinician_data.csv&quot;
+isochrones_data &lt;- create_isochrones_for_dataframe(input_file, breaks = c(30*60, 60*60, 120*60, 180*60))
+
+&gt; isochrones_data
+[1] 1
+splay setup instructions:
+To create isochrones for a specific point(s) use the following code:
+tryLocationMemo(location = location, range = c(1800, 3600, 7200, 10800))
+Setting up the hereR access...
+Sending 1 request(s) with unlimited RPS to: &#39;https://isoline.router.hereapi.com/v8/isolines?...&#39;
+Received 1 response(s) with total size: 2.8 Kb
+Isoline successfully produced for range: 1800 seconds
+Sending 1 request(s) with unlimited RPS to: &#39;https://isoline.router.hereapi.com/v8/isolines?...&#39;
+Received 1 response(s) with total size: 3.1 Kb
+Isoline successfully produced for range: 3600 seconds
+Sending 1 request(s) with unlimited RPS to: &#39;https://isoline.router.hereapi.com/v8/isolines?...&#39;
+Received 1 response(s) with total size: 4.8 Kb
+Isoline successfully produced for range: 7200 seconds
+Sending 1 request(s) with unlimited RPS to: &#39;https://isoline.router.hereapi.com/v8/isolines?...&#39;
+Received 1 response(s) with total size: 6.9 Kb
+Isoline successfully produced for range: 10800 seconds</code></pre>
+</div>
+<div id="output" class="section level3">
+<h3>Output</h3>
+<p>The function returns a list of isolines for different time ranges.
+Each isoline is represented as an <code>sf</code> object, making it easy
+to visualize and analyze. The <code>create_isochrones</code> function is
+wrapped with <code>memoise</code> so it does a nice job caching the
+data. Of note, none of the columns that you feed into the function will
+come out the other side after going to the HERE API. Therefore, we are
+hoping there is a 1:1 relationship in rows to isochrones. If not we may
+need to mark each column with a different time that we feed to the HERE
+API as a pseudo-identifier.</p>
+</div>
+</div>
+<div id="conclusion" class="section level2">
+<h2>Conclusion</h2>
+<p>The <code>create_isochrones</code> function simplifies the process of
+calculating isolines for location-based analysis. Whether you’re
+exploring accessibility, optimizing routes, or conducting spatial
+analysis, isochrones provide valuable insights into travel times and
+distances. With the <code>tyler</code> package and the
+<code>create_isochrones</code> function, you can streamline your
+location-based workflows and make informed decisions.</p>
+</div>
+</div>
+<div id="features-and-bugs" class="section level1">
+<h1>Features and bugs</h1>
+<p>If you have ideas for other features that would make name handling
+easier, or find a bug, the best approach is to either report it or add
+it!</p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
