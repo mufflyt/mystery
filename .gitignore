@@ -12,6 +12,7 @@
 # R package and build files
 .Rbuildignore
 docs/            # pkgdown or other generated docs
+non_existent_directory
 inst/doc/
 /Meta/           # Metadata from package builds
 *.tar.gz         # Package archives

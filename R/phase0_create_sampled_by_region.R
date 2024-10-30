@@ -20,8 +20,8 @@
 #'                                                 dplyr::filter(census_bureau_tbl, Region == "West"),
 #'                                                 output_csv_path = "test/sample.csv")
 #' @export
-#' @importFrom dplyr mutate filter group_by left_join select arrange row_number bind_rows
-#' @importFrom exploratory statecode sample_rows
+#' @importFrom dplyr mutate filter group_by left_join select arrange row_number bind_rows sample_n
+#' @importFrom exploratory statecode
 #' @importFrom readr write_csv
 #' @importFrom logger log_info
 phase0_create_sampled_by_region <- function(taxonomy_and_aaos_tbl, census_bureau_tbl, output_csv_path = "ortho_spine/phase_0/sampled_by_region_ortho_spine.csv") {
@@ -158,13 +158,12 @@ join_census_regions <- function(tbl, census_bureau_tbl) {
 #' # Example 3: Test sampling with varied seed
 #' sampled_data <- sample_by_division(taxonomy_and_aaos_tbl, seed = 2023)
 #' @noRd
-#' @importFrom exploratory sample_rows
 #' @importFrom dplyr group_by mutate row_number bind_rows arrange
 sample_by_division <- function(tbl) {
   logger::log_info("Sampling 14 records per Division for reproducibility.")
   tbl %>%
     dplyr::group_by(Division) %>%
-    exploratory::sample_rows(14, seed = 1978) %>%
+    dplyr::sample_n(size = 14)
     dplyr::mutate(temp_id = dplyr::row_number()) %>%
     dplyr::bind_rows(.) %>%
     dplyr::arrange(npi)
