@@ -7,10 +7,10 @@ November 1, 2024
 November 1, 2024
 We started better naming conventions with named for what part of the project they are used:
 
+* "nppes_" this may be helpful for processing the NPI file using duck database
 * "phase0_" - Able to gather the data and clean it (genderize, standardize phone numbers, geocode)
 * "clean_phase_1" - Sets up the confirmation calls.  
 * "phase2_" - Sets up the REDCap database inputs, quality control.  
-
 * "results_section_" - Creates the prose of the results section.  
 * "figure_" - For plotting data in the results section.  
 * "map_" - For mapping data as a dot map or a honeycomb plot or a region.  
