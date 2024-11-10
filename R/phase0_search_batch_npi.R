@@ -34,7 +34,7 @@
 #'   last = c("Brown", "White", "Black")
 #' )
 #' npi_results <- search_batch_npi(df, limit = 15, write_csv_path = "npi_results.csv")
-search_batch_npi <- function(df, limit = 5, write_csv_path = NULL) {
+phase0_search_batch_npi <- function(df, limit = 5, write_csv_path = NULL) {
   # Ensure the dataframe has 'first' and 'last' columns
   if (!all(c("first", "last") %in% colnames(df))) {
     stop("The dataframe must have 'first' and 'last' columns.")

@@ -39,6 +39,7 @@ phase0_create_sampled_by_region <- function(taxonomy_and_aaos_tbl, census_bureau
     arrange_final_columns()
 
   logger::log_info("Saving sampled data to {output_csv_path}.")
+  dir.create(dirname(output_csv_path), showWarnings = FALSE, recursive = TRUE)
   readr::write_csv(sampled_region_data, output_csv_path)
 
   logger::log_info("Completed phase0_create_sampled_by_region. Output dataset has {nrow(sampled_region_data)} rows and {ncol(sampled_region_data)} columns.")
@@ -69,10 +70,15 @@ phase0_create_sampled_by_region <- function(taxonomy_and_aaos_tbl, census_bureau
 #' @importFrom dplyr mutate
 add_full_state_names <- function(tbl) {
   logger::log_info("Converting state_code to full state names.")
+  state_lookup <- tibble::tibble(
+    state_code = state.abb,
+    full_name = state.name
+  )
   tbl %>%
-    dplyr::mutate(state_code = exploratory::statecode(state_code, output_type = "name"))
+    dplyr::left_join(state_lookup, by = c("state_code" = "state_code")) %>%
+    dplyr::mutate(state_code = full_name) %>%
+    dplyr::select(-full_name)
 }
-
 #' Filter out entries with missing phone, first name, or last name and exclude Guam
 #' @param tbl A tibble with `phone_number`, `first`, `last`, and `state_code` columns.
 #' @return A tibble filtered for valid entries.
@@ -160,12 +166,17 @@ join_census_regions <- function(tbl, census_bureau_tbl) {
 #' @noRd
 #' @importFrom dplyr group_by mutate row_number bind_rows arrange
 sample_by_division <- function(tbl) {
-  logger::log_info("Sampling 14 records per Division for reproducibility.")
+  logger::log_info("Sampling up to 14 records per Division for reproducibility.")
+
   tbl %>%
     dplyr::group_by(Division) %>%
-    dplyr::sample_n(size = 14)
+    dplyr::group_modify(~ {
+      # Determine the sample size for each group without calling dplyr::n() directly
+      sample_size <- min(14, nrow(.x))
+      .x %>%
+        dplyr::slice_sample(n = sample_size, replace = (nrow(.x) < 14))
+    }) %>%
     dplyr::mutate(temp_id = dplyr::row_number()) %>%
-    dplyr::bind_rows(.) %>%
     dplyr::arrange(npi)
 }
 

@@ -4,7 +4,7 @@
 \alias{retrieve_clinician_data}
 \title{Retrieve Clinician Data}
 \usage{
-retrieve_clinician_data(input_data)
+retrieve_clinician_data(npi_numbers)
 }
 \arguments{
 \item{input_data}{Either a dataframe containing NPI numbers or a path to a CSV file.}
