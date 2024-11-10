@@ -1,3 +1,41 @@
+#' Exclusion Criteria Summary for Mystery Caller Study
+#'
+#' This function provides a summary of exclusion criteria applied to the mystery caller study data. It identifies the count and percentage of physicians excluded based on predefined criteria.
+#'
+#' @param call_data A data frame containing the initial mystery caller data with exclusion criteria columns. Expected columns include: `physician_id`, `call_status`, `exclusion_reason`, among others.
+#' @param exclusion_column A string indicating the name of the column that contains exclusion criteria (e.g., `exclusion_reason`).
+#' @return A data frame summarizing exclusions, with counts and percentages for each exclusion reason.
+#' @importFrom dplyr filter count mutate group_by summarize
+#' @importFrom stringr str_detect
+#' @importFrom logger log_info log_warn
+#'
+#' @examples
+#' # Example 1: Basic exclusion summary
+#' call_data <- data.frame(
+#'   physician_id = 1:100,
+#'   call_status = sample(c("Answered", "Unanswered"), 100, replace = TRUE),
+#'   exclusion_reason = sample(c("Not accepting new patients", "Requires referral"), 100, replace = TRUE)
+#' )
+#' exclusion_summary <- results_section_exclusions(
+#'   call_data = call_data,
+#'   exclusion_column = "exclusion_reason"
+#' )
+#' print(exclusion_summary)
+#'
+#' # Example 2: Including multiple exclusion reasons
+#' call_data$exclusion_reason <- sample(c("Requires referral", "Voicemail only", "No answer"), 100, replace = TRUE)
+#' exclusion_summary_multi <- results_section_exclusions(
+#'   call_data = call_data,
+#'   exclusion_column = "exclusion_reason"
+#' )
+#' print(exclusion_summary_multi)
+#'
+#' # Example 3: Filtering by call status
+#' exclusion_summary_filtered <- results_section_exclusions(
+#'   call_data = call_data %>% dplyr::filter(call_status == "Unanswered"),
+#'   exclusion_column = "exclusion_reason"
+#' )
+#' @export
 results_section_exclusions <- function(call_data,
                                        exclusion_col = "reason_for_exclusions",
                                        able_to_contact_value = "Able to contact",

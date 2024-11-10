@@ -2,7 +2,7 @@
 % Please edit documentation in R/results_section_count_physicians_by_group.R
 \name{count_physicians_by_group}
 \alias{count_physicians_by_group}
-\title{Count Physicians by State or Subdivision}
+\title{Count Unique Physicians by ID with Logging}
 \usage{
 count_physicians_by_group(
   data,
@@ -15,32 +15,26 @@ count_physicians_by_group(
 )
 }
 \arguments{
-\item{data}{A dataframe containing the physician data.}
+\item{physician_data}{A dataframe with physician data, containing a unique identifier column.}
 
-\item{state_name_column}{The column name in the dataframe containing state names or abbreviations (default is "state_code").}
-
-\item{phone_column}{The column name in the dataframe containing phone numbers (default is "phone_number").}
-
-\item{first_name_column}{The column name in the dataframe containing first names (default is "first").}
-
-\item{last_name_column}{The column name in the dataframe containing last names (default is "last").}
-
-\item{group_by}{A string indicating whether to group by "state" or "subdivision" (default is "state").}
-
-\item{output_to_csv}{(Optional) A file path to save the state/subdivision counts to a CSV file. If NULL, no file is saved.}
+\item{id_column}{A string representing the column to use as the unique identifier for counting.}
 }
 \value{
-A tibble with the counts of physicians per state or subdivision.
+An integer count of unique physicians.
 }
 \description{
-This function counts the number of physicians available per state or US Census Bureau subdivision.
-It can optionally save the counts to a CSV file.
+This function calculates the number of unique physicians based on a unique identifier column, with logging of inputs, outputs, and steps.
 }
 \examples{
-# Example 1: Count physicians by state
-count_physicians_by_group(taxonomy_and_aaos_data)
+# Example 1: Count unique physicians by physician_id
+unique_count <- results_section_count_unique_physicians(physician_data, "physician_id")
+unique_count
 
-# Example 2: Count physicians by U.S. Census Bureau subdivision
-count_physicians_by_group(taxonomy_and_aaos_data, group_by = "subdivision")
+# Example 2: Use NPI as the unique identifier
+unique_count <- results_section_count_unique_physicians(physician_data, "npi")
+unique_count
 
+# Example 3: Custom unique identifier
+unique_count <- results_section_count_unique_physicians(physician_data, "custom_id")
+unique_count
 }

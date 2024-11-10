@@ -38,9 +38,10 @@ state_abbreviations <- c(state.abb, "DC", "PR")
 #' }
 #' @importFrom tidycensus get_acs
 #' @importFrom dplyr left_join filter mutate select rename group_by summarize case_when arrange
-#' @importFrom zipcodeR zip_code_db
+#' @import zipcodeR
 #' @importFrom scales comma
 #' @importFrom logger log_info
+#' @export
 results_section_physician_by_household_income <- function(
     year = 2022,
     physician_information_with_zip = "Phase_2.rds"

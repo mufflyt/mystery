@@ -11,7 +11,7 @@
 #' @importFrom stats glm as.formula coef
 #' @importFrom purrr map_chr
 #' @importFrom stringr str_c
-#' @export
+#'
 #'
 #' @examples
 #' # Example 1: Determine the direction of effects with a basic dataset
@@ -40,6 +40,7 @@
 #' )
 #' significant_vars3 <- data.frame(Variable = c("years_experience", "specialty"))
 #' determine_direction(df3, "accepts_medicare", significant_vars3)
+#' @export
 determine_direction <- function(data, target_var, significant_vars) {
 
   # Log inputs

@@ -2,32 +2,73 @@
 % Please edit documentation in R/results_section_fit_poisson_models.R
 \name{fit_poisson_models}
 \alias{fit_poisson_models}
-\title{Fit Poisson Models and Extract P-Values with Logging}
+\title{Fit Poisson Models for Analyzing Wait Times in Mystery Caller Study}
 \usage{
 fit_poisson_models(data, target_var, predictors)
 }
 \arguments{
-\item{data}{A data frame containing the dataset.}
+\item{wait_times_data}{A data frame containing information on appointment wait times and insurance type. Must include columns: \code{wait_time}, \code{insurance_type}, \code{physician_id}, \code{caller_scenario}, and additional demographic or study-specific variables.}
 
-\item{target_var}{A string representing the name of the target variable.}
+\item{outcome_var}{A string representing the column name for the outcome variable, typically \code{wait_time}.}
 
-\item{predictors}{A vector of strings representing the names of predictor variables.}
+\item{group_vars}{A character vector of grouping variables to include as random effects, such as \code{physician_id}.}
+
+\item{fixed_effects}{A character vector specifying fixed effect variables, including \code{insurance_type} and additional relevant predictors.}
+
+\item{verbose}{A logical. If \code{TRUE}, logs model diagnostics and summaries to the console.}
 }
 \value{
-A tibble containing the predictor variables, their corresponding p-values, and formatted p-values.
+A list with fitted Poisson models for each insurance scenario and a summary of fixed and random effect estimates.
 }
 \description{
-This function fits Poisson models for each predictor variable against a target variable.
-It logs the process, including inputs, outputs, transformations, and any variables that are skipped due to insufficient variance.
+This function fits Poisson regression models to analyze wait times for appointments based on caller scenario data, such as private insurance versus Medicaid. The model outputs provide insights into whether insurance type and other variables impact wait times for new patient appointments.
 }
 \examples{
-# Example 1: Basic usage with a dataset and predictor variables
-result <- fit_poisson_models(data = my_data_frame, target_var = "outcome", predictors = c("age", "gender", "income"))
+# Example 1: Fitting Poisson model with wait time data
+wait_data <- data.frame(
+  wait_time = rpois(100, lambda = 5),
+  insurance_type = sample(c("Medicaid", "Private"), 100, replace = TRUE),
+  physician_id = sample(1:10, 100, replace = TRUE),
+  caller_scenario = sample(c("Vaginitis", "UTI", "Pregnancy Test"), 100, replace = TRUE),
+  demographic_var = rnorm(100)
+)
+fit_results <- fit_poisson_models(
+  wait_times_data = wait_data,
+  outcome_var = "wait_time",
+  group_vars = c("physician_id"),
+  fixed_effects = c("insurance_type", "caller_scenario")
+)
 
-# Example 2: Using a larger dataset with many predictors
-predictor_vars <- names(my_large_data_frame)[3:20]  # Exclude first two columns
-result <- fit_poisson_models(data = my_large_data_frame, target_var = "accepts_medicaid", predictors = predictor_vars)
+# Example 2: Adding demographic information and viewing summary output
+demographic_data <- data.frame(
+  wait_time = rpois(200, lambda = 6),
+  insurance_type = sample(c("Medicaid", "Private"), 200, replace = TRUE),
+  physician_id = sample(1:20, 200, replace = TRUE),
+  caller_scenario = sample(c("Vaginitis", "UTI", "TOA"), 200, replace = TRUE),
+  age = sample(30:60, 200, replace = TRUE),
+  specialty = sample(c("OBGYN", "Family Medicine"), 200, replace = TRUE)
+)
+fit_results_demographics <- fit_poisson_models(
+  wait_times_data = demographic_data,
+  outcome_var = "wait_time",
+  group_vars = c("physician_id", "specialty"),
+  fixed_effects = c("insurance_type", "caller_scenario", "age"),
+  verbose = TRUE
+)
 
-# Example 3: Handling a dataset where some predictors may have only one unique value
-result <- fit_poisson_models(data = my_data_frame, target_var = "outcome", predictors = c("region", "specialty", "age_group"))
+# Example 3: Evaluating impact of scenario type and demographics on wait times
+scenario_data <- data.frame(
+  wait_time = rpois(150, lambda = 4),
+  insurance_type = sample(c("Medicaid", "Private"), 150, replace = TRUE),
+  physician_id = sample(1:15, 150, replace = TRUE),
+  scenario = sample(c("Emergency", "Urgent"), 150, replace = TRUE),
+  gender = sample(c("Male", "Female"), 150, replace = TRUE)
+)
+scenario_results <- fit_poisson_models(
+  wait_times_data = scenario_data,
+  outcome_var = "wait_time",
+  group_vars = "physician_id",
+  fixed_effects = c("insurance_type", "scenario", "gender")
+)
+print(scenario_results)
 }

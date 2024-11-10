@@ -1,29 +1,25 @@
-#' Count Physicians by State or Subdivision
+#' Count Unique Physicians by ID with Logging
 #'
-#' This function counts the number of physicians available per state or US Census Bureau subdivision.
-#' It can optionally save the counts to a CSV file.
+#' This function calculates the number of unique physicians based on a unique identifier column, with logging of inputs, outputs, and steps.
 #'
-#' @param data A dataframe containing the physician data.
-#' @param state_name_column The column name in the dataframe containing state names or abbreviations (default is "state_code").
-#' @param phone_column The column name in the dataframe containing phone numbers (default is "phone_number").
-#' @param first_name_column The column name in the dataframe containing first names (default is "first").
-#' @param last_name_column The column name in the dataframe containing last names (default is "last").
-#' @param group_by A string indicating whether to group by "state" or "subdivision" (default is "state").
-#' @param output_to_csv (Optional) A file path to save the state/subdivision counts to a CSV file. If NULL, no file is saved.
+#' @param physician_data A dataframe with physician data, containing a unique identifier column.
+#' @param id_column A string representing the column to use as the unique identifier for counting.
+#' @return An integer count of unique physicians.
 #'
-#' @return A tibble with the counts of physicians per state or subdivision.
+#' @importFrom dplyr distinct n
 #'
-#' @importFrom dplyr mutate filter group_by summarize arrange if_else
-#' @importFrom purrr map flatten_chr
-#' @importFrom readr write_csv
-#' @importFrom exploratory statecode
 #' @examples
-#' # Example 1: Count physicians by state
-#' count_physicians_by_group(taxonomy_and_aaos_data)
+#' # Example 1: Count unique physicians by physician_id
+#' unique_count <- results_section_count_unique_physicians(physician_data, "physician_id")
+#' unique_count
 #'
-#' # Example 2: Count physicians by U.S. Census Bureau subdivision
-#' count_physicians_by_group(taxonomy_and_aaos_data, group_by = "subdivision")
+#' # Example 2: Use NPI as the unique identifier
+#' unique_count <- results_section_count_unique_physicians(physician_data, "npi")
+#' unique_count
 #'
+#' # Example 3: Custom unique identifier
+#' unique_count <- results_section_count_unique_physicians(physician_data, "custom_id")
+#' unique_count
 #' @export
 count_physicians_by_group <- function(data,
                                       state_name_column = "state_code",

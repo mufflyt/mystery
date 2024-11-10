@@ -1,17 +1,27 @@
-#' Writes an Arsenal table object to a Word document.
+#' Write Arsenal Table Object to Word Document with Error Handling and Logging
 #'
-#' @param object An object to be written to Word, typically an Arsenal table.
-#' @param filename The filename (without extension) for the Word document.
-#' @return None
-#' @export
+#' This function exports an Arsenal table object to a Word document for ease of review and sharing, logging each step and handling errors.
+#'
+#' @param object An Arsenal table object to export, typically created using `arsenal::tableby`.
+#' @param filename A string representing the filename (without extension) for the output Word document.
+#' @return None. Outputs a Word document to the specified location.
 #'
 #' @importFrom arsenal write2word
 #' @importFrom methods is
 #'
 #' @examples
 #' \dontrun{
-#' arsenal_tables_write2word(my_table, "output_table")
+#' # Example 1: Export a table to Word
+#' arsenal_tables_write2word(my_table, "physician_summary")
+#'
+#' # Example 2: Saving with a custom filename
+#' arsenal_tables_write2word(my_table, "custom_output")
+#'
+#' # Example 3: Exporting a different Arsenal table object
+#' another_table <- arsenal::tableby(~ var1 + var2, data = sample_data)
+#' arsenal_tables_write2word(another_table, "analysis_output")
 #' }
+#' @export
 arsenal_tables_write2word <- function(object, filename) {
   # Validate input parameters
   if (!is.data.frame(object)) {

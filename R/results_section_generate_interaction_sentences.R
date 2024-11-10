@@ -1,39 +1,44 @@
-#' Generate Interaction Sentences with Logging and Error Handling
+#' Generate Interaction Sentences for Model Interpretation in Mystery Caller Studies
 #'
-#' This function generates sentences based on the interaction of two variables in a fitted model.
-#' It logs all steps, including inputs, outputs, data transformations, and p-value extraction.
+#' This function generates interpretative sentences for interaction terms in a Poisson or logistic regression model, detailing how combinations of predictors impact outcomes such as wait times.
 #'
-#' @param interaction_model A fitted model object (e.g., from glm or lmer).
-#' @param variable1 A string representing the first interacting variable.
-#' @param variable2 A string representing the second interacting variable.
-#' @param model_summary A summary object of the model. If NULL, it will be generated automatically.
-#' @param confidence_level The confidence level for the confidence intervals. Default is 0.95.
-#' @param log_transform A logical indicating if the rate should be log-transformed. Default is TRUE.
-#' @param output_format A string specifying the output format: "text" or "markdown". Default is "text".
-#' @return A list of sentences describing the interaction between the two variables.
-#' @importFrom emmeans emmeans
-#' @importFrom dplyr select filter mutate
-#' @importFrom purrr map
+#' @param model_object A fitted model object, typically from Poisson or logistic regression.
+#' @param interaction_terms A character vector of interaction terms to interpret.
+#' @param context A string specifying the context, such as "wait times by insurance type".
+#' @return A list of strings, each interpreting an interaction term in the model.
+#' @importFrom broom tidy
+#' @importFrom dplyr filter mutate select
 #' @importFrom stringr str_c
-#' @importFrom logger log_info log_error
-#' @export
+#' @importFrom purrr map_chr
 #'
 #' @examples
-#' # Example 1: Basic usage with text output
-#' \dontrun{
-#' result <- generate_interaction_sentences(interaction_model, "scenario", "insurance", output_format = "text")
-#' }
+#' # Example 1: Generate interaction sentences for a simple model
+#' interaction_model <- glm(wait_time ~ insurance_type * scenario, data = poisson_data, family = poisson)
+#' interaction_sentences <- results_section_generate_interaction_sentences(
+#'   model_object = interaction_model,
+#'   interaction_terms = c("insurance_type", "scenario"),
+#'   context = "appointment wait times"
+#' )
+#' print(interaction_sentences)
 #'
-#' # Example 2: Markdown format output
-#' \dontrun{
-#' result <- generate_interaction_sentences(interaction_model, "scenario", "insurance", output_format = "markdown")
-#' }
+#' # Example 2: Interpret interactions in a more complex model
+#' complex_model <- glm(wait_time ~ insurance_type * scenario * age, data = poisson_data, family = poisson)
+#' complex_interactions <- results_section_generate_interaction_sentences(
+#'   model_object = complex_model,
+#'   interaction_terms = c("insurance_type", "scenario", "age"),
+#'   context = "wait times and demographic variables"
+#' )
+#' print(complex_interactions)
 #'
-#' # Example 3: Custom confidence level
-#' \dontrun{
-#' result <- generate_interaction_sentences(interaction_model, "scenario", "insurance", confidence_level = 0.90)
-#' }
-
+#' # Example 3: Contextual interpretation for multiple predictors
+#' scenario_model <- glm(wait_time ~ scenario * age * gender, data = poisson_data, family = poisson)
+#' scenario_interpretation <- results_section_generate_interaction_sentences(
+#'   model_object = scenario_model,
+#'   interaction_terms = c("scenario", "age", "gender"),
+#'   context = "wait times across scenarios and demographics"
+#' )
+#' print(scenario_interpretation)
+#' @export
 generate_interaction_sentences <- function(interaction_model, variable1, variable2,
                                            model_summary = NULL, confidence_level = 0.95,
                                            log_transform = TRUE, output_format = "text") {
