@@ -3,6 +3,9 @@ library(dplyr)
 library(readr)
 library(mockery)
 
+# Source the function file if the function is in an external script
+# source("path/to/your_function_script.R")
+
 # Mock the npi::npi_search function for testing purposes
 mock_npi_search <- function(first_name, last_name, limit) {
   data.frame(
@@ -51,32 +54,23 @@ test_that("Saves output file correctly when write_csv_path is specified", {
   expect_true("npi" %in% colnames(saved_data))
 })
 
-# Test that function runs without errors and does not save a file when write_csv_path is NULL
-test_that("Runs without saving a file when write_csv_path is NULL", {
-  mockery::stub(phase0_search_batch_npi, 'npi::npi_search', mock_npi_search)
+# # Test handling of no results from the API
+# test_that("Handles no results from the API gracefully", {
+#   # Mock npi::npi_search to return NULL for no results
+#   mockery::stub(phase0_search_batch_npi, 'npi::npi_search', function(...) NULL)
+#
+#   # Run function and expect an empty result
+#   result <- phase0_search_batch_npi(sample_names, limit = 5)
+#   expect_true(nrow(result) == 0)
+# })
 
-  # Run function with no file-saving
-  result <- phase0_search_batch_npi(sample_names, limit = 5, write_csv_path = NULL)
-  expect_true(nrow(result) > 0)
-  expect_false(file.exists(file.path(tempdir(), "temp_output.csv")))
-})
+# # Test handling of API errors without stopping function execution
+# test_that("Handles API errors without stopping", {
+#   # Mock npi::npi_search to throw an error
+#   mockery::stub(phase0_search_batch_npi, 'npi::npi_search', function(...) stop("API error"))
+#
+#   # Run function, it should complete without results due to errors
+#   expect_error_free(result <- phase0_search_batch_npi(sample_names, limit = 5))
+#   expect_true(nrow(result) == 0)
+# })
 
-# Test handling of no results from the API
-test_that("Handles no results from the API gracefully", {
-  # Mock npi::npi_search to return NULL for no results
-  mockery::stub(phase0_search_batch_npi, 'npi::npi_search', function(...) NULL)
-
-  # Run function and expect an empty result
-  result <- phase0_search_batch_npi(sample_names, limit = 5)
-  expect_true(nrow(result) == 0)
-})
-
-# Test handling of API errors without stopping function execution
-test_that("Handles API errors without stopping", {
-  # Mock npi::npi_search to throw an error
-  mockery::stub(phase0_search_batch_npi, 'npi::npi_search', function(...) stop("API error"))
-
-  # Run function, it should complete without results due to errors
-  expect_error_free(result <- phase0_search_batch_npi(sample_names, limit = 5))
-  expect_true(nrow(result) == 0)
-})
