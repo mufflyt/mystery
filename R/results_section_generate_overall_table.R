@@ -11,33 +11,22 @@
 #' @param label_translations An optional named list for label translations to use in the table summary.
 #' @return Nothing is returned. The function saves the output table as a PDF file.
 #' @importFrom arsenal write2pdf tableby
-#' @importFrom readr read_rds
-#' @importFrom easyr read.any
+#' @importFrom readr read_rds read_csv
+#' @importFrom readxl read_excel
 #' @importFrom fs dir_create dir_exists
 #' @importFrom dplyr select all_of
 #' @importFrom logger log_info log_error
 #' @importFrom glue glue
+#' @importFrom tools file_ext
 #' @export
 #'
 #' @examples
 #' \dontrun{
-#' # Example 1: Generate the overall table with default settings
 #' generate_overall_table("data/Table1.rds", "output_tables")
-#'
-#' # Example 2: Generate the overall table with specific selected columns
 #' generate_overall_table("data/Table1.csv", "output_tables", selected_columns = c("age", "gender"))
-#'
-#' # Example 3: Generate the overall table with label translations and title customization
 #' label_translations <- list(age = "Age (years)", gender = "Gender")
 #' generate_overall_table("data/Table1.xlsx", "output_tables", title = "Demographic Summary",
 #'                        label_translations = label_translations)
-#'
-#' # Example 4: Generate the table from a CSV file with all columns used
-#' generate_overall_table("data/Table1.csv", "output_tables")
-#'
-#' # Example 5: Save the table to a custom directory with a specific title and selected columns
-#' generate_overall_table("data/Table1.rds", "custom_output", title = "Custom Summary",
-#'                        selected_columns = c("age", "income"))
 #' }
 
 tm_write2pdf <- function(object, filename) {
@@ -56,7 +45,7 @@ generate_overall_table <- function(input_file_path, output_directory, title = "O
   log_info("Selected columns: {selected_columns}")
   log_info("Label translations: {label_translations}")
 
-  # Error Handling: Ensure output directory exists
+  # Ensure output directory exists
   if (!fs::dir_exists(output_directory)) {
     log_info("Creating output directory at {output_directory}")
     fs::dir_create(output_directory)
@@ -66,19 +55,24 @@ generate_overall_table <- function(input_file_path, output_directory, title = "O
   file_extension <- tools::file_ext(input_file_path)
   log_info("Reading data from file: {input_file_path} (file extension: {file_extension})")
 
-  # Error Handling: Reading Data
+  # Read data using appropriate functions
   data_input <- tryCatch({
-    if (file_extension == "rds") {
-      readr::read_rds(input_file_path)
-    } else {
-      easyr::read.any(input_file_path)
-    }
+    switch(
+      file_extension,
+      "rds" = readr::read_rds(input_file_path),
+      "csv" = readr::read_csv(input_file_path),
+      "xlsx" = readxl::read_excel(input_file_path),
+      {
+        log_error("Unsupported file format: {file_extension}")
+        stop("Unsupported file format: ", file_extension)
+      }
+    )
   }, error = function(e) {
     log_error("Error reading data from {input_file_path}: {e$message}")
     stop("Error reading data.")
   })
 
-  # Error Handling: Check if the data is empty
+  # Ensure the data is not empty
   if (nrow(data_input) == 0 || ncol(data_input) == 0) {
     log_error("The input data is empty.")
     stop("The input data is empty.")
@@ -134,7 +128,7 @@ generate_overall_table <- function(input_file_path, output_directory, title = "O
     stop("Error generating overall table.")
   })
 
-  # Log summary of the generated table
+  # Generate and log summary of the overall table
   log_info("Generating summary of the overall table.")
   overall_summary <- summary(
     overall_table,
@@ -150,7 +144,7 @@ generate_overall_table <- function(input_file_path, output_directory, title = "O
 
   # Generate a filename with the current date and time
   date_time <- format(Sys.time(), "%Y-%m-%d_%H-%M-%S")
-  filename <- file.path(output_directory, paste("arsenal_overall_table", date_time, sep = "_"))
+  filename <- file.path(output_directory, paste("arsenal_overall_table", date_time, ".pdf", sep = ""))
 
   # Save the overall table as a PDF
   log_info("Saving the overall table as a PDF: {filename}")

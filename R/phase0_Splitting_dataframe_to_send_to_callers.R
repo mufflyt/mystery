@@ -1,11 +1,11 @@
-#' Split data into multiple parts and save each part as separate Excel files
+#' Split data into multiple parts and save each part as separate CSV files
 #'
 #' This function splits the data based on a specified column (e.g., insurance or specialty),
-#' and saves each part as a separate Excel file. It allows you to prioritize certain values in the column,
+#' and saves each part as a separate CSV file. It allows you to prioritize certain values in the column,
 #' and ensures that no physician appears in consecutive rows.
 #'
 #' @param input_data_or_path Either a dataframe containing the input data or a path to the input data file (RDS, CSV, or XLS/XLSX).
-#' @param output_folder Directory where output Excel files will be saved. Default is current working directory.
+#' @param output_folder Directory where output CSV files will be saved. Default is current working directory.
 #' @param assistant_names Vector of lab assistant names to name the output files.
 #' @param seed_value Seed value for randomization (default is 1978).
 #' @param complete_file_prefix Prefix for the complete output file name (default is "complete_version_").
@@ -15,9 +15,8 @@
 #' @param priority_values Vector of values to prioritize within the split_column (e.g., c("Pediatric Dermatologists", "Medicaid")). Default is NULL.
 #'
 #' @importFrom dplyr arrange mutate group_by_at ungroup sample_frac
-#' @importFrom openxlsx write.xlsx
+#' @importFrom readr write_csv read_csv
 #' @importFrom fs dir_create dir_exists
-#' @importFrom readr read_csv
 #' @export
 #'
 #' @examples
@@ -65,95 +64,6 @@ split_calls_to_lab_assistants_and_save_by_priority <- function(input_data_or_pat
 }
 
 #' @noRd
-load_and_validate_input_data <- function(input_data_or_path) {
-  if (is.character(input_data_or_path)) {
-    if (!base::file.exists(input_data_or_path)) {
-      stop("The file does not exist at the specified path: ", input_data_or_path)
-    }
-    input_data <- readr::read_csv(input_data_or_path)
-  } else if (is.data.frame(input_data_or_path)) {
-    input_data <- input_data_or_path
-  } else {
-    stop("The input must be either a data frame or a valid file path.")
-  }
-  return(input_data)
-}
-
-#' @noRd
-validate_split_column <- function(input_data, split_column) {
-  if (!split_column %in% colnames(input_data)) {
-    stop(paste("The column '", split_column, "' does not exist in the input data."))
-  }
-}
-
-#' @noRd
-assign_priority_rank <- function(input_data, split_column, priority_values) {
-  if (!all(priority_values %in% unique(input_data[[split_column]]))) {
-    stop("Some priority values are not present in the split column.")
-  }
-
-  priority_rank <- setNames(seq_along(priority_values), priority_values)
-  input_data <- input_data %>%
-    dplyr::mutate(priority_rank = dplyr::if_else(
-      input_data[[split_column]] %in% priority_values,
-      priority_rank[.[[split_column]]],
-      length(priority_values) + 1
-    )) %>%
-    dplyr::arrange(priority_rank)
-
-  return(input_data)
-}
-
-#' @noRd
-assign_lab_assistants <- function(input_data, assistant_names, split_column, seed_value) {
-  if (length(assistant_names) < 2) {
-    stop("Please provide at least two lab assistant names.")
-  }
-
-  set.seed(seed_value)
-  input_data <- input_data %>%
-    dplyr::group_by_at(split_column) %>%
-    dplyr::mutate(assigned_lab_assistant = sample(assistant_names, n(), replace = TRUE)) %>%
-    dplyr::ungroup()
-
-  return(input_data)
-}
-
-#' @noRd
-avoid_consecutive_physicians <- function(data, first_name_column, last_name_column) {
-  log_progress("Shuffling rows to avoid consecutive physicians...")
-
-  shuffled_data <- data
-  consecutive_issue <- TRUE
-
-  while (consecutive_issue) {
-    # Shuffle the rows
-    shuffled_data <- shuffled_data %>%
-      dplyr::sample_frac(1)
-
-    # Create a lagged column to check for consecutive rows with the same physician
-    shuffled_data <- shuffled_data %>%
-      dplyr::mutate(lag_first_name = lag(.data[[first_name_column]]),
-                    lag_last_name = lag(.data[[last_name_column]]),
-                    same_physician = if_else(.data[[first_name_column]] == lag_first_name &
-                                               .data[[last_name_column]] == lag_last_name, TRUE, FALSE))
-
-    # Check if there are any consecutive physicians
-    consecutive_issue <- any(shuffled_data$same_physician, na.rm = TRUE)
-
-    # Log each shuffle
-    log_progress(paste("Checking for consecutive physicians: Consecutive issue =", consecutive_issue))
-  }
-
-  # Drop helper columns
-  shuffled_data <- shuffled_data %>%
-    dplyr::select(-lag_first_name, -lag_last_name, -same_physician)
-
-  log_progress("Shuffling completed without consecutive physicians.")
-  return(shuffled_data)
-}
-
-#' @noRd
 save_complete_and_split_data <- function(input_data, output_folder, complete_file_prefix, split_file_prefix, recursive_create) {
 
   # Create output folder if it doesn't exist
@@ -165,12 +75,12 @@ save_complete_and_split_data <- function(input_data, output_folder, complete_fil
     })
   }
 
-  # Save the complete data to an Excel file
+  # Save the complete data to a CSV file
   current_timestamp <- format(Sys.time(), "%Y-%m-%d_%H-%M-%S")
-  complete_output_path <- file.path(output_folder, paste0(complete_file_prefix, current_timestamp, ".xlsx"))
+  complete_output_path <- file.path(output_folder, paste0(complete_file_prefix, current_timestamp, ".csv"))
 
   tryCatch({
-    openxlsx::write.xlsx(input_data, complete_output_path)
+    readr::write_csv(input_data, complete_output_path)
     message("Saved the complete data to: ", complete_output_path)
   }, error = function(e) {
     stop("Error saving the complete data file: ", e$message)
@@ -180,18 +90,12 @@ save_complete_and_split_data <- function(input_data, output_folder, complete_fil
   split_data <- split(input_data, input_data$assigned_lab_assistant)
 
   for (lab_assistant in names(split_data)) {
-    output_file <- file.path(output_folder, paste0(split_file_prefix, lab_assistant, "_", current_timestamp, ".xlsx"))
+    output_file <- file.path(output_folder, paste0(split_file_prefix, lab_assistant, "_", current_timestamp, ".csv"))
     tryCatch({
-      openxlsx::write.xlsx(split_data[[lab_assistant]], output_file)
+      readr::write_csv(split_data[[lab_assistant]], output_file)
       message("Saved split data for ", lab_assistant, " to: ", output_file)
     }, error = function(e) {
       stop("Error saving split data for ", lab_assistant, ": ", e$message)
     })
   }
 }
-
-#' @noRd
-log_progress <- function(message) {
-  cat("[LOG]", message, "\n")
-}
-

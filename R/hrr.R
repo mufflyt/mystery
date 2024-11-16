@@ -6,7 +6,6 @@
 #' @return An sf object containing the hospital referral region data.
 #' @importFrom sf read_sf st_transform
 #' @importFrom dplyr filter
-#'
 #' @export
 hrr <- function(remove_HI_AK = TRUE) {
   cat("Loading necessary packages...\n")
@@ -41,12 +40,15 @@ hrr <- function(remove_HI_AK = TRUE) {
 #' @importFrom sf sf_use_s2 st_transform st_make_grid st_sf st_intersection st_join
 #' @importFrom dplyr mutate group_by summarize filter
 #' @importFrom ggplot2 geom_sf scale_fill_viridis_c guide_colorbar element_text theme_minimal theme
-#' @importFrom ggspatial annotation_scale annotation_north_arrow
 #' @importFrom rnaturalearth ne_countries
-#'
 #' @export
 hrr_generate_maps <- function(physician_sf, trait_map = "all", honey_map = "all") {
   sf::sf_use_s2(FALSE)
+
+  # Check if ggspatial is available
+  if (!requireNamespace("ggspatial", quietly = TRUE)) {
+    stop("The ggspatial package is required for this function. Please install it using install.packages('ggspatial').")
+  }
 
   # Load USA shapefile
   cat("Loading USA shapefile...\n")

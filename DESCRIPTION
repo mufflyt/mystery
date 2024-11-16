@@ -43,7 +43,6 @@ Imports:
     genderdata,
     ggmap,
     ggplot2,
-    ggspatial,
     here,
     hereR,
     htmlwidgets,
@@ -53,7 +52,6 @@ Imports:
     leaflet,
     leaflet.extras,
     memoise,
-    openxlsx,
     provider,
     rainbow,
     rnaturalearth,
@@ -64,7 +62,6 @@ Imports:
     stats,
     testthat,
     tigris,
-    zipcodeR,
     viridis,
     broom,
     conflicted,
@@ -84,7 +81,8 @@ Imports:
     broom.mixed,
     tidycensus
 Suggests:
-    mockery
+    ggspatial,
+    zipcodeR
 Remotes: andrewallenbruce/provider, lmullen/genderdata
 LazyData: true
 Files: R/
