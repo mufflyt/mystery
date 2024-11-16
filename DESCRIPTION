@@ -81,7 +81,9 @@ Imports:
     webshot,
     lmerTest,
     robustlmm,
-    maps
+    maps,
+    broom.mixed,
+    tidycensus
 Remotes: andrewallenbruce/provider, lmullen/genderdata
 LazyData: true
 Files: R/

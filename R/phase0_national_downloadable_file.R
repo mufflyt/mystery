@@ -1,46 +1,58 @@
-#' Fetch CMS Provider Data for Multiple Values with Pagination and Logging
+# Load required libraries
+library(httr)
+library(jsonlite)
+library(dplyr)
+library(readr)
+library(logger)
+
+#' Fetch CMS Provider Data for Multiple Properties with Pagination and Logging
 #'
-#' This function retrieves filtered CMS provider data using pagination. It handles multiple values for a single property by querying each value separately, combining results, and logging each step.
+#' This function retrieves CMS provider data for a given specialty across multiple properties, handling pagination and logging each step.
+#' It combines results across all properties and optionally saves the final data frame as a CSV file.
 #'
-#' @param sys_sleep Numeric. Number of seconds to wait between API requests to avoid rate limiting. Default is 1 second.
-#' @param property Character. The property (column) to filter by. Default is "pri_spec".
-#' @param value Character vector. The values to filter within the specified property. Default is "OBSTETRICS/GYNECOLOGY".
-#' @param output_csv_path Character. Optional path to save the fetched data as a CSV file with a timestamp.
-#' @return A data frame with the CMS provider data filtered according to the specified criteria.
-#' @importFrom httr POST content status_code
-#' @importFrom jsonlite toJSON fromJSON
-#' @importFrom dplyr bind_rows
-#' @importFrom logger log_info log_error
+#' @param property_variable Character vector of property names to search (e.g., c("pri_spec", "sec_spec_1", ...)).
+#' @param specialty Character. The specialty value to search for within each property (e.g., "OTOLARYNGOLOGY").
+#' @param url Character. The CMS API endpoint URL. Defaults to "https://data.cms.gov/provider-data/api/1/datastore/query/mj5m-pzi6/0".
+#' @param limit Integer. Number of records per API request. Default is 100.
+#' @param sys_sleep Numeric. Delay in seconds between API requests to avoid rate limiting. Default is 1.
+#' @param output_csv_path Character. Optional path to save the fetched data as a CSV file with a timestamp. Default is NULL.
+#'
+#' @return A data frame containing combined results across all properties. If no data is retrieved, returns an empty data frame.
 #' @examples
-#' fetch_cms_data(sys_sleep = 1, property = "pri_spec", value = c("OBSTETRICS/GYNECOLOGY", "OTOLARYNGOLOGY"))
+#' \dontrun{
+#' phase0_national_downloadable_file(
+#'   property_variable = c("pri_spec", "sec_spec_1", "sec_spec_2"),
+#'   specialty = "OTOLARYNGOLOGY",
+#'   output_csv_path = "path/to/save_directory"
+#' )
+#' }
 #' @export
-phase0_national_downloadable_file <- function(sys_sleep = 1, property = "pri_spec", value = "OBSTETRICS/GYNECOLOGY", output_csv_path = NULL) {
-  # Log the function inputs
-  logger::log_info("Function phase0_national_downloadable_file called with inputs: sys_sleep = {sys_sleep}, property = {property}, value = {value}")
+phase0_national_downloadable_file <- function(
+    property_variable,
+    specialty,
+    url = "https://data.cms.gov/provider-data/api/1/datastore/query/mj5m-pzi6/0",
+    limit = 100,
+    sys_sleep = 1,
+    output_csv_path = NULL
+) {
+  all_property_results <- list()  # Initialize an empty list to store all results across properties
 
-  # Define the base URL
-  url <- "https://data.cms.gov/provider-data/api/1/datastore/query/mj5m-pzi6/0"
+  # Loop through each property in property_variable
+  for (property in property_variable) {
+    logger::log_info("Searching for specialty '{specialty}' in property '{property}'")
 
-  # Initialize an empty list to store results for all values
-  all_results <- list()
-
-  # Loop through each value in `value` to fetch data
-  for (single_value in value) {
-    logger::log_info("Fetching data for {property} = {single_value}")
-
-    # Initialize pagination variables
-    limit <- 100
     offset <- 0
     keep_querying <- TRUE
+    property_results <- list()  # To store results for the current property
 
-    # Loop to paginate through results for the current `single_value`
+    # Paginate through results for each property
     while (keep_querying) {
-      # Define the body of the POST request
+      # Define request body
       body <- list(
         conditions = list(
           list(
             property = property,
-            value = single_value,
+            value = specialty,
             operator = "="
           )
         ),
@@ -49,61 +61,57 @@ phase0_national_downloadable_file <- function(sys_sleep = 1, property = "pri_spe
         results = TRUE
       )
 
-      # Log the request body for debugging
-      logger::log_info("Request body: {jsonlite::toJSON(body, auto_unbox = TRUE)}")
+      json_body <- toJSON(body, auto_unbox = TRUE)  # Convert to JSON
+      response <- POST(url, body = json_body, encode = "json", accept("application/json"))
 
-      # Convert body to JSON for the POST request
-      json_body <- jsonlite::toJSON(body, auto_unbox = TRUE)
+      # Check response and parse
+      if (status_code(response) == 200) {
+        data_content <- content(response, "text", encoding = "UTF-8")
+        cms_data <- fromJSON(data_content, flatten = TRUE)
 
-      # Make the POST request
-      response <- httr::POST(
-        url,
-        body = json_body,
-        encode = "json",
-        httr::accept("application/json")
-      )
+        if (!is.null(cms_data$results) && length(cms_data$results) > 0) {
+          # Add a column to indicate the property source
+          property_data <- as.data.frame(cms_data$results) %>%
+            mutate(property = property)
 
-      # Check response status
-      if (httr::status_code(response) == 200) {
-        data_content <- httr::content(response, "text")
-        cms_data <- jsonlite::fromJSON(data_content, flatten = TRUE)
-
-        # Append results if present
-        if (!is.null(cms_data$results)) {
-          logger::log_info("Fetched {length(cms_data$results)} rows for {property} = {single_value} with offset: {offset}")
-          all_results[[length(all_results) + 1]] <- dplyr::as_tibble(cms_data$results)
+          property_results[[length(property_results) + 1]] <- property_data
+          logger::log_info("Fetched {nrow(property_data)} rows for '{property}' with offset: {offset}")
+        } else {
+          logger::log_info("No more results returned for '{property}' with offset {offset}. Ending loop.")
+          break
         }
 
         # Stop loop if fewer than 'limit' records are returned
-        if (length(cms_data$results) < limit) {
-          logger::log_info("Final batch for {property} = {single_value} received with {length(cms_data$results)} rows. Exiting pagination loop.")
+        if (nrow(property_data) < limit) {
           keep_querying <- FALSE
         } else {
           offset <- offset + limit
+          Sys.sleep(sys_sleep)
         }
       } else {
-        logger::log_error("Failed to retrieve data for {property} = {single_value}. Status code: {httr::status_code(response)}")
-        stop("Failed to retrieve filtered data from the CMS API.")
+        logger::log_error("Failed to retrieve data for property '{property}'")
+        stop("Failed to retrieve data from CMS API for property:", property)
       }
+    }
 
-      # Wait to avoid hitting rate limits
-      Sys.sleep(sys_sleep)
+    # Combine results for the current property
+    if (length(property_results) > 0) {
+      property_data <- bind_rows(property_results)
+      all_property_results[[property]] <- property_data
     }
   }
 
-  # Combine all results across values into a single data frame
-  combined_data <- dplyr::bind_rows(all_results)
-  logger::log_info("All data fetched and combined. Total rows: {nrow(combined_data)}, Total columns: {ncol(combined_data)}")
+  # Combine all results across properties
+  final_data <- bind_rows(all_property_results)
 
-  # Save to CSV if a path is provided
-  if (!is.null(output_csv_path)) {
+  # Optionally save to CSV
+  if (!is.null(output_csv_path) && nrow(final_data) > 0) {
     timestamp <- format(Sys.time(), "%Y%m%d%H%M%S")
     file_path <- file.path(output_csv_path, paste0("cms_data_", timestamp, ".csv"))
-    readr::write_csv(combined_data, file_path)
+    write_csv(final_data, file_path)
     logger::log_info("Data saved to file at: {file_path}")
   }
 
-  # Log function completion
   logger::log_info("Function phase0_national_downloadable_file completed successfully.")
-  return(combined_data)
+  return(final_data)
 }

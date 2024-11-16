@@ -56,6 +56,11 @@ create_bar_plot <- function(input_data,
                             filename_prefix = "bar_plot", # Prefix for the saved file
                             verbose = TRUE) {
 
+  # Load necessary library
+  if (!requireNamespace("ggplot2", quietly = TRUE)) {
+    stop("The ggplot2 package is required but not installed. Please install ggplot2.")
+  }
+
   # Error handling for input validation
   if (!is.data.frame(input_data)) {
     stop("Input data must be a dataframe.")
@@ -89,7 +94,7 @@ create_bar_plot <- function(input_data,
   }
 
   # Create the bar plot
-  bar_plot <- ggplot2::ggplot(input_data, ggplot2::aes_string(x = category_var)) +
+  bar_plot <- ggplot2::ggplot(input_data, ggplot2::aes(x = !!rlang::sym(category_var))) +
     ggplot2::geom_bar(fill = "gray80", color = "black") +  # Bar plot with gray fill and black outline
     ggplot2::geom_text(stat = 'count', ggplot2::aes(label = ggplot2::after_stat(count)), vjust = 1) +  # Display count labels
     ggplot2::facet_wrap(as.formula(paste("~", grouping_var))) +  # Facet by the specified variable
@@ -109,7 +114,6 @@ create_bar_plot <- function(input_data,
   if (verbose) {
     message("Bar plot created successfully.")
   }
-  print(bar_plot)
 
   # Return the plot object for further use or testing
   return(bar_plot)

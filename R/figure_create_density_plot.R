@@ -120,8 +120,6 @@ verbose = TRUE) {
     cat("Plots saved to:", tiff_filename, "and", png_filename, "\n")
   }
 
-  print(density_plot)
-
   # Return the plot object
   return(density_plot)
 }

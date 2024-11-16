@@ -1,62 +1,144 @@
-#' Search NPI by Taxonomy
+#' Batch NPI Search Function
 #'
-#' This function performs a search on the NPI registry for a list of taxonomy descriptions and returns a combined dataframe of results.
-#' It processes the returned data and cleans up unnecessary fields.
+#' This function performs a batch search for first and last names using the NPI registry API
+#' and returns a flattened dataframe with relevant results. Optionally, it saves the results as a CSV file.
+#' Extensive logging is provided to track each step, including function start, input validation, NPI query status,
+#' data transformation, and file saving.
 #'
-#' @param taxonomy_to_search A character vector of taxonomy descriptions to search for in the NPI registry.
+#' @param name_data A dataframe with two columns: `first` (first names) and `last` (last names).
+#'        Each row represents a unique name query.
+#' @param max_results The number of results to request for each NPI query (default is 5). This is passed to
+#'        limit the results from the NPI registry API.
+#' @param csv_path Optional. A character string specifying the file path to save the results as a CSV file.
+#'        If NULL, no CSV file is saved (default is NULL).
 #'
-#' @return A dataframe of cleaned NPI data, filtered by taxonomy and other criteria.
-#' @importFrom dplyr bind_rows distinct mutate filter select arrange
+#' @return A dataframe containing flattened NPI results, including columns for the queried `first` and `last` names.
+#'         If no results are found, an empty tibble is returned.
+#'
+#' @importFrom dplyr bind_rows select left_join
+#' @importFrom logger log_info log_error log_warn
+#' @importFrom readr write_csv
+#' @importFrom tibble tibble
 #' @importFrom npi npi_search npi_flatten
-#' @importFrom stringr str_remove_all str_to_lower str_detect regex
+#'
+#' @examples
+#' \dontrun{
+#' # Example 1: Basic batch NPI search with default max_results (5 results per query)
+#' name_data <- data.frame(first = c("Tyler", "Matthew"), last = c("Muffly", "Smith"))
+#' search_results <- phase0_search_batch_npi(name_data)
+#' print(search_results)
+#'
+#' # Example 2: Batch NPI search with increased max_results
+#' name_data <- data.frame(first = c("Alice", "Bob"), last = c("Johnson", "Doe"))
+#' search_results <- phase0_search_batch_npi(name_data, max_results = 10)
+#' print(search_results)
+#'
+#' # Example 3: Batch NPI search with CSV output
+#' name_data <- data.frame(first = c("Sarah", "Tom", "Emily"), last = c("Brown", "White", "Black"))
+#' search_results <- phase0_search_batch_npi(name_data, max_results = 5, csv_path = "npi_search_results.csv")
+#' print(search_results)
+#' }
+#'
 #' @export
-search_by_taxonomy <- function(taxonomy_to_search) {
-  # Create an empty data frame to store search results
-  combined_data <- data.frame()
-  cat("Starting search_by_taxonomy\n")
+phase0_search_batch_npi <- function(name_data, max_results = 5, csv_path = NULL) {
+  library(dplyr)
+  library(logger)
+  library(readr)
+  library(tibble)
+  library(npi)
 
-  # Loop over each taxonomy description
-  for (taxonomy in taxonomy_to_search) {
-    cat("Searching for taxonomy:", taxonomy, "\n")
-    tryCatch({
-      # Perform the search for the current taxonomy
-      result <- npi::npi_search(
-        taxonomy_description = taxonomy,
-        country_code = "US",
-        enumeration_type = "ind",
-        limit = 1200
-      )
-      cat("Search completed for taxonomy:", taxonomy, "\n")
-
-      if (!is.null(result)) {
-        cat("Processing data for taxonomy:", taxonomy, "\n")
-        # Process and filter the data for the current taxonomy
-        data_taxonomy <- npi::npi_flatten(result)
-
-        # Data transformations and filtering
-        data_taxonomy <- dplyr::mutate(data_taxonomy, search_term = taxonomy)
-        data_taxonomy <- dplyr::filter(data_taxonomy, addresses_country_name == "United States")
-        data_taxonomy <- dplyr::mutate(data_taxonomy, basic_credential = stringr::str_remove_all(basic_credential, "[[\\p{P}][\\p{S}]]"))
-        data_taxonomy <- dplyr::filter(data_taxonomy, stringr::str_to_lower(basic_credential) %in% stringr::str_to_lower(c("MD", "DO")))
-        data_taxonomy <- dplyr::arrange(data_taxonomy, basic_last_name)
-        data_taxonomy <- dplyr::filter(data_taxonomy, stringr::str_detect(taxonomies_desc, taxonomy))
-
-        # Selecting necessary columns, removing unwanted fields
-        data_taxonomy <- dplyr::select(data_taxonomy, npi, basic_first_name, basic_last_name, basic_middle_name, basic_sole_proprietor,
-                                       basic_gender, basic_enumeration_date, taxonomies_desc, taxonomies_primary,
-                                       addresses_address_1, addresses_city, addresses_state, addresses_postal_code,
-                                       addresses_telephone_number, search_term)
-
-        # Append the data for the current taxonomy to the combined data frame
-        combined_data <- dplyr::bind_rows(combined_data, data_taxonomy)
-        cat("Data appended for taxonomy:", taxonomy, "\n")
-      } else {
-        cat("No data found for taxonomy:", taxonomy, "\n")
-      }
-    }, error = function(e) {
-      message(sprintf("Error in search for %s:\n%s", taxonomy, e$message))
-    })
+  # Log function start
+  logger::log_info("Starting phase0_search_batch_npi function...")
+  logger::log_info("Input dataframe has {nrow(name_data)} rows and {ncol(name_data)} columns.")
+  logger::log_info("max_results set to: {max_results}")
+  if (!is.null(csv_path)) {
+    logger::log_info("CSV path specified: {csv_path}")
   }
 
-  return(combined_data)
+  validate_name_data(name_data)
+
+  query_results <- perform_npi_batch_query(name_data, max_results)
+
+  combined_query_data <- dplyr::bind_rows(query_results)
+  logger::log_info("Combined query results into one dataframe with {nrow(combined_query_data)} rows.")
+
+  if (nrow(combined_query_data) == 0) {
+    logger::log_warn("No results found for any of the input names. Returning an empty tibble.")
+    return(tibble::tibble())
+  }
+
+  final_data <- flatten_and_combine_query_data(combined_query_data)
+
+  # Save to CSV if path provided and results exist
+  if (!is.null(csv_path) && nrow(final_data) > 0) {
+    save_query_results(final_data, csv_path)
+  }
+
+  logger::log_info("phase0_search_batch_npi function completed successfully.")
+  return(final_data)
 }
+
+#' @noRd
+validate_name_data <- function(name_data) {
+  if (!all(c("first", "last") %in% colnames(name_data))) {
+    logger::log_error("Dataframe is missing 'first' and/or 'last' columns.")
+    stop("The dataframe must have 'first' and 'last' columns.")
+  }
+  logger::log_info("Input dataframe validated successfully.")
+}
+
+#' @noRd
+perform_npi_batch_query <- function(name_data, max_results) {
+  query_list <- list()
+  for (i in seq_len(nrow(name_data))) {
+    first_name <- name_data$first[i]
+    last_name <- name_data$last[i]
+    logger::log_info("Querying NPI for: {first_name} {last_name}")
+
+    try({
+      npi_query <- npi::npi_search(first_name = first_name, last_name = last_name, limit = max_results)
+
+      if (!is.null(npi_query)) {
+        npi_query$queried_first_name <- first_name
+        npi_query$queried_last_name <- last_name
+        query_list[[i]] <- npi_query
+        logger::log_info("Results found for: {first_name} {last_name}")
+      } else {
+        logger::log_info("No results found for: {first_name} {last_name}")
+      }
+    }, silent = TRUE)
+  }
+  query_list
+}
+
+#' @noRd
+flatten_and_combine_query_data <- function(combined_query_data) {
+  query_columns <- dplyr::select(combined_query_data, npi, queried_first_name, queried_last_name)
+  logger::log_info("Extracted columns for tracking queried names.")
+
+  flattened_query_data <- tryCatch(
+    npi::npi_flatten(dplyr::select(combined_query_data, -queried_first_name, -queried_last_name)),
+    error = function(e) {
+      logger::log_error("Error in flattening query data: {e$message}")
+      stop("Failed to flatten the query data.")
+    }
+  )
+  logger::log_info("Flattened NPI query data.")
+
+  final_data <- dplyr::left_join(flattened_query_data, query_columns, by = "npi")
+  logger::log_info("Rejoined queried columns. Final dataframe has {nrow(final_data)} rows and {ncol(final_data)} columns.")
+
+  final_data
+}
+
+#' @noRd
+save_query_results <- function(final_data, csv_path) {
+  tryCatch({
+    readr::write_csv(final_data, csv_path)
+    logger::log_info("Data saved to file: {csv_path}")
+  }, error = function(e) {
+    logger::log_error("Error saving file to {csv_path}: {e$message}")
+    stop("Failed to save the output CSV.")
+  })
+}
+

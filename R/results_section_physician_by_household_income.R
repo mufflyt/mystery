@@ -101,16 +101,38 @@ get_income_data <- function(year) {
 }
 
 # Helper function to load physician data
+# Define a lookup table for state codes (if needed)
+state_lookup <- c(
+  "Alabama" = "AL", "Alaska" = "AK", "Arizona" = "AZ", "Arkansas" = "AR",
+  "California" = "CA", "Colorado" = "CO", "Connecticut" = "CT", "Delaware" = "DE",
+  "Florida" = "FL", "Georgia" = "GA", "Hawaii" = "HI", "Idaho" = "ID",
+  "Illinois" = "IL", "Indiana" = "IN", "Iowa" = "IA", "Kansas" = "KS",
+  "Kentucky" = "KY", "Louisiana" = "LA", "Maine" = "ME", "Maryland" = "MD",
+  "Massachusetts" = "MA", "Michigan" = "MI", "Minnesota" = "MN", "Mississippi" = "MS",
+  "Missouri" = "MO", "Montana" = "MT", "Nebraska" = "NE", "Nevada" = "NV",
+  "New Hampshire" = "NH", "New Jersey" = "NJ", "New Mexico" = "NM",
+  "New York" = "NY", "North Carolina" = "NC", "North Dakota" = "ND",
+  "Ohio" = "OH", "Oklahoma" = "OK", "Oregon" = "OR", "Pennsylvania" = "PA",
+  "Rhode Island" = "RI", "South Carolina" = "SC", "South Dakota" = "SD",
+  "Tennessee" = "TN", "Texas" = "TX", "Utah" = "UT", "Vermont" = "VT",
+  "Virginia" = "VA", "Washington" = "WA", "West Virginia" = "WV",
+  "Wisconsin" = "WI", "Wyoming" = "WY"
+)
+
+# Helper function to load physician data
 load_physician_data <- function(file_path) {
   log_info("Loading physician data from file: {file_path}")
   physician_data <- readRDS(file_path) %>%
     dplyr::rename(id_number = ID, zip_code = zip) %>%
-    dplyr::mutate(zip_code = as.character(zip_code)) %>%
-    dplyr::mutate(state = exploratory::statecode(state, output = "alpha_code"))
+    dplyr::mutate(
+      zip_code = as.character(zip_code),
+      state = state_lookup[state]  # Map state names to abbreviations
+    )
 
   log_info("Loaded physician data with {nrow(physician_data)} records.")
   return(physician_data)
 }
+
 
 # Helper function to calculate state-specific income ranges
 #' @noRd
