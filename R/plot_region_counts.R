@@ -62,7 +62,6 @@
 #' @importFrom dplyr mutate left_join group_by summarise arrange
 #' @importFrom ggplot2 aes geom_polygon theme_void labs geom_text scale_fill_viridis_d scale_color_identity
 #' @importFrom viridis scale_fill_viridis
-#' @import maps
 #' @importFrom logger log_info
 plot_region_counts <- function(state_counts, region_df, region_col, save_path = NULL) {
 
