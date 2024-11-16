@@ -1,10 +1,3 @@
-# Load required libraries
-library(httr)
-library(jsonlite)
-library(dplyr)
-library(readr)
-library(logger)
-
 #' Fetch CMS Provider Data for Multiple Properties with Pagination and Logging
 #'
 #' This function retrieves CMS provider data for a given specialty across multiple properties, handling pagination and logging each step.
@@ -18,6 +11,14 @@ library(logger)
 #' @param output_csv_path Character. Optional path to save the fetched data as a CSV file with a timestamp. Default is NULL.
 #'
 #' @return A data frame containing combined results across all properties. If no data is retrieved, returns an empty data frame.
+#'
+#' @importFrom httr POST content status_code accept
+#' @importFrom jsonlite toJSON fromJSON
+#' @importFrom dplyr mutate bind_rows
+#' @importFrom magrittr %>%
+#' @importFrom readr write_csv
+#' @importFrom logger log_info log_error
+#'
 #' @examples
 #' \dontrun{
 #' phase0_national_downloadable_file(
@@ -39,7 +40,7 @@ phase0_national_downloadable_file <- function(
 
   # Loop through each property in property_variable
   for (property in property_variable) {
-    logger::log_info("Searching for specialty '{specialty}' in property '{property}'")
+    log_info("Searching for specialty '{specialty}' in property '{property}'")
 
     offset <- 0
     keep_querying <- TRUE
@@ -75,9 +76,9 @@ phase0_national_downloadable_file <- function(
             mutate(property = property)
 
           property_results[[length(property_results) + 1]] <- property_data
-          logger::log_info("Fetched {nrow(property_data)} rows for '{property}' with offset: {offset}")
+          log_info("Fetched {nrow(property_data)} rows for '{property}' with offset: {offset}")
         } else {
-          logger::log_info("No more results returned for '{property}' with offset {offset}. Ending loop.")
+          log_info("No more results returned for '{property}' with offset {offset}. Ending loop.")
           break
         }
 
@@ -89,7 +90,7 @@ phase0_national_downloadable_file <- function(
           Sys.sleep(sys_sleep)
         }
       } else {
-        logger::log_error("Failed to retrieve data for property '{property}'")
+        log_error("Failed to retrieve data for property '{property}'")
         stop("Failed to retrieve data from CMS API for property:", property)
       }
     }
@@ -109,9 +110,9 @@ phase0_national_downloadable_file <- function(
     timestamp <- format(Sys.time(), "%Y%m%d%H%M%S")
     file_path <- file.path(output_csv_path, paste0("cms_data_", timestamp, ".csv"))
     write_csv(final_data, file_path)
-    logger::log_info("Data saved to file at: {file_path}")
+    log_info("Data saved to file at: {file_path}")
   }
 
-  logger::log_info("Function phase0_national_downloadable_file completed successfully.")
+  log_info("Function phase0_national_downloadable_file completed successfully.")
   return(final_data)
 }

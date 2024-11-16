@@ -41,11 +41,6 @@
 #'
 #' @export
 phase0_search_batch_npi <- function(name_data, max_results = 5, csv_path = NULL) {
-  library(dplyr)
-  library(logger)
-  library(readr)
-  library(tibble)
-  library(npi)
 
   # Log function start
   logger::log_info("Starting phase0_search_batch_npi function...")

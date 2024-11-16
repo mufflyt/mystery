@@ -56,11 +56,6 @@ create_bar_plot <- function(input_data,
                             filename_prefix = "bar_plot", # Prefix for the saved file
                             verbose = TRUE) {
 
-  # Load necessary library
-  if (!requireNamespace("ggplot2", quietly = TRUE)) {
-    stop("The ggplot2 package is required but not installed. Please install ggplot2.")
-  }
-
   # Error handling for input validation
   if (!is.data.frame(input_data)) {
     stop("Input data must be a dataframe.")

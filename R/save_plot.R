@@ -66,9 +66,6 @@ save_plot <- function(plot, file_name, save_directory, plot_width = 8, plot_heig
     stop("The tools package is required but is not installed. It is a part of base R, please check your installation.")
   }
 
-  # Load the logging package
-  library(logger)
-
   # Log the inputs to the function
   logger::log_info("save_plot function called with arguments: plot, file_name = {file_name}, save_directory = {save_directory}, plot_width = {plot_width}, plot_height = {plot_height}, resolution_dpi = {resolution_dpi}, size_units = {size_units}, scale_factor = {scale_factor}, file_format = {file_format}, background_color = {background_color}, verbose_output = {verbose_output}")
 

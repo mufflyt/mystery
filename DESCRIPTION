@@ -22,7 +22,6 @@ Imports:
     janitor,
     lifecycle,
     lubridate,
-    mockery,
     npi,
     progress,
     purrr,
@@ -84,6 +83,8 @@ Imports:
     maps,
     broom.mixed,
     tidycensus
+Suggests:
+    mockery
 Remotes: andrewallenbruce/provider, lmullen/genderdata
 LazyData: true
 Files: R/

@@ -1,14 +1,3 @@
-# Load required libraries
-library(tidycensus)
-library(dplyr)
-library(zipcodeR)
-library(scales)
-library(logger)
-library(tidyverse)
-
-# Vector of all state abbreviations, including DC and PR
-state_abbreviations <- c(state.abb, "DC", "PR")
-
 #' Physician Distribution by Household Income Quartile
 #'
 #' This function retrieves ACS data for household income at the ZIP code level and classifies physicians by income quartiles
@@ -46,6 +35,9 @@ results_section_physician_by_household_income <- function(
     year = 2022,
     physician_information_with_zip = "Phase_2.rds"
 ) {
+
+  # Vector of all state abbreviations, including DC and PR
+  state_abbreviations <- c(state.abb, "DC", "PR")
 
   # Log inputs
   log_info("Starting physician distribution analysis for ACS survey year: {year}")
