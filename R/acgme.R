@@ -22,11 +22,10 @@
 #'   \item{coordinator_name_1}{The name of the program coordinator.}
 #'   \item{coordinator_phone_1}{The phone number of the program coordinator.}
 #'   \item{coordinator_email_1}{The email address of the program coordinator.}
-#'   \item{participation_site_code_*}{The code for each participating site (up to 18 sites).}
-#'   \item{participation_site_name_*}{The name of each participating site (up to 18 sites).}
-#'   \item{rotation_required_*}{Indicates if a rotation is required at each site ("Yes" or "No").}
-#'   \item{rotation_months_y*_#}{The number of months allocated for rotations at each site
-#'         by year (up to 4 years and 18 sites).}
+#'   \item{participation_site_code_X}{The code for participating site `X` (where `X` ranges from 1 to 18).}
+#'   \item{participation_site_name_X}{The name of participating site `X` (where `X` ranges from 1 to 18).}
+#'   \item{rotation_required_X}{Indicates if a rotation is required at site `X` (where `X` ranges from 1 to 18, values are "Yes" or "No").}
+#'   \item{rotation_months_yY_X}{The number of months allocated for rotations at site `X` during year `Y` (where `X` ranges from 1 to 18 and `Y` ranges from 1 to 4).}
 #' }
 #'
 #' @details

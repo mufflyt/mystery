@@ -193,12 +193,14 @@ save_map_to_file <- function(map_plot, save_path) {
 #'
 #' @examples
 #' # Example 1: Create a map of U.S. states by region/division,
-#' excluding Alaska and Hawaii
-#' create_region_map(
-#'   remove_ak_hi = TRUE,
-#'   districts_per_group = "US_Census_Subdivisions",
-#'   alpha_level = 0.2
-#' )
+#' # Excluding Alaska
+#' data(us_census_bureau_regions_df)
+#' regions_map <- us_census_bureau_regions_df %>%
+#'   dplyr::filter(State != "Alaska") %>%
+#'   ggplot2::ggplot(ggplot2::aes(fill = Region)) +
+#'   ggplot2::geom_map(map = us_map, ggplot2::aes(map_id = State.Code)) +
+#'   ggplot2::labs(title = "Map of U.S. Regions (Excluding Alaska)")
+#' print(regions_map)
 #'
 #' # Example 2: Create a map of U.S. states by ACOG districts,
 #' including Alaska and Hawaii

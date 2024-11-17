@@ -6,15 +6,18 @@
 #' each step, including function start, input validation, NPI query status,
 #' data transformation, and file saving.
 #'
-#' @param df A dataframe with two columns: `first` (first names) and `last` (last names).
+#' @param df A dataframe with two columns: `first` (first names) and `last`
+#' (last names).
 #'   Each row represents a unique name query.
-#' @param limit An integer specifying the number of results to request for each NPI query.
-#'   Default is 5.
+#' @param limit An integer specifying the number of results to request for
+#' each NPI query.  Default is 5.
 #' @param write_csv_path An optional character string specifying the file path
-#'   to save the results as a CSV file. If `NULL`, no CSV file is saved. Default is `NULL`.
+#'   to save the results as a CSV file. If `NULL`, no CSV file is saved.
+#'   Default is `NULL`.
 #'
-#' @return A dataframe containing flattened NPI results, including columns for the queried `first` and `last` names.
-#'   If no results are found, an empty tibble is returned.
+#' @return A dataframe containing flattened NPI results, including columns for
+#' the queried `first` and `last` names. If no results are found, an empty
+#' tibble is returned.
 #'
 #' @importFrom dplyr bind_rows select left_join
 #' @importFrom logger log_info log_error log_warn

@@ -1,29 +1,28 @@
-#' FIPS Code Dataset
+#' FIPS Codes for U.S. States
 #'
-#' This dataset provides Federal Information Processing Standards (FIPS) codes for U.S. states
-#' and counties. FIPS codes are used in various governmental and statistical applications
-#' to uniquely identify geographic regions.
+#' This dataset provides Federal Information Processing Standards (FIPS) codes for U.S. states.
 #'
-#' @format A data frame with columns:
+#' @format A data frame with 52 rows and 3 variables:
 #' \describe{
-#'   \item{State}{The name of the U.S. state (e.g., "California", "Texas").}
-#'   \item{County}{The name of the county (e.g., "Los Angeles County").}
-#'   \item{FIPS}{The FIPS code for the county (e.g., "06037" for Los Angeles County).}
+#'   \item{state}{The name of the U.S. state (e.g., "Alabama").}
+#'   \item{state_code}{The two-digit FIPS code for the state (e.g., "01").}
+#'   \item{state_name}{The full name of the state (e.g., "Alabama").}
 #' }
-#' @details
-#' - FIPS codes are hierarchical: state codes are the first two digits, and county codes follow.
-#' - They are widely used in geographic data systems and federal reporting.
 #'
-#' @source
-#' - [U.S. Census Bureau FIPS Codes](https://www.census.gov/library/reference/code-lists/ansi.html)
+#' @details
+#' This dataset maps state FIPS codes to their names and abbreviations.
+#'
+#' @source Derived from U.S. Census Bureau data.
 #'
 #' @examples
 #' # Load the dataset
 #' data(fips)
 #'
-#' # Find the FIPS code for a specific county
-#' subset(fips, County == "Los Angeles County")
+#' # View the first few rows
+#' head(fips)
 #'
-#' # Filter counties in California
-#' subset(fips, State == "California")
+#' # Get FIPS code for a specific state
+#' subset(fips, state == "California")
+#'
+#' @keywords dataset FIPS
 "fips"

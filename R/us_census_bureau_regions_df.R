@@ -9,7 +9,7 @@
 #'   \item{Region}{The region of the state (e.g., "West").}
 #'   \item{Division}{The division of the state (e.g., "Pacific").}
 #' }
-#' @source Derived from U.S. Census Bureau data.
+#'
 #' @examples
 #' data(us_census_bureau_regions_df)
 #' head(us_census_bureau_regions_df)
