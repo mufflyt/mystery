@@ -26,6 +26,7 @@
 #' @importFrom tidyr spread
 #' @importFrom stringr str_trim
 #' @importFrom rlang sym
+#' @importFrom stats lm na.omit poisson sd setNames
 #'
 #' @examples
 #' \dontrun{

@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_nppes_data_for_one_year.R
 \name{nppes_get_data_for_one_year}
 \alias{nppes_get_data_for_one_year}
-\title{Get NPPES Data for One Year with Chunked Processing}
+\title{Process NPPES Data for One Year with Chunked Processing}
 \usage{
 nppes_get_data_for_one_year(
   npi_file_path,
@@ -20,65 +20,80 @@ nppes_get_data_for_one_year(
 )
 }
 \arguments{
-\item{npi_file_path}{A character string specifying the path to the NPI CSV file. This file is expected to
-contain the raw NPPES data for one year.}
+\item{npi_file_path}{A character string specifying the path to the raw NPPES data CSV file.
+This file should contain the raw data for one year, typically downloaded from NPPES.}
 
-\item{output_csv_path}{A character string specifying the path to save the output cleaned data as a CSV file.
+\item{output_csv_path}{A character string specifying the full file path where the cleaned data will be saved.
 The file will be created or overwritten during the process.}
 
-\item{duckdb_file_path}{A character string specifying the path to the DuckDB database file. Default is a
-predefined file path.}
+\item{duckdb_file_path}{A character string specifying the path to the DuckDB database file.
+This is used for temporary data storage during processing. Defaults to
+\code{"/Volumes/Video Projects Muffly 1/nppes_historical_downloads/my_duckdb.duckdb"}.}
 
-\item{taxonomy_codes_1}{A character vector specifying the taxonomy codes to filter in
-\verb{Healthcare Provider Taxonomy Code_1}. Default is a predefined set of taxonomy codes.}
+\item{taxonomy_codes_1}{A character vector of taxonomy codes used to filter data in
+\verb{Healthcare Provider Taxonomy Code_1}. Defaults to common codes for healthcare providers.}
 
-\item{taxonomy_codes_2}{A character vector specifying the taxonomy codes to filter in
-\verb{Healthcare Provider Taxonomy Code_2}. Default is the same set as \code{taxonomy_codes_1}.}
+\item{taxonomy_codes_2}{A character vector of taxonomy codes used to filter data in
+\verb{Healthcare Provider Taxonomy Code_2}. Defaults to the same set as \code{taxonomy_codes_1}.}
 
-\item{save_column_in_each_nppes_year}{A logical value indicating whether to save a sample of the data to
-an Excel file for each year. Default is \code{FALSE}.}
+\item{save_column_in_each_nppes_year}{A logical value indicating whether to save a sample of
+the data to an Excel file for each year. Defaults to \code{FALSE}.}
 
 \item{excel_file_path}{A character string specifying the path to save the Excel file if
-\code{save_column_in_each_nppes_year} is \code{TRUE}. Default is \code{NULL}.}
+\code{save_column_in_each_nppes_year} is \code{TRUE}. Defaults to \code{NULL}.}
 }
 \value{
-A cleaned data frame containing the NPPES data for one year. The data is saved to a CSV file
-specified by the \code{output_csv_path} argument.
+A data frame containing the cleaned NPPES data for one year. The processed data is also saved
+to the file specified by \code{output_csv_path}.
 }
 \description{
-This function processes NPPES data for one year by reading a CSV file, filtering based on taxonomy codes,
-and writing the results to an output CSV file. It processes the data in chunks to improve memory efficiency
-and includes system beeps for progress and completion. Logs are provided at each step using the \code{log_message}
-function.
+This function processes NPPES (National Plan and Provider Enumeration System) data for a single year.
+It reads raw data from a CSV file, filters it based on specified taxonomy codes, and writes the cleaned data
+to an output CSV file. The function processes data in manageable chunks to optimize memory usage, logs progress,
+and includes auditory feedback for significant stages.
 }
 \details{
-This function processes large datasets in chunks to reduce memory usage, filtering the data based on
-specified taxonomy codes. It logs progress using the \code{log_message} helper function and gives auditory feedback with system beeps.
+This function is designed for handling large NPPES datasets. By chunking the data, it avoids
+memory-related issues while providing a structured way to process and clean the data.
+Filtering is based on user-specified taxonomy codes for healthcare providers.
 
-The function saves the cleaned data to the specified \code{output_csv_path} and can optionally save sample data to Excel.
-After completion, a message is displayed indicating that \code{nppes_save_summary_statistics} is the next function to run.
+Logs are generated at each step to track progress, and system beeps are used for auditory feedback
+(requires the \code{beepr} package). If \code{save_column_in_each_nppes_year} is \code{TRUE}, the function
+saves a sample of the processed data to an Excel file for verification or further analysis.
+}
+\note{
+Ensure that the \code{npi_file_path} points to a valid CSV file containing raw NPPES data.
+The \code{taxonomy_codes_1} and \code{taxonomy_codes_2} parameters should be adjusted as needed
+for specific filtering requirements.
 }
 \examples{
-# Example 1: Basic usage with default taxonomy codes
-result <- nppes_get_data_for_one_year(
-  npi_file_path = "/path/to/npi_file.csv",
-  output_csv_path = "/path/to/output.csv"
+# Example 1: Process data with default taxonomy codes and save to CSV
+nppes_get_data_for_one_year(
+  npi_file_path = "path/to/nppes_data_2024.csv",
+  output_csv_path = "path/to/cleaned_data_2024.csv"
 )
 
-# Example 2: Using custom taxonomy codes for filtering
-result <- nppes_get_data_for_one_year(
-  npi_file_path = "/Volumes/Video Projects Muffly 1/nppes_historical_downloads/NPPES_Data_Disseminat_September_2024/npidata_pfile_20050523-20240811.csv",
-  output_csv_path = "/path/to/output.csv",
+# Example 2: Customize taxonomy codes and process data
+nppes_get_data_for_one_year(
+  npi_file_path = "path/to/nppes_data_2023.csv",
+  output_csv_path = "path/to/cleaned_data_2023.csv",
   taxonomy_codes_1 = c("207X00000X", "207Y00000X"),
   taxonomy_codes_2 = c("207X00000X", "207Y00000X")
 )
 
-# Example 3: Saving sample data to an Excel file
-result <- nppes_get_data_for_one_year(
-  npi_file_path = "/path/to/npi_file.csv",
-  output_csv_path = "/path/to/output.csv",
+# Example 3: Save a sample of the data to an Excel file
+nppes_get_data_for_one_year(
+  npi_file_path = "path/to/nppes_data_2022.csv",
+  output_csv_path = "path/to/cleaned_data_2022.csv",
   save_column_in_each_nppes_year = TRUE,
-  excel_file_path = "/path/to/sample_data.xlsx"
+  excel_file_path = "path/to/sample_data_2022.xlsx"
+)
+
+# Example 4: Process data with a custom DuckDB path
+nppes_get_data_for_one_year(
+  npi_file_path = "path/to/nppes_data_2021.csv",
+  output_csv_path = "path/to/cleaned_data_2021.csv",
+  duckdb_file_path = "custom/path/to/duckdb_database.duckdb"
 )
 
 }

@@ -23,13 +23,16 @@
 #' phase0_search_npi_by_number(npi_dataframe = npi_list)
 #'
 #' # Example 2: Save results in chunks of 5, specifying a custom directory
-#' phase0_search_npi_by_number(npi_dataframe = npi_list, records_per_chunk = 5, save_directory = "custom_directory")
+#' phase0_search_npi_by_number(npi_dataframe = npi_list, records_per_chunk = 5,
+#' save_directory = "custom_directory")
 #'
 #' # Example 3: Large dataset with default chunking
-#' large_npi_list <- data.frame(npi = replicate(50, paste0(sample(0:9, 10, replace = TRUE), collapse = "")))
+#' large_npi_list <- data.frame(npi = replicate(50, paste0(sample(0:9, 10,
+#' replace = TRUE), collapse = "")))
 #' phase0_search_npi_by_number(npi_dataframe = large_npi_list)
 #'
-#' # Expected output: Combined data frame with clinician information, saved to CSV files by chunks.
+#' # Expected output: Combined data frame with clinician information,
+#' saved to CSV files by chunks.
 phase0_search_npi_by_number <- function(npi_dataframe,
                                         records_per_chunk = 10,
                                         save_directory = NULL) {

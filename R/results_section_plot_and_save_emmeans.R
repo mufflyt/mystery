@@ -100,7 +100,7 @@ plot_and_save_emmeans <- function(model_object, specs, variable_of_interest, col
     ggplot2::scale_color_brewer(palette = "Set1") +  # Change color palette
     ggplot2::ggtitle(paste("Estimated Marginal Means -", tools::toTitleCase(variable_of_interest))) +
     ggplot2::xlab(tools::toTitleCase(variable_of_interest)) +
-    ggplot2::ylab("Business Days Until Appointment (Mean ± 95% CI)") +  # Clearer y-axis label
+    ggplot2::ylab("Business Days Until Appointment (Mean \u00b1 95% CI)") +  # Clearer y-axis label
     ggplot2::theme_minimal() +
     ggplot2::theme(
       axis.text.x = ggplot2::element_text(angle = 0, hjust = 0.5, vjust = 1, size = 10, color = "black"),

@@ -14,6 +14,7 @@
 #' @importFrom dplyr filter select mutate
 #' @importFrom stats formula
 #' @importFrom logger log_info log_warn
+#' @importFrom stats lm na.omit poisson sd setNames
 #'
 #' @examples
 #' # Example 1: Fitting Poisson model with wait time data

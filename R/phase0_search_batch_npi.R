@@ -51,8 +51,10 @@
 #'   last = c("Brown", "White", "Black"),
 #'   stringsAsFactors = FALSE
 #' )
-#' results <- phase0_search_batch_npi(name_df, limit = 5, write_csv_path = "npi_search_results.csv")
-#' print(results)  # Display the output, which is also saved to the specified CSV
+#' results <- phase0_search_batch_npi(name_df, limit = 5, write_csv_path =
+#' "npi_search_results.csv")
+#' print(results)  # Display the output, which is also saved to the specified
+#' CSV
 #' }
 #'
 #' @export

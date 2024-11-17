@@ -27,7 +27,6 @@
 #' }
 #' @importFrom tidycensus get_acs
 #' @importFrom dplyr left_join filter mutate select rename group_by summarize case_when arrange
-#' @import zipcodeR
 #' @importFrom scales comma
 #' @importFrom logger log_info
 #' @export
@@ -58,7 +57,14 @@ results_section_physician_by_household_income <- function(
   physician_details <- load_physician_data(physician_information_with_zip)
 
   # Step 3: Calculate state-specific income ranges
-  income_ranges_by_state <- calculate_income_ranges(income_by_zip)
+  if (!requireNamespace("zipcodeR", quietly = TRUE)) {
+    stop("The 'zipcodeR' package is required but not installed. Please install it using install.packages('zipcodeR').")
+  }
+  zip_data <- zipcodeR::zip_code_db %>%
+    dplyr::rename(zip_code = zipcode) %>%
+    dplyr::select(zip_code, state)
+
+  income_ranges_by_state <- calculate_income_ranges(income_by_zip, zip_data)
 
   # Step 4: Assign physicians to income quartiles
   physician_distribution_by_quartile <- assign_income_quartiles(physician_details, income_by_zip, income_ranges_by_state)
@@ -73,69 +79,12 @@ results_section_physician_by_household_income <- function(
   return(physician_distribution_by_quartile)
 }
 
-# Helper function to get income data
-get_income_data <- function(year) {
-  log_info("Retrieving ACS data for median household income by ZIP code for year: {year}")
-  income_data <- tidycensus::get_acs(
-    geography = "zcta",
-    variables = "B19013_001",
-    survey = "acs5",
-    year = year,
-    cache_table = TRUE
-  ) %>%
-    dplyr::select(-moe) %>%
-    dplyr::rename(zip_code = GEOID, median_income = estimate) %>%
-    dplyr::mutate(zip_code = as.character(zip_code)) %>%
-    dplyr::filter(!is.na(median_income))
-
-  log_info("Retrieved and processed income data with {nrow(income_data)} records.")
-  return(income_data)
-}
-
-# Helper function to load physician data
-# Define a lookup table for state codes (if needed)
-state_lookup <- c(
-  "Alabama" = "AL", "Alaska" = "AK", "Arizona" = "AZ", "Arkansas" = "AR",
-  "California" = "CA", "Colorado" = "CO", "Connecticut" = "CT", "Delaware" = "DE",
-  "Florida" = "FL", "Georgia" = "GA", "Hawaii" = "HI", "Idaho" = "ID",
-  "Illinois" = "IL", "Indiana" = "IN", "Iowa" = "IA", "Kansas" = "KS",
-  "Kentucky" = "KY", "Louisiana" = "LA", "Maine" = "ME", "Maryland" = "MD",
-  "Massachusetts" = "MA", "Michigan" = "MI", "Minnesota" = "MN", "Mississippi" = "MS",
-  "Missouri" = "MO", "Montana" = "MT", "Nebraska" = "NE", "Nevada" = "NV",
-  "New Hampshire" = "NH", "New Jersey" = "NJ", "New Mexico" = "NM",
-  "New York" = "NY", "North Carolina" = "NC", "North Dakota" = "ND",
-  "Ohio" = "OH", "Oklahoma" = "OK", "Oregon" = "OR", "Pennsylvania" = "PA",
-  "Rhode Island" = "RI", "South Carolina" = "SC", "South Dakota" = "SD",
-  "Tennessee" = "TN", "Texas" = "TX", "Utah" = "UT", "Vermont" = "VT",
-  "Virginia" = "VA", "Washington" = "WA", "West Virginia" = "WV",
-  "Wisconsin" = "WI", "Wyoming" = "WY"
-)
-
-# Helper function to load physician data
-load_physician_data <- function(file_path) {
-  log_info("Loading physician data from file: {file_path}")
-  physician_data <- readRDS(file_path) %>%
-    dplyr::rename(id_number = ID, zip_code = zip) %>%
-    dplyr::mutate(
-      zip_code = as.character(zip_code),
-      state = state_lookup[state]  # Map state names to abbreviations
-    )
-
-  log_info("Loaded physician data with {nrow(physician_data)} records.")
-  return(physician_data)
-}
-
-
-# Helper function to calculate state-specific income ranges
-#' @noRd
-calculate_income_ranges <- function(income_by_zip) {
+# Helper function: Calculate state-specific income ranges
+calculate_income_ranges <- function(income_by_zip, zip_data) {
   log_info("Calculating state-specific income ranges for each quartile.")
-  zip_state_mapping <- zipcodeR::zip_code_db %>%
-    dplyr::rename(zip_code = zipcode) %>%
-    dplyr::select(zip_code, state)
 
   income_ranges <- income_by_zip %>%
-    dplyr::inner_join(zip_state_mapping, by = "zip_code") %>%
+    dplyr::inner_join(zip_data, by = "zip_code") %>%
     dplyr::group_by(state) %>%
     dplyr::summarize(
       Q1_min = round(min(median_income[median_income <= quantile(median_income, 0.25, na.rm = TRUE)], na.rm = TRUE)),
@@ -149,73 +98,4 @@ calculate_income_ranges <- function(income_by_zip) {
     )
   log_info("Calculated income ranges for {nrow(income_ranges)} states.")
   return(income_ranges)
-}
-
-# Helper function to assign income quartiles to each physician and summarize
-#' @noRd
-assign_income_quartiles <- function(physician_details, income_by_zip, income_ranges_by_state) {
-  log_info("Assigning income quartiles to each physician based on ZIP code income ranges.")
-  physicians_with_income_ranges <- physician_details %>%
-    dplyr::left_join(income_by_zip, by = "zip_code") %>%
-    dplyr::left_join(income_ranges_by_state, by = "state") %>%
-    dplyr::filter(!is.na(median_income)) %>%
-    dplyr::mutate(
-      income_quartile = case_when(
-        median_income >= Q1_min & median_income <= Q1_max ~ "Q1 (Lowest)",
-        median_income > Q2_min & median_income <= Q2_max ~ "Q2",
-        median_income > Q3_min & median_income <= Q3_max ~ "Q3",
-        median_income > Q4_min & median_income <= Q4_max ~ "Q4 (Highest)"
-      ),
-      income_range = case_when(
-        income_quartile == "Q1 (Lowest)" ~ paste0("$", scales::comma(round(Q1_min)), " - $", scales::comma(round(Q1_max))),
-        income_quartile == "Q2" ~ paste0("$", scales::comma(round(Q2_min)), " - $", scales::comma(round(Q2_max))),
-        income_quartile == "Q3" ~ paste0("$", scales::comma(round(Q3_min)), " - $", scales::comma(round(Q3_max))),
-        income_quartile == "Q4 (Highest)" ~ paste0("$", scales::comma(round(Q4_min)), " - $", scales::comma(round(Q4_max)))
-      )
-    ) %>%
-    dplyr::filter(!is.na(income_quartile))
-
-  physician_summary <- physicians_with_income_ranges %>%
-    dplyr::group_by(state, income_quartile, income_range) %>%
-    dplyr::summarize(physicians_in_quartile = n(), .groups = "drop") %>%
-    dplyr::left_join(
-      physician_details %>%
-        dplyr::group_by(state) %>%
-        dplyr::summarize(total_physicians = n(), .groups = "drop"),
-      by = "state"
-    ) %>%
-    dplyr::mutate(
-      percent_in_quartile = (physicians_in_quartile / total_physicians) * 100
-    ) %>%
-    dplyr::arrange(state, income_quartile)
-
-  log_info("Completed physician distribution by income quartile.")
-  return(physician_summary)
-}
-
-# Helper function to add US-level summary for affluent ZIP codes
-#' @noRd
-add_us_summary <- function(physician_distribution_by_quartile, income_by_zip, physician_details) {
-  log_info("Calculating U.S.-level summary for affluent ZIP codes (Q4).")
-  total_physicians_us <- nrow(physician_details)
-  physicians_in_affluent_quartile_us <- nrow(physician_distribution_by_quartile %>%
-                                               dplyr::filter(income_quartile == "Q4 (Highest)"))
-  percent_in_affluent_quartile_us <- (physicians_in_affluent_quartile_us / total_physicians_us) * 100
-  affluent_range_us <- paste0(
-    "$", scales::comma(round(quantile(income_by_zip$median_income, 0.75, na.rm = TRUE))),
-    " - $", scales::comma(round(max(income_by_zip$median_income, na.rm = TRUE)))
-  )
-
-  us_summary <- tibble(
-    state = "US",
-    income_quartile = "Q4 (Highest)",
-    income_range = affluent_range_us,
-    total_physicians = total_physicians_us,
-    physicians_in_quartile = physicians_in_affluent_quartile_us,
-    percent_in_quartile = percent_in_affluent_quartile_us
-  )
-
-  physician_distribution_with_us <- dplyr::bind_rows(physician_distribution_by_quartile, us_summary)
-  log_info("Added U.S.-level summary to the distribution data.")
-  return(physician_distribution_with_us)
 }

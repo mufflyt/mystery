@@ -7,39 +7,69 @@
 create_forest_plot(df, target_variable, significant_vars)
 }
 \arguments{
-\item{df}{A data frame containing the dataset.}
+\item{df}{A data frame containing the dataset used for the regression analysis.}
 
-\item{target_variable}{A string representing the name of the target variable.}
+\item{target_variable}{A string representing the target variable (dependent variable) for the regression model.}
 
-\item{significant_vars}{A data frame containing significant predictors, their coefficients, and confidence intervals.}
+\item{significant_vars}{A data frame containing significant predictors with their variable names (\code{Variable}),
+coefficients (\code{Coefficient}), and confidence intervals (\code{Lower_CI}, \code{Upper_CI}).}
 }
 \value{
-A ggplot object representing the forest plot.
+A \code{ggplot} object representing the forest plot with coefficients and confidence intervals for each significant predictor.
 }
 \description{
-This function creates a forest plot for significant predictors, showing their coefficients and confidence intervals.
-The function logs the process, including inputs and outputs for transparency.
+This function generates a forest plot displaying significant predictors' coefficients and confidence intervals
+for a Poisson regression model. It logs each step of the process, providing insights into the predictors included,
+coefficients, and confidence intervals. The forest plot highlights the direction and significance of effects
+for the analyzed variables.
+}
+\details{
+The function loops through significant predictors to fit individual Poisson regression models for each predictor
+against the target variable. It extracts coefficients and confidence intervals, compiles the results, and visualizes
+them as a forest plot. A vertical dashed red line at \code{x = 0} indicates no effect.
 }
 \examples{
-# Example usage:
+# Example 1: Preparing a dataset and identifying significant predictors
 
-# 1. Prepare the dataset
-predictor_vars <- prepare_dataset(df, target_variable = "cleaned_does_the_physician_accept_medicaid_numeric",
-                                  excluded_columns = c("does_the_physician_accept_medicaid",
-                                                       "cleaned_does_the_physician_accept_medicaid"))
+# Define predictor variables by excluding specific columns
+predictor_vars <- prepare_dataset(
+  df,
+  target_variable = "cleaned_does_the_physician_accept_medicaid_numeric",
+  excluded_columns = c("does_the_physician_accept_medicaid",
+                       "cleaned_does_the_physician_accept_medicaid")
+)
 
-# 2. Fit Poisson models and extract p-values
-results <- fit_poisson_models(df, target_variable = "cleaned_does_the_physician_accept_medicaid_numeric",
-                              predictor_vars = predictor_vars)
+# Fit Poisson models for each predictor and extract p-values
+results <- fit_poisson_models(
+  df,
+  target_variable = "cleaned_does_the_physician_accept_medicaid_numeric",
+  predictor_vars = predictor_vars
+)
 
-# 3. Determine the direction of significant variables
+# Filter for significant predictors (p-value < 0.2)
 significant_vars <- results \%>\%
-  dplyr::filter(P_Value < 0.2)  # Apply significance filter
-significant_vars_with_direction <- determine_direction(df, "cleaned_does_the_physician_accept_medicaid_numeric",
-                                                       significant_vars)
+  dplyr::filter(P_Value < 0.2)
 
-# 4. Create a forest plot for significant predictors
-forest_plot <- create_forest_plot(df, "cleaned_does_the_physician_accept_medicaid_numeric",
-                                  significant_vars_with_direction)
+# Determine directionality of effects for significant predictors
+significant_vars_with_direction <- determine_direction(
+  df,
+  target_variable = "cleaned_does_the_physician_accept_medicaid_numeric",
+  significant_vars = significant_vars
+)
+
+# Create a forest plot for significant predictors
+forest_plot <- create_forest_plot(
+  df,
+  target_variable = "cleaned_does_the_physician_accept_medicaid_numeric",
+  significant_vars = significant_vars_with_direction
+)
 print(forest_plot)
+
+# Example 2: Saving the forest plot to a file
+ggplot2::ggsave("forest_plot.png", plot = forest_plot, width = 10, height = 6)
+
 }
+\keyword{forest-plot}
+\keyword{plot}
+\keyword{regression}
+\keyword{visualization}

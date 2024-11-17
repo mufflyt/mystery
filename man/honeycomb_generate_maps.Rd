@@ -38,22 +38,3 @@ Each ggplot object is a hexagon map showing physician distribution.
 This function generates hexagon maps for ACOG districts, using physician location data.
 It provides extensive logging, error handling, and defaults to sample data if no inputs are provided.
 }
-\examples{
-\dontrun{
-# Example 1: Generate maps using default ACOG districts and sample physician data
-hex_maps <- honeycomb_generate_maps()
-
-# Example 2: Generate maps for a specific ACOG district with default sample data
-hex_maps <- honeycomb_generate_maps(target_district = "District IV")
-
-# Example 3: Generate maps for all districts, with custom grid size and custom data
-custom_physicians <- tyler::get_custom_physician_data()  # Assume a custom data function
-custom_acog_districts <- tyler::get_custom_acog_data()  # Assume custom ACOG districts data
-hex_maps <- honeycomb_generate_maps(
-  physician_locations_sf = custom_physicians,
-  acog_districts_sf = custom_acog_districts,
-  hex_grid_size = c(0.5, 0.5)
-)
-}
-
-}

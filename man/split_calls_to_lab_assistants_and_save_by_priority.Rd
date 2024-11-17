@@ -2,7 +2,7 @@
 % Please edit documentation in R/phase0_Splitting_dataframe_to_send_to_callers.R
 \name{split_calls_to_lab_assistants_and_save_by_priority}
 \alias{split_calls_to_lab_assistants_and_save_by_priority}
-\title{Split data into multiple parts and save each part as separate Excel files}
+\title{Split data into multiple parts and save each part as separate CSV files}
 \usage{
 split_calls_to_lab_assistants_and_save_by_priority(
   input_data_or_path,
@@ -19,7 +19,7 @@ split_calls_to_lab_assistants_and_save_by_priority(
 \arguments{
 \item{input_data_or_path}{Either a dataframe containing the input data or a path to the input data file (RDS, CSV, or XLS/XLSX).}
 
-\item{output_folder}{Directory where output Excel files will be saved. Default is current working directory.}
+\item{output_folder}{Directory where output CSV files will be saved. Default is current working directory.}
 
 \item{assistant_names}{Vector of lab assistant names to name the output files.}
 
@@ -37,7 +37,7 @@ split_calls_to_lab_assistants_and_save_by_priority(
 }
 \description{
 This function splits the data based on a specified column (e.g., insurance or specialty),
-and saves each part as a separate Excel file. It allows you to prioritize certain values in the column,
+and saves each part as a separate CSV file. It allows you to prioritize certain values in the column,
 and ensures that no physician appears in consecutive rows.
 }
 \examples{

@@ -2,7 +2,8 @@
 % Please edit documentation in R/map_create_region_map.R
 \name{create_region_map}
 \alias{create_region_map}
-\title{Main function to create a map of U.S. States by Region, Division, or Custom Districts}
+\title{Main function to create a map of U.S. States by Region, Division, or
+Custom Districts}
 \usage{
 create_region_map(
   remove_ak_hi = TRUE,
@@ -14,33 +15,64 @@ create_region_map(
 )
 }
 \arguments{
-\item{remove_ak_hi}{Logical, whether to exclude Alaska and Hawaii from the map. Default is TRUE.}
+\item{remove_ak_hi}{Logical, whether to exclude Alaska and Hawaii from the
+map. Default is TRUE.}
 
-\item{districts_per_group}{Character, which grouping to use for the regions. Options are: "acog_districts", "ENT_Board_of_Governors_Regions", or "US_Census_Subdivisions".}
+\item{districts_per_group}{Character, which grouping to use for the regions.
+Options are:
+"acog_districts", "ENT_Board_of_Governors_Regions", or
+"US_Census_Subdivisions".}
 
-\item{save_path}{Character, an optional file path to save the map image. If NULL, the map will not be saved. Default is NULL.}
+\item{save_path}{Character, an optional file path to save the map image.
+If NULL, the map will not
+be saved. Default is NULL.}
 
-\item{alpha_level}{Numeric, the transparency level for the map's fill color, with 0 being fully transparent and 1 fully opaque. Default is 0.2.}
+\item{alpha_level}{Numeric, the transparency level for the map's fill color,
+with 0 being fully
+transparent and 1 fully opaque. Default is 0.2.}
 
-\item{title}{Character, the title for the map. Default is "U.S. States by Region/Division or Custom Districts".}
+\item{title}{Character, the title for the map. Default is "U.S. States by
+Region/Division or Custom
+Districts".}
 
 \item{subtitle}{Character, an optional subtitle for the map.}
 }
 \value{
-A ggplot map object representing the U.S. states colored by region/division, ACOG districts, or ENT_Board_of_Governors_Regions.
+A ggplot map object representing the U.S. states colored by
+region/division, ACOG districts,
+or ENT_Board_of_Governors_Regions.
 }
 \description{
-This function generates a map of U.S. states, coloring them by regions, divisions, ACOG districts, or ENT Board of Governors Regions.
-Users can customize which grouping to use (ACOG Districts, ENT_Board_of_Governors_Regions, or US Census Subdivisions).
+This function generates a map of U.S. states, coloring them by regions,
+divisions, ACOG districts,
+or ENT Board of Governors Regions. Users can customize which grouping to
+use (ACOG Districts,
+ENT_Board_of_Governors_Regions, or US Census Subdivisions).
 }
 \examples{
-# Example 1: Create a map of U.S. states by region/division, excluding Alaska and Hawaii
-create_region_map(remove_ak_hi = TRUE, districts_per_group = "US_Census_Subdivisions", alpha_level = 0.2)
+# Example 1: Create a map of U.S. states by region/division,
+excluding Alaska and Hawaii
+create_region_map(
+  remove_ak_hi = TRUE,
+  districts_per_group = "US_Census_Subdivisions",
+  alpha_level = 0.2
+)
 
-# Example 2: Create a map of U.S. states by ACOG districts, including Alaska and Hawaii
-create_region_map(remove_ak_hi = FALSE, districts_per_group = "acog_districts", alpha_level = 0.5)
+# Example 2: Create a map of U.S. states by ACOG districts,
+including Alaska and Hawaii
+create_region_map(
+  remove_ak_hi = FALSE,
+  districts_per_group = "acog_districts",
+  alpha_level = 0.5
+)
 
-# Example 3: Create a map of U.S. states by ENT Board of Governors Regions and save it to a file
-create_region_map(remove_ak_hi = TRUE, districts_per_group = "ENT_Board_of_Governors_Regions", save_path = "ent_bog_regions_map.png", alpha_level = 0.3)
+# Example 3: Create a map of U.S. states by ENT Board of Governors Regions
+and save it to a file
+create_region_map(
+  remove_ak_hi = TRUE,
+  districts_per_group = "ENT_Board_of_Governors_Regions",
+  save_path = "ent_bog_regions_map.png",
+  alpha_level = 0.3
+)
 
 }

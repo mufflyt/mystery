@@ -12,6 +12,7 @@
 #' @importFrom broom.mixed tidy
 #' @importFrom dplyr mutate select filter
 #' @importFrom logger log_info log_warn
+#' @importFrom stats lm na.omit poisson sd setNames
 #'
 #' @examples
 #' # Example 1: Basic mixed model with random effects by state

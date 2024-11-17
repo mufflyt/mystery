@@ -17,6 +17,7 @@
 #' print(summary_sentence)
 #' @import dplyr
 #' @import beepr
+#' @importFrom stats lm na.omit poisson sd setNames
 #' @export
 linear_regression_race_drive_time_generate_summary_sentence <- function(tabulated_data, driving_time_minutes = 180, race = "American Indian/Alaska Native") {
   # Log the function call with input arguments

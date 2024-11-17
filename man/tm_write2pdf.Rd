@@ -27,22 +27,10 @@ supports RDS, CSV, and XLS file formats and creates an overall summary table sav
 }
 \examples{
 \dontrun{
-# Example 1: Generate the overall table with default settings
 generate_overall_table("data/Table1.rds", "output_tables")
-
-# Example 2: Generate the overall table with specific selected columns
 generate_overall_table("data/Table1.csv", "output_tables", selected_columns = c("age", "gender"))
-
-# Example 3: Generate the overall table with label translations and title customization
 label_translations <- list(age = "Age (years)", gender = "Gender")
 generate_overall_table("data/Table1.xlsx", "output_tables", title = "Demographic Summary",
                        label_translations = label_translations)
-
-# Example 4: Generate the table from a CSV file with all columns used
-generate_overall_table("data/Table1.csv", "output_tables")
-
-# Example 5: Save the table to a custom directory with a specific title and selected columns
-generate_overall_table("data/Table1.rds", "custom_output", title = "Custom Summary",
-                       selected_columns = c("age", "income"))
 }
 }

@@ -36,7 +36,9 @@ significant_vars <- data.frame(
   Formatted_P_Value = c("<0.01", "0.02")
 )
 results_section_medicaid_summary(significant_vars, 45.6, 100, 200)
-# Output: Physicians who accepted Medicaid were Specialty positively associated (p = <0.01) and Region negatively associated (p = 0.02). The Medicaid acceptance rate was 45.6\% (n = 100/N = 200).
+# Output: Physicians who accepted Medicaid were Specialty positively
+associated (p = <0.01) and Region negatively associated (p = 0.02).
+The Medicaid acceptance rate was 45.6\% (n = 100/N = 200).
 
 # Example 2: Using larger physician counts and different acceptance rate
 significant_vars <- data.frame(
@@ -45,7 +47,10 @@ significant_vars <- data.frame(
   Formatted_P_Value = c("<0.05", "0.01")
 )
 results_section_medicaid_summary(significant_vars, 35.2, 500, 1200)
-# Output: Physicians who accepted Medicaid were Experience positively associated (p = <0.05) and Training Level negatively associated (p = 0.01). The Medicaid acceptance rate was 35.2\% (n = 500/N = 1,200).
+# Output: Physicians who accepted Medicaid were
+Experience positively associated (p = <0.05) and Training Level
+negatively associated (p = 0.01). The Medicaid acceptance rate
+was 35.2\% (n = 500/N = 1,200).
 
 # Example 3: Using a single significant predictor and a high acceptance rate
 significant_vars <- data.frame(
@@ -54,5 +59,6 @@ significant_vars <- data.frame(
   Formatted_P_Value = c("<0.001")
 )
 results_section_medicaid_summary(significant_vars, 60.0, 750, 1250)
-# Output: Physicians who accepted Medicaid were Age positively associated (p = <0.001). The Medicaid acceptance rate was 60.0\% (n = 750/N = 1,250).
+# Output: Physicians who accepted Medicaid were Age positively associated
+(p = <0.001). The Medicaid acceptance rate was 60.0\% (n = 750/N = 1,250).
 }

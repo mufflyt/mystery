@@ -29,7 +29,7 @@
 #' )
 #'
 #' # Example 2: Plot without saving, grouping by ACOG districts
-#' acog_districts_df <- data.frame(
+#' ACOG_Districts_sf <- data.frame(
 #'   State = c("California", "Nevada", "Utah"),
 #'   ACOG_District = c("District IX", "District IX", "District VIII")
 #' )
@@ -39,7 +39,7 @@
 #' )
 #' plot_region_counts(
 #'   state_counts = state_counts,
-#'   region_df = acog_districts_df,
+#'   region_df = ACOG_Districts_sf,
 #'   region_col = "ACOG_District"
 #' )
 #'
@@ -118,19 +118,33 @@ plot_region_counts <- function(state_counts, region_df, region_col, save_path = 
   logger::log_info("Centroids calculated for each region. `region_centroids` has {nrow(region_centroids)} rows.")
 
   # Plot the choropleth map with region_col as fill
+  # Log the beginning of the plot creation process
   logger::log_info("Creating the choropleth map with regions as fill and centroid labels.")
+
+  # Ensure the region_col is a factor
+  map_data_with_regions <- map_data_with_regions %>%
+    dplyr::mutate({{ region_col }} := as.factor(.data[[region_col]]))
+
+  # Create the choropleth map
   region_plot <- ggplot2::ggplot(map_data_with_regions, ggplot2::aes(long, lat, group = group, fill = .data[[region_col]])) +
     ggplot2::geom_polygon(color = "gray30", size = 0.2) +
-    viridis::scale_fill_viridis_d(option = "C", name = region_col) +
+    viridis::scale_fill_viridis_d(option = "C", name = region_col) +  # Use discrete viridis scale
     ggplot2::theme_void() +
     ggplot2::labs(
       title = paste("Choropleth Map of Physicians Available by", region_col),
       subtitle = "Aggregated Data for Spine Surgeons as of 2024"
     ) +
-    ggplot2::geom_text(data = region_centroids, ggplot2::aes(x = long, y = lat, label = round(total_available, 0),
-                                                             color = ifelse(total_available > 50, "white", "black")),
-                       size = 4, fontface = "bold", inherit.aes = FALSE) +
+    ggplot2::geom_text(
+      data = region_centroids,
+      ggplot2::aes(
+        x = long, y = lat, label = round(total_available, 0),
+        color = ifelse(total_available > 50, "white", "black")
+      ),
+      size = 4, fontface = "bold", inherit.aes = FALSE
+    ) +
     ggplot2::scale_color_identity()  # Ensures the color mapping works without legends for text colors
+
+  # Log completion of the plot
   logger::log_info("Plot creation complete.")
 
   # Save plot if a path is provided
@@ -167,10 +181,10 @@ plot_region_counts <- function(state_counts, region_df, region_col, save_path = 
 # )
 #
 # # Example 2: Plot with ACOG Districts
-# # acog_districts_df contains columns "State" and "ACOG_District"
+# # ACOG_Districts_sf contains columns "State" and "ACOG_District"
 # plot_region_counts(
 #   state_counts = state_counts,
-#   region_df = acog_districts_df,
+#   region_df = ACOG_Districts_sf,
 #   region_col = "ACOG_District",
 #   state_col = "state_code",
 #   save_path = "acog_district_map.png",

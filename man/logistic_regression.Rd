@@ -11,12 +11,15 @@ logistic_regression(df, target_variable, predictor_vars, significance_level)
 
 \item{target_variable}{A string representing the name of the target variable.}
 
-\item{predictor_vars}{A vector of strings representing the names of predictor variables.}
+\item{predictor_vars}{A vector of strings representing the names of predictor
+variables.}
 
-\item{significance_level}{A numeric value specifying the significance level for filtering predictors.}
+\item{significance_level}{A numeric value specifying the significance level
+for filtering predictors.}
 }
 \value{
-A data frame containing significant predictors with their p-values and formatted p-values.
+A data frame containing significant predictors with their p-values
+and formatted p-values.
 }
 \description{
 This function performs logistic regression for multiple predictor variables
@@ -27,9 +30,21 @@ a given significance level.
 \examples{
 # Assuming df is your data frame
 target_variable <- "cleaned_does_the_physician_accept_medicaid_numeric"
-predictor_vars <- setdiff(names(df), c(target_variable, "does_the_physician_accept_medicaid", "cleaned_does_the_physician_accept_medicaid"))
+predictor_vars <- setdiff(
+  names(df),
+  c(
+    target_variable,
+    "does_the_physician_accept_medicaid",
+    "cleaned_does_the_physician_accept_medicaid"
+  )
+)
 significance_logistic_regression <- 0.2
 
-significant_vars <- logistic_regression(df, target_variable, predictor_vars, significance_level = significance_logistic_regression)
+significant_vars <- logistic_regression(
+  df,
+  target_variable,
+  predictor_vars,
+  significance_level = significance_logistic_regression
+)
 print(significant_vars)
 }

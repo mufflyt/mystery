@@ -2,7 +2,7 @@
 % Please edit documentation in R/clean_phase_2_results.R
 \name{clean_phase_2_data}
 \alias{clean_phase_2_data}
-\title{Clean and process Phase 2 data}
+\title{Clean and Process Phase 2 Data}
 \usage{
 clean_phase_2_data(
   data_or_path,
@@ -36,8 +36,8 @@ cleaned_data <- clean_phase_2_data(input_path, required_strings, standard_names)
 
 # Example 2: Directly using a data frame
 df <- data.frame(
-  doc_info = 1:5,
-  contact_data = 6:10
+  DocInfo = 1:5,
+  ContactData = 6:10
 )
 required_strings <- c("doc_info", "contact_data")
 standard_names <- c("doctor_info", "patient_contact_info")

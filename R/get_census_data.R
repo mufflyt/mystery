@@ -4,13 +4,17 @@
 #' over the specified list of state FIPS codes.
 #'
 #' @param us_fips_list A vector of state FIPS codes which Census data is to be retrieved.
-#' @param vintage The vintage year is Census data (default is 2022).
+#' @param vintage The vintage year of Census data (default is 2022).
 #'
-#' @return A dataframe containing Census data all state block groups.
+#' @return A dataframe containing Census data for all state block groups.
 #' @importFrom dplyr bind_rows
-#' @importFrom censusapi getCensus
 #' @export
 get_census_data <- function(us_fips_list, vintage = 2022) {
+
+  # Check if the censusapi package is installed
+  if (!requireNamespace("censusapi", quietly = TRUE)) {
+    stop("The 'censusapi' package is required but not installed. Please install it using install.packages('censusapi').")
+  }
 
   # Initialize an empty list to store state data
   state_data <- list()
@@ -20,13 +24,13 @@ get_census_data <- function(us_fips_list, vintage = 2022) {
     cat("Processing FIPS:", f, "\n")
 
     # Define the region for the current state
-    stateget <- paste("state:", f, "&in=county:*&in=tract:*", sep="")
+    stateget <- paste("state:", f, "&in=county:*&in=tract:*", sep = "")
 
     # Get Census data for the current state and append it to state_data list
     state_data[[f]] <- censusapi::getCensus(
       name = "acs/acs5",
       vintage = vintage,
-      vars = c("NAME", paste0("B01001_0", c("01", 26, 33:49), "E")), #B01001_001E
+      vars = c("NAME", paste0("B01001_0", c("01", 26, 33:49), "E")), # Adjust variables as needed
       region = "block group:*",
       regionin = stateget,
       key = "485c6da8987af0b9829c25f899f2393b4bb1a4fb"

@@ -78,7 +78,7 @@ results_section_wait_time_median_stats <- function(appointment_data, wait_time_c
 
   # Generate sentence for overall statistics
   overall_summary <- sprintf(
-    "The overall median wait time was %.1f business days (IQR: %.1f–%.1f).",
+    "The overall median wait time was %.1f business days (IQR: %.1f \u2013 %.1f).",
     overall_wait_time_stats$median_wait_time,
     overall_wait_time_stats$wait_time_q1,
     overall_wait_time_stats$wait_time_q3
@@ -99,7 +99,7 @@ results_section_wait_time_median_stats <- function(appointment_data, wait_time_c
       dplyr::mutate(
         Group = !!rlang::sym(group_var),
         summary_sentence = sprintf(
-          "For %s, the median wait time was %.1f business days (IQR: %.1f–%.1f).",
+          "For %s, the median wait time was %.1f business days (IQR: %.1f \u2013 %.1f).",
           !!rlang::sym(group_var),
           median_wait_time,
           wait_time_q1,

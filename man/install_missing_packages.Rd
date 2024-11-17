@@ -2,24 +2,46 @@
 % Please edit documentation in R/setup_install_missing_packages.R
 \name{install_missing_packages}
 \alias{install_missing_packages}
-\title{Install Missing CRAN Packages}
+\title{Install Missing CRAN Packages with Version Reporting}
 \usage{
 install_missing_packages(cran_pkgs)
 }
 \arguments{
-\item{cran_pkgs}{A character vector of CRAN package names to check and install if missing.}
+\item{cran_pkgs}{A character vector containing the names of CRAN packages to verify and install if missing.
+Each element should be the name of a package available on CRAN.}
 }
 \description{
-This function checks if the specified CRAN packages are installed. If a package is not installed, it will be installed automatically. For packages that are already installed, a message will be printed indicating that they are installed along with their version.
+This function checks for the presence of specified CRAN packages on the user's system.
+If a package is not already installed, it automatically installs it with all dependencies.
+For packages that are already installed, the function logs their version numbers to the console.
+}
+\details{
+This utility function is designed to ensure that necessary CRAN packages are installed for a project.
+It uses \code{\link[utils]{installed.packages}} to check for existing packages and \code{\link[utils]{install.packages}}
+to install any missing packages. For already-installed packages, the function retrieves and displays the version
+number from the installed package metadata.
+
+The function automatically handles package dependencies during installation by passing \code{dependencies = TRUE}
+to \code{install.packages}.
+}
+\note{
+This function requires an active internet connection to download and install packages from CRAN.
+Ensure that your R environment has write permissions to the library path.
 }
 \examples{
-# Example 1: Install ggplot2 and dplyr if missing
+\dontrun{
+# Example 1: Ensure ggplot2 and dplyr are installed
 install_missing_packages(c("ggplot2", "dplyr"))
 
-# Example 2: Install multiple packages including data.table and tidyr
-install_missing_packages(c("data.table", "tidyr", "readr"))
+# Example 2: Install a set of commonly used packages for data wrangling and visualization
+install_missing_packages(c("tidyr", "readr", "ggplot2", "dplyr"))
 
-# Example 3: Install a large set of packages commonly used in data science
-install_missing_packages(c("ggplot2", "dplyr", "tidyverse", "caret", "randomForest"))
+# Example 3: Check for and install machine learning packages
+install_missing_packages(c("caret", "randomForest", "xgboost"))
+
+# Example 4: Use this function to ensure all required packages for a project are installed
+required_packages <- c("ggplot2", "dplyr", "tidyr", "readr", "caret", "randomForest")
+install_missing_packages(required_packages)
+}
 
 }

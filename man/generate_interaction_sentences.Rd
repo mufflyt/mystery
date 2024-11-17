@@ -30,7 +30,8 @@ This function generates interpretative sentences for interaction terms in a Pois
 }
 \examples{
 # Example 1: Generate interaction sentences for a simple model
-interaction_model <- glm(wait_time ~ insurance_type * scenario, data = poisson_data, family = poisson)
+interaction_model <- glm(wait_time ~ insurance_type * scenario,
+data = poisson_data, family = poisson)
 interaction_sentences <- results_section_generate_interaction_sentences(
   model_object = interaction_model,
   interaction_terms = c("insurance_type", "scenario"),
@@ -39,7 +40,8 @@ interaction_sentences <- results_section_generate_interaction_sentences(
 print(interaction_sentences)
 
 # Example 2: Interpret interactions in a more complex model
-complex_model <- glm(wait_time ~ insurance_type * scenario * age, data = poisson_data, family = poisson)
+complex_model <- glm(wait_time ~ insurance_type * scenario * age,
+data = poisson_data, family = poisson)
 complex_interactions <- results_section_generate_interaction_sentences(
   model_object = complex_model,
   interaction_terms = c("insurance_type", "scenario", "age"),
@@ -48,7 +50,8 @@ complex_interactions <- results_section_generate_interaction_sentences(
 print(complex_interactions)
 
 # Example 3: Contextual interpretation for multiple predictors
-scenario_model <- glm(wait_time ~ scenario * age * gender, data = poisson_data, family = poisson)
+scenario_model <- glm(wait_time ~ scenario * age * gender,
+data = poisson_data, family = poisson)
 scenario_interpretation <- results_section_generate_interaction_sentences(
   model_object = scenario_model,
   interaction_terms = c("scenario", "age", "gender"),

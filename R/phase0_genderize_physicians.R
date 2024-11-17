@@ -22,25 +22,31 @@
 #' \dontrun{
 #' # Assumes "physicians_data.csv" exists with a 'first_name' column
 #' result <- phase0_genderize_physicians("physicians_data.csv")
-#' # Output saved in the current working directory as genderized_<timestamp>_physicians_data.csv
-#' # Returns a tibble with the original data plus a 'gender' column based on 'first_name'
+#' # Output saved in the current working directory as
+#' genderized_<timestamp>_physicians_data.csv
+#' # Returns a tibble with the original data plus a 'gender'
+#' column based on 'first_name'
 #' print(result)
 #' }
 #'
 #' # Example 2: Custom output directory for saving the result
 #' \dontrun{
 #' # Assumes "physicians_data.csv" exists with a 'first_name' column
-#' result <- phase0_genderize_physicians("physicians_data.csv", output_dir = "output_directory/")
-#' # Output saved in "output_directory" as genderized_<timestamp>_physicians_data.csv
+#' result <- phase0_genderize_physicians("physicians_data.csv",
+#' output_dir = "output_directory/")
+#' # Output saved in "output_directory" as
+#' genderized_<timestamp>_physicians_data.csv
 #' # Returns a tibble with original data plus 'gender' information
 #' print(result)
 #' }
 #'
 #' # Example 3: Handling missing 'first_name' gracefully
 #' \dontrun{
-#' # Assumes "physicians_data_missing_names.csv" contains missing values in the 'first_name' column
+#' # Assumes "physicians_data_missing_names.csv" contains missing
+#' values in the 'first_name' column
 #' result <- phase0_genderize_physicians("physicians_data_missing_names.csv")
-#' # Returns a tibble with original data plus a 'gender' column. Rows with missing first names are retained
+#' # Returns a tibble with original data plus a 'gender' column. Rows with
+#'  missing first names are retained
 #' # but may have NA in the 'gender' column.
 #' print(result)
 #' }
@@ -49,14 +55,17 @@
 #' \dontrun{
 #' # Assumes "invalid_data.csv" does not contain a 'first_name' column
 #' result <- phase0_genderize_physicians("invalid_data.csv")
-#' # Error: Logs an error and stops the function as 'first_name' column is missing.
+#' # Error: Logs an error and stops the function as 'first_name' column is
+#' missing.
 #' }
 #'
 #' # Example 5: Saving the output in a different directory with a custom name
 #' \dontrun{
 #' # Assumes "physicians_data.csv" exists with a 'first_name' column
-#' result <- phase0_genderize_physicians("physicians_data.csv", output_dir = "custom_output/")
-#' # Output saved in "custom_output/" with a filename like genderized_<timestamp>_physicians_data.csv
+#' result <- phase0_genderize_physicians("physicians_data.csv", output_dir =
+#'  "custom_output/")
+#' # Output saved in "custom_output/" with a filename like genderized_
+#' <timestamp>_physicians_data.csv
 #' # Returns a tibble with original data plus 'gender' information
 #' print(result)
 #' }

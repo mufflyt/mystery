@@ -2,7 +2,7 @@
 % Please edit documentation in R/clean_phase_1_results.R
 \name{clean_phase_1_results}
 \alias{clean_phase_1_results}
-\title{Clean Phase 1 Results}
+\title{Clean and Process Phase 1 Results}
 \usage{
 clean_phase_1_results(
   phase1_input,
@@ -12,24 +12,53 @@ clean_phase_1_results(
 )
 }
 \arguments{
-\item{phase1_input}{A data frame containing Phase 1 results data.}
+\item{phase1_input}{A data frame containing Phase 1 results data. Must include at least the columns:
+\code{"names"}, \code{"practice_name"}, \code{"phone_number"}, and \code{"state_name"}.}
 
-\item{replicate_rows}{An optional integer specifying how many times to replicate the rows (e.g., 2, 3, 4). Default is NULL (no replication).}
+\item{replicate_rows}{An optional integer specifying how many times to replicate the rows. Use \code{2} for
+doubling rows, \code{3} for tripling, etc. Default is \code{NULL} (no replication).}
 
-\item{replication_labels}{An optional character vector of labels (e.g., races) to assign to the replicated rows. Default is NULL.}
+\item{replication_labels}{An optional character vector of labels (e.g., races) to assign to the replicated
+rows. The length of this vector must match the \code{replicate_rows} value. Default is \code{NULL}.}
 
-\item{csv_file_path}{An optional path to save the cleaned data as a CSV file. If NULL, the file is saved with a timestamp in the \code{cleaned_data} directory.}
+\item{csv_file_path}{An optional path to save the cleaned data as a CSV file. If \code{NULL}, the cleaned data
+is saved with a timestamp in a \code{cleaned_data} directory.}
 }
 \value{
-The cleaned data frame after processing.
+A cleaned and processed data frame ready for analysis or upload.
 }
 \description{
-Cleans, processes, and prepares the Phase 1 results data for further analysis.
-The function allows row replication, optional label assignment, and saving the cleaned data to a CSV file.
+This function cleans, processes, and prepares the Phase 1 results data for further analysis. It provides
+functionality for row replication, optional label assignment, and saving the cleaned data to a CSV file
+in a format ready for REDCap or further statistical analysis.
 }
 \examples{
 \dontrun{
-cleaned_phase1 <- clean_phase_1_results(my_data, 4, c("White", "Black", "Asian", "HIPI"), "output.csv")
-}
+# Example 1: Basic cleaning with no replication or labels
+cleaned_phase1 <- clean_phase_1_results(
+  phase1_input = my_data,
+  replicate_rows = NULL,
+  replication_labels = NULL,
+  csv_file_path = NULL
+)
+head(cleaned_phase1)
 
+# Example 2: Replicate rows three times with race labels
+cleaned_phase1 <- clean_phase_1_results(
+  phase1_input = my_data,
+  replicate_rows = 3,
+  replication_labels = c("White", "Black", "Asian"),
+  csv_file_path = "replicated_data.csv"
+)
+head(cleaned_phase1)
+
+# Example 3: Replicate rows four times and save to a custom CSV file
+cleaned_phase1 <- clean_phase_1_results(
+  phase1_input = my_data,
+  replicate_rows = 4,
+  replication_labels = c("White", "Black", "Asian", "Hispanic"),
+  csv_file_path = "output/phase1_cleaned.csv"
+)
+head(cleaned_phase1)
+}
 }

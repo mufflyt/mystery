@@ -14,7 +14,8 @@
 #' call_data <- data.frame(
 #'   physician_id = 1:100,
 #'   call_status = sample(c("Answered", "Unanswered"), 100, replace = TRUE),
-#'   exclusion_reason = sample(c("Not accepting new patients", "Requires referral"), 100, replace = TRUE)
+#'   exclusion_reason = sample(c("Not accepting new patients",
+#'   "Requires referral"), 100, replace = TRUE)
 #' )
 #' exclusion_summary <- results_section_exclusions(
 #'   call_data = call_data,
@@ -23,7 +24,8 @@
 #' print(exclusion_summary)
 #'
 #' # Example 2: Including multiple exclusion reasons
-#' call_data$exclusion_reason <- sample(c("Requires referral", "Voicemail only", "No answer"), 100, replace = TRUE)
+#' call_data$exclusion_reason <- sample(c("Requires referral",
+#' "Voicemail only", "No answer"), 100, replace = TRUE)
 #' exclusion_summary_multi <- results_section_exclusions(
 #'   call_data = call_data,
 #'   exclusion_column = "exclusion_reason"

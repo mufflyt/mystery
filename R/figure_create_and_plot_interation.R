@@ -66,6 +66,7 @@
 #' @importFrom dplyr rename mutate group_by summarise
 #' @importFrom ggplot2 ggsave ggplot aes geom_point geom_line labs theme_minimal
 #' @importFrom rlang sym
+#' @importFrom stats lm na.omit poisson sd setNames
 #' @export
 create_and_plot_interaction <- function(data_path, response_variable, variable_of_interest, interaction_variable, random_intercept, output_path, resolution = 100) {
   # Read the data

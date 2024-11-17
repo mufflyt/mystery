@@ -1,4 +1,4 @@
-#' Clean and process Phase 2 data
+#' Clean and Process Phase 2 Data
 #'
 #' This function reads data from a file or data frame, cleans column names, and applies renaming based on specified criteria to facilitate data analysis. The function logs each step of the process, including data loading, column cleaning, and renaming for transparency.
 #'
@@ -7,10 +7,9 @@
 #' @param standard_names Vector of new names to apply to the matched columns.
 #' @param output_csv_path Optional. If provided, the cleaned data will be saved to this path.
 #' @return A data frame with processed data.
-#' @export
 #' @importFrom readr read_csv write_csv
-#' @importFrom dplyr filter mutate
-#' @importFrom janitor clean_names
+#' @importFrom dplyr rename_with mutate select
+#' @importFrom stringr str_to_lower str_replace_all
 #' @examples
 #' # Example 1: Cleaning data from a CSV file
 #' input_path <- "path_to_your_data.csv"
@@ -21,8 +20,8 @@
 #'
 #' # Example 2: Directly using a data frame
 #' df <- data.frame(
-#'   doc_info = 1:5,
-#'   contact_data = 6:10
+#'   DocInfo = 1:5,
+#'   ContactData = 6:10
 #' )
 #' required_strings <- c("doc_info", "contact_data")
 #' standard_names <- c("doctor_info", "patient_contact_info")
@@ -38,6 +37,7 @@
 #' standard_names <- c("physician_info", "patient_contact_info")
 #' cleaned_df2 <- clean_phase_2_data(df2, required_strings, standard_names)
 #' print(cleaned_df2)  # Should issue warnings about missing columns
+#' @export
 clean_phase_2_data <- function(data_or_path, required_strings, standard_names, output_csv_path = NULL) {
   # Log the input parameters
   cat("--- Starting data cleaning process ---\n")
@@ -62,8 +62,11 @@ clean_phase_2_data <- function(data_or_path, required_strings, standard_names, o
   # Log the initial dimensions of the data
   cat("Initial data dimensions: ", dim(data), "\n")
 
-  # Clean and standardize column names
-  data <- janitor::clean_names(data)
+  # Clean and standardize column names using tidyverse
+  data <- data %>%
+    dplyr::rename_with(
+      .fn = ~ stringr::str_to_lower(stringr::str_replace_all(., "[^[:alnum:]_]", "_"))
+    )
   message("Columns have been cleaned to snake case format. Updated column names: ", paste(names(data), collapse = ", "))
 
   # Apply the renaming function with detailed logging
@@ -78,10 +81,32 @@ clean_phase_2_data <- function(data_or_path, required_strings, standard_names, o
     output_csv_path <- paste0("cleaned_phase_2_data_", current_datetime, ".csv")
   }
 
-  # Save the cleaned data using write_output_csv
-  write_output_csv(data, filename = basename(output_csv_path), output_dir = dirname(output_csv_path), verbose = TRUE)
-
+  # Save the cleaned data
+  readr::write_csv(data, output_csv_path)
   message("Cleaned data successfully saved to: ", output_csv_path)
+
+  return(data)
+}
+
+# Helper Function: Rename Columns by Substring Matching
+rename_columns_by_substring <- function(data, required_strings, standard_names) {
+  if (length(required_strings) != length(standard_names)) {
+    stop("Error: The length of 'required_strings' must match the length of 'standard_names'.")
+  }
+
+  # Map required strings to their corresponding standard names
+  column_map <- setNames(standard_names, required_strings)
+
+  # Rename columns based on matching substrings
+  new_names <- names(data)
+  for (pattern in names(column_map)) {
+    new_names <- ifelse(
+      stringr::str_detect(new_names, pattern, ignore_case = TRUE),
+      column_map[[pattern]],
+      new_names
+    )
+  }
+  names(data) <- new_names
 
   return(data)
 }

@@ -3,8 +3,8 @@
 #' This function filters a dataframe of physician data based on insurance type, reason for exclusion,
 #' and appointment availability, then counts the number of unique physicians who meet the criteria.
 #'
-#' @param df A dataframe containing physician data. Must include columns 'insurance', 'reason_for_exclusions',
-#' 'business_days_until_appointment', and 'phone'.
+#' @param df A dataframe containing physician data. Must include columns 'insurance',
+#' 'reason_for_exclusions', 'business_days_until_appointment', and 'phone'.
 #' @param insurance_type A string specifying the insurance type to filter by (e.g., "Medicaid").
 #' @param reason_for_exclusion A string specifying the reason for exclusion to filter by. Default is NULL,
 #' which includes all rows regardless of the exclusion reason.
@@ -13,14 +13,20 @@
 #' @return An integer representing the number of unique physicians who meet the specified criteria.
 #'
 #' @examples
-#' # Example 1: Counting unique physicians with specific insurance type and reason for exclusion
+#' # Example 1: Counting unique physicians with specific insurance and reason for exclusion
 #' df <- data.frame(
 #'   insurance = c("Medicaid", "Medicaid", "Blue Cross/Blue Shield", "Medicaid"),
-#'   reason_for_exclusions = c("Able to contact", "Not available", "Able to contact", "Able to contact"),
+#'   reason_for_exclusions = c(
+#'     "Able to contact", "Not available", "Able to contact", "Able to contact"
+#'   ),
 #'   business_days_until_appointment = c(5, 0, 10, 3),
 #'   phone = c("123-456-7890", "123-456-7890", "098-765-4321", "234-567-8901")
 #' )
-#' unique_count <- count_unique_physicians(df, insurance_type = "Medicaid", reason_for_exclusion = "Able to contact")
+#' unique_count <- count_unique_physicians(
+#'   df,
+#'   insurance_type = "Medicaid",
+#'   reason_for_exclusion = "Able to contact"
+#' )
 #' print(unique_count)  # Expected output: 1
 #'
 #' # Example 2: Counting unique physicians without specifying a reason for exclusion
@@ -30,17 +36,26 @@
 #'   business_days_until_appointment = c(3, 5, 1),
 #'   phone = c("321-654-0987", "321-654-0987", "654-321-0987")
 #' )
-#' unique_count2 <- count_unique_physicians(df2, insurance_type = "Blue Cross/Blue Shield")
+#' unique_count2 <- count_unique_physicians(
+#'   df2,
+#'   insurance_type = "Blue Cross/Blue Shield"
+#' )
 #' print(unique_count2)  # Expected output: 1
 #'
 #' # Example 3: Using verbose logging to see detailed steps
 #' df3 <- data.frame(
 #'   insurance = c("Medicaid", "Medicaid", "Medicaid", "Medicaid"),
-#'   reason_for_exclusions = c("Able to contact", "Able to contact", "Not available", "Able to contact"),
+#'   reason_for_exclusions = c(
+#'     "Able to contact", "Able to contact", "Not available", "Able to contact"
+#'   ),
 #'   business_days_until_appointment = c(2, 1, 0, 4),
 #'   phone = c("111-222-3333", "111-222-3333", "222-333-4444", "333-444-5555")
 #' )
-#' unique_count3 <- count_unique_physicians(df3, insurance_type = "Medicaid", verbose = TRUE)
+#' unique_count3 <- count_unique_physicians(
+#'   df3,
+#'   insurance_type = "Medicaid",
+#'   verbose = TRUE
+#' )
 #' print(unique_count3)  # Expected output: 2
 #'
 #' @importFrom dplyr filter distinct
@@ -102,7 +117,7 @@ count_unique_physicians <- function(df, insurance_type, reason_for_exclusion = N
   # Count unique physicians based on phone number
   unique_physicians_count <- filtered_df %>%
     dplyr::distinct(phone) %>%
-    dplyr::nrow()
+    nrow()
 
   if (verbose) {
     message(glue("Number of unique physicians: {unique_physicians_count}"))

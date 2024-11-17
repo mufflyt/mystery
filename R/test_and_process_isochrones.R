@@ -21,14 +21,17 @@
 #'
 #' @examples
 #' # Validate the file of geocoded data.
-#' input_file <- readr::read_csv("data/isochrones/inner_join_postmastr_clinician_data.csv") %>%
+#' input_file <- readr::read_csv
+#' ("data/isochrones/inner_join_postmastr_clinician_data.csv") %>%
 #'   dplyr::mutate(id = dplyr::row_number()) %>%
 #'   dplyr::filter(postmastr.name.x != "Hye In Park, MD")
 #'
 #' test_and_process_isochrones(input_file = input_file)
 #'
-#' # Filter out the rows that are going to error out after using the test_and_process_isochrones function.
-#' # error_rows <- c(265, 431, 816, 922, 1605, 2049, 2212, 2284, 2308, 2409, 2482, 2735, 2875, 2880, 3150, 3552, 3718)
+#' # Filter out the rows that are going to error out after using
+#' the test_and_process_isochrones function.
+#' # error_rows <-
+#' c(265, 431, 816, 922, 1605, 2049, 2212, 2284, 2308, 2409, 2482, 2735)
 #' # input_file_no_error_rows <- input_file %>%
 #' #   dplyr::filter(!id %in% error_rows)
 #'
@@ -124,7 +127,8 @@ test_and_process_isochrones <- function(input_file) {
 #' isochrones_data <- process_and_save_isochrones(input_file, chunk_size = 25)
 #'
 #' # Optionally, write the combined isochrones to a shapefile
-#' sf::st_write(isochrones_data, dsn = "data/isochrones/isochrones_all_combined",
+#' sf::st_write(isochrones_data, dsn =
+#' "data/isochrones/isochrones_all_combined",
 #'              layer = "isochrones", driver = "ESRI Shapefile", quiet = FALSE)
 #'
 

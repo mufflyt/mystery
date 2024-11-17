@@ -15,13 +15,9 @@ Depends:
     R (>= 3.5.0)
 Imports:
     dplyr,
-    DBI,
     duckdb,
-    easyr,
     glue,
-    janitor,
     lifecycle,
-    lubridate,
     npi,
     progress,
     purrr,
@@ -29,12 +25,9 @@ Imports:
     tibble,
     tidyr,
     logger,
-    methods,
     arsenal,
     beepr,
-    censusapi,
     caret,
-    devtools,
     effects,
     exploratory,
     emmeans,
@@ -45,17 +38,9 @@ Imports:
     ggplot2,
     here,
     hereR,
-    htmlwidgets,
-    imager,
-    gridExtra,
-    knitr,
-    leaflet,
-    leaflet.extras,
     memoise,
     provider,
-    rainbow,
     rnaturalearth,
-    remotes,
     rmarkdown,
     scales,
     sf,
@@ -74,15 +59,17 @@ Imports:
     readr,
     readxl,
     rlang,
-    webshot,
     lmerTest,
     robustlmm,
     maps,
     broom.mixed,
-    tidycensus
+    tidycensus,
+    knitr, 
+    methods
 Suggests:
     ggspatial,
-    zipcodeR
+    zipcodeR, 
+    censusapi
 Remotes: andrewallenbruce/provider, lmullen/genderdata
 LazyData: true
 Files: R/

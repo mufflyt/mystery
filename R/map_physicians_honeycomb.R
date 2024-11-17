@@ -39,7 +39,7 @@ honeycomb_generate_maps <- function(
   # Default to dummy physician and district data if none is provided
   if (is.null(physician_locations_sf)) {
     logger::log_info("No physician data provided, using default sample data.")
-    physician_locations_sf <- tyler::sample_physician_locations_sf()  # Assuming sample function available
+    physician_locations_sf <- tyler::physicians()  # Assuming sample function available
   }
 
   if (is.null(acog_districts_sf)) {

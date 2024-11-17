@@ -35,7 +35,8 @@ input_file <- read_csv("data/locations.csv")
 isochrones_data <- process_and_save_isochrones(input_file, chunk_size = 25)
 
 # Optionally, write the combined isochrones to a shapefile
-sf::st_write(isochrones_data, dsn = "data/isochrones/isochrones_all_combined",
+sf::st_write(isochrones_data, dsn =
+"data/isochrones/isochrones_all_combined",
              layer = "isochrones", driver = "ESRI Shapefile", quiet = FALSE)
 
 }
