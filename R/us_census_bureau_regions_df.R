@@ -10,5 +10,7 @@
 #'   \item{Division}{The division of the state (e.g., "Pacific").}
 #' }
 #' @source Derived from U.S. Census Bureau data.
-#' @export
+#' @examples
+#' data(us_census_bureau_regions_df)
+#' head(us_census_bureau_regions_df)
 "us_census_bureau_regions_df"

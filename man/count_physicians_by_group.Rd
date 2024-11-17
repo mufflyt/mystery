@@ -2,7 +2,7 @@
 % Please edit documentation in R/results_section_count_physicians_by_group.R
 \name{count_physicians_by_group}
 \alias{count_physicians_by_group}
-\title{Count Unique Physicians by ID with Logging}
+\title{Count Physicians by State or Subdivision with Logging}
 \usage{
 count_physicians_by_group(
   data,
@@ -15,26 +15,61 @@ count_physicians_by_group(
 )
 }
 \arguments{
-\item{physician_data}{A dataframe with physician data, containing a unique identifier column.}
+\item{data}{A dataframe containing physician data, including state, phone, and name columns.}
 
-\item{id_column}{A string representing the column to use as the unique identifier for counting.}
+\item{state_name_column}{A string specifying the column name for state information in the dataset.
+Default is \code{"state_code"}.}
+
+\item{phone_column}{A string specifying the column name for phone numbers in the dataset.
+Default is \code{"phone_number"}.}
+
+\item{first_name_column}{A string specifying the column name for physicians' first names.
+Default is \code{"first"}.}
+
+\item{last_name_column}{A string specifying the column name for physicians' last names.
+Default is \code{"last"}.}
+
+\item{group_by}{A string specifying how to group the counts. Options are \code{"state"} for
+state-level counts and \code{"subdivision"} for U.S. Census subdivision counts.
+Default is \code{"state"}.}
+
+\item{output_to_csv}{A string specifying the file path to save the counts as a CSV file.
+If \code{NULL}, no file will be saved. Default is \code{NULL}.}
 }
 \value{
-An integer count of unique physicians.
+A dataframe with counts of physicians grouped by state or subdivision.
 }
 \description{
-This function calculates the number of unique physicians based on a unique identifier column, with logging of inputs, outputs, and steps.
+This function counts physicians grouped by either state or U.S. Census subdivision,
+using the \code{us_census_bureau_regions_df} dataset. It logs inputs, transformations,
+and outputs. The results can optionally be saved to a CSV file.
 }
 \examples{
-# Example 1: Count unique physicians by physician_id
-unique_count <- results_section_count_unique_physicians(physician_data, "physician_id")
-unique_count
+# Example 1: Count physicians by state
+state_counts <- count_physicians_by_group(
+  data = physicians_data,
+  state_name_column = "state_code",
+  phone_column = "phone",
+  first_name_column = "first_name",
+  last_name_column = "last_name",
+  group_by = "state"
+)
 
-# Example 2: Use NPI as the unique identifier
-unique_count <- results_section_count_unique_physicians(physician_data, "npi")
-unique_count
+# Example 2: Count physicians by U.S. Census subdivision
+subdivision_counts <- count_physicians_by_group(
+  data = physicians_data,
+  state_name_column = "state_code",
+  phone_column = "phone",
+  first_name_column = "first_name",
+  last_name_column = "last_name",
+  group_by = "subdivision"
+)
 
-# Example 3: Custom unique identifier
-unique_count <- results_section_count_unique_physicians(physician_data, "custom_id")
-unique_count
+# Example 3: Save counts to a CSV file
+count_physicians_by_group(
+  data = physicians_data,
+  group_by = "state",
+  output_to_csv = "state_counts.csv"
+)
+
 }

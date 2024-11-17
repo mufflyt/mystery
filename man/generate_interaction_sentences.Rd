@@ -3,7 +3,7 @@
 %   R/results_section_generate_interaction_sentences.R
 \name{generate_interaction_sentences}
 \alias{generate_interaction_sentences}
-\title{Generate Interaction Sentences for Model Interpretation in Mystery Caller Studies}
+\title{Generate Interaction Sentences for Model Interpretation}
 \usage{
 generate_interaction_sentences(
   interaction_model,
@@ -16,46 +16,46 @@ generate_interaction_sentences(
 )
 }
 \arguments{
-\item{model_object}{A fitted model object, typically from Poisson or logistic regression.}
+\item{interaction_model}{A fitted regression model object (e.g., from \code{glm} or \code{lmer}).}
 
-\item{interaction_terms}{A character vector of interaction terms to interpret.}
+\item{variable1}{The first variable in the interaction (character string).}
 
-\item{context}{A string specifying the context, such as "wait times by insurance type".}
+\item{variable2}{The second variable in the interaction (character string).}
+
+\item{model_summary}{An optional model summary object. If not provided, it will
+be calculated from the \code{interaction_model}.}
+
+\item{confidence_level}{The confidence level for reporting intervals. Default is 0.95.}
+
+\item{log_transform}{Logical. If \code{TRUE}, log-transformed estimates will be used. Default is \code{TRUE}.}
+
+\item{output_format}{The format of the output sentences. Options are \code{"text"} (default)
+or \code{"markdown"}.}
 }
 \value{
 A list of strings, each interpreting an interaction term in the model.
 }
 \description{
-This function generates interpretative sentences for interaction terms in a Poisson or logistic regression model, detailing how combinations of predictors impact outcomes such as wait times.
+This function generates interpretative sentences for interaction terms in a
+regression model (Poisson or logistic), detailing how combinations of predictors
+impact outcomes such as wait times.
+}
+\details{
+The function uses estimated marginal means to compute and interpret
+interaction effects. Sentences include confidence intervals and p-values
+where available.
 }
 \examples{
-# Example 1: Generate interaction sentences for a simple model
+# Example: Generate interaction sentences for a Poisson model
 interaction_model <- glm(wait_time ~ insurance_type * scenario,
-data = poisson_data, family = poisson)
-interaction_sentences <- results_section_generate_interaction_sentences(
-  model_object = interaction_model,
-  interaction_terms = c("insurance_type", "scenario"),
-  context = "appointment wait times"
+                         data = poisson_data, family = poisson)
+
+interaction_sentences <- generate_interaction_sentences(
+  interaction_model = interaction_model,
+  variable1 = "insurance_type",
+  variable2 = "scenario",
+  output_format = "text"
 )
 print(interaction_sentences)
 
-# Example 2: Interpret interactions in a more complex model
-complex_model <- glm(wait_time ~ insurance_type * scenario * age,
-data = poisson_data, family = poisson)
-complex_interactions <- results_section_generate_interaction_sentences(
-  model_object = complex_model,
-  interaction_terms = c("insurance_type", "scenario", "age"),
-  context = "wait times and demographic variables"
-)
-print(complex_interactions)
-
-# Example 3: Contextual interpretation for multiple predictors
-scenario_model <- glm(wait_time ~ scenario * age * gender,
-data = poisson_data, family = poisson)
-scenario_interpretation <- results_section_generate_interaction_sentences(
-  model_object = scenario_model,
-  interaction_terms = c("scenario", "age", "gender"),
-  context = "wait times across scenarios and demographics"
-)
-print(scenario_interpretation)
 }

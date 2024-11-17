@@ -7,16 +7,31 @@
 retrieve_clinician_data(npi_numbers)
 }
 \arguments{
-\item{input_data}{Either a dataframe containing NPI numbers or a path to a CSV file.}
+\item{input_data}{Either a dataframe containing NPI numbers (must include a column named \code{npi}) or a path to a CSV file with NPI numbers.}
 }
 \value{
 A tibble with clinician data for each valid NPI.
 }
 \description{
-Retrieves clinician data for each valid NPI from a dataframe or CSV file.
+Retrieves clinician data for each valid NPI from a dataframe or CSV file. This
+function ensures valid NPI numbers are processed and retrieves detailed
+clinician information.
+}
+\details{
+\itemize{
+\item The function checks the input data for validity and removes invalid NPI numbers.
+\item If a CSV file path is provided, the file is read, and the data is processed.
+}
 }
 \examples{
-sample_data <- tibble::tibble(npi = c(1689603763))
-retrieve_clinician_data(sample_data)
+# Example 1: Provide a dataframe with NPI numbers
+sample_data <- tibble::tibble(npi = c(1689603763, 1234567890))
+clinician_data <- retrieve_clinician_data(sample_data)
+print(clinician_data)
+
+# Example 2: Provide a CSV file path
+write.csv(sample_data, "npi_data.csv", row.names = FALSE)
+clinician_data <- retrieve_clinician_data("npi_data.csv")
+print(clinician_data)
 
 }

@@ -41,7 +41,7 @@ plot_region_counts(
 )
 
 # Example 2: Plot without saving, grouping by ACOG districts
-acog_districts_df <- data.frame(
+ACOG_Districts_sf <- data.frame(
   State = c("California", "Nevada", "Utah"),
   ACOG_District = c("District IX", "District IX", "District VIII")
 )
@@ -51,7 +51,7 @@ state_counts <- data.frame(
 )
 plot_region_counts(
   state_counts = state_counts,
-  region_df = acog_districts_df,
+  region_df = ACOG_Districts_sf,
   region_col = "ACOG_District"
 )
 

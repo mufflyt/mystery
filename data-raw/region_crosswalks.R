@@ -65,7 +65,7 @@ acog_districts_df$ACOG_District <- factor(acog_districts_df$ACOG_District,
 
 
 # Create a data frame with the region and division information
-regions_df <- data.frame(
+us_census_bureau_regions_df <- data.frame(
   State = c("Alaska", "Alabama", "Arkansas", "Arizona", "California", "Colorado", "Connecticut",
             "District of Columbia", "Delaware", "Florida", "Georgia", "Hawaii", "Iowa", "Idaho",
             "Illinois", "Indiana", "Kansas", "Kentucky", "Louisiana", "Massachusetts", "Maryland",
@@ -74,7 +74,7 @@ regions_df <- data.frame(
             "New York", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina",
             "South Dakota", "Tennessee", "Texas", "Utah", "Virginia", "Vermont", "Washington",
             "Wisconsin", "West Virginia", "Wyoming"),
-  State Code = c("AK", "AL", "AR", "AZ", "CA", "CO", "CT", "DC", "DE", "FL", "GA", "HI", "IA",
+  `State Code` = c("AK", "AL", "AR", "AZ", "CA", "CO", "CT", "DC", "DE", "FL", "GA", "HI", "IA",
                  "ID", "IL", "IN", "KS", "KY", "LA", "MA", "MD", "ME", "MI", "MN", "MO", "MS",
                  "MT", "NC", "ND", "NE", "NH", "NJ", "NM", "NV", "NY", "OH", "OK", "OR", "PA",
                  "RI", "SC", "SD", "TN", "TX", "UT", "VA", "VT", "WA", "WI", "WV", "WY"),
