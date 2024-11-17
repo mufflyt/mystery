@@ -54,6 +54,18 @@ generate_overall_table <- function(input_file_path, output_directory, title = "O
 
 # Helper Functions
 
+#' Save Arsenal Table to PDF
+#'
+#' This function saves an Arsenal table as a PDF.
+#'
+#' @param object An Arsenal table object.
+#' @param filename The file path for saving the PDF.
+#' @export
+tm_write2pdf <- function(object, filename) {
+  arsenal::write2pdf(object, filename, keep.md = TRUE, quiet = TRUE)
+}
+
+
 #' @noRd
 log_inputs <- function(input_file_path, output_directory, title, selected_columns, label_translations) {
   log_info("Input file path: {input_file_path}")
