@@ -10,7 +10,7 @@
 #' @param selected_columns An optional vector of selected columns to include in the table. Default is NULL.
 #' @param label_translations An optional named list for label translations to use in the table summary.
 #' @return Nothing is returned. The function saves the output table as a PDF file.
-#' @importFrom arsenal write2pdf tableby
+#' @importFrom arsenal tableby write2pdf
 #' @importFrom readr read_rds read_csv
 #' @importFrom readxl read_excel
 #' @importFrom fs dir_create dir_exists
@@ -29,33 +29,53 @@
 #'                        label_translations = label_translations)
 #' }
 
-tm_write2pdf <- function(object, filename) {
-  log_info("Saving Arsenal Table as a PDF at {filename}")
-  arsenal::write2pdf(object, filename, keep.md = TRUE, quiet = TRUE)
-}
-
 generate_overall_table <- function(input_file_path, output_directory, title = "Overall Table Summary",
                                    selected_columns = NULL, label_translations = NULL) {
-
-  # Log the start of the function and inputs
   log_info("Starting generate_overall_table function...")
+  log_inputs(input_file_path, output_directory, title, selected_columns, label_translations)
+
+  # Ensure output directory exists
+  ensure_output_directory(output_directory)
+
+  # Read input data
+  data_input <- read_input_data(input_file_path)
+
+  # Validate data and select columns
+  selected_data <- validate_and_select_columns(data_input, selected_columns)
+
+  # Generate the overall table
+  overall_table <- generate_table(selected_data)
+
+  # Generate a filename and save the table as a PDF
+  save_table_as_pdf(overall_table, output_directory, title, label_translations)
+
+  log_info("Overall table generation completed.")
+}
+
+# Helper Functions
+
+#' @noRd
+log_inputs <- function(input_file_path, output_directory, title, selected_columns, label_translations) {
   log_info("Input file path: {input_file_path}")
   log_info("Output directory: {output_directory}")
   log_info("Title: {title}")
   log_info("Selected columns: {selected_columns}")
   log_info("Label translations: {label_translations}")
+}
 
-  # Ensure output directory exists
+#' @noRd
+ensure_output_directory <- function(output_directory) {
   if (!fs::dir_exists(output_directory)) {
     log_info("Creating output directory at {output_directory}")
     fs::dir_create(output_directory)
   }
+}
 
-  # Read the input data based on file extension
+#' @noRd
+read_input_data <- function(input_file_path) {
   file_extension <- tools::file_ext(input_file_path)
   log_info("Reading data from file: {input_file_path} (file extension: {file_extension})")
 
-  # Read data using appropriate functions
   data_input <- tryCatch({
     switch(
       file_extension,
@@ -72,13 +92,16 @@ generate_overall_table <- function(input_file_path, output_directory, title = "O
     stop("Error reading data.")
   })
 
-  # Ensure the data is not empty
   if (nrow(data_input) == 0 || ncol(data_input) == 0) {
     log_error("The input data is empty.")
     stop("The input data is empty.")
   }
 
-  # Select specific columns if provided
+  data_input
+}
+
+#' @noRd
+validate_and_select_columns <- function(data_input, selected_columns) {
   if (!is.null(selected_columns)) {
     log_info("Selecting specific columns: {selected_columns}")
     selected_data <- tryCatch({
@@ -92,13 +115,15 @@ generate_overall_table <- function(input_file_path, output_directory, title = "O
     selected_data <- data_input
   }
 
-  # Log a brief summary of the data
   log_info("Data summary:")
   print(str(selected_data))
+  selected_data
+}
 
-  # Generate the overall table using arsenal::tableby
+#' @noRd
+generate_table <- function(selected_data) {
   log_info("Generating the overall table with arsenal::tableby")
-  overall_table <- tryCatch({
+  tryCatch({
     arsenal::tableby(
       ~ .,
       data = selected_data,
@@ -127,9 +152,10 @@ generate_overall_table <- function(input_file_path, output_directory, title = "O
     log_error("Error generating table with arsenal::tableby: {e$message}")
     stop("Error generating overall table.")
   })
+}
 
-  # Generate and log summary of the overall table
-  log_info("Generating summary of the overall table.")
+#' @noRd
+save_table_as_pdf <- function(overall_table, output_directory, title, label_translations) {
   overall_summary <- summary(
     overall_table,
     text = TRUE,
@@ -138,18 +164,12 @@ generate_overall_table <- function(input_file_path, output_directory, title = "O
     pfootnote = FALSE
   )
 
-  # Log the overall summary
   log_info("Overall table summary:")
   print(overall_summary)
 
-  # Generate a filename with the current date and time
   date_time <- format(Sys.time(), "%Y-%m-%d_%H-%M-%S")
   filename <- file.path(output_directory, paste("arsenal_overall_table", date_time, ".pdf", sep = ""))
 
-  # Save the overall table as a PDF
   log_info("Saving the overall table as a PDF: {filename}")
   tm_write2pdf(overall_summary, filename)
-
-  # Log function completion
-  log_info("Overall table generation completed.")
 }

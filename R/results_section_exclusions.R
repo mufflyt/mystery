@@ -1,42 +1,45 @@
 #' Exclusion Criteria Summary for Mystery Caller Study
 #'
-#' This function provides a summary of exclusion criteria applied to the mystery caller study data. It identifies the count and percentage of physicians excluded based on predefined criteria.
+#' This function provides a summary of exclusion criteria applied to the mystery
+#' caller study data. It identifies the count and percentage of physicians excluded
+#' based on predefined criteria.
 #'
-#' @param call_data A data frame containing the initial mystery caller data with exclusion criteria columns. Expected columns include: `physician_id`, `call_status`, `exclusion_reason`, among others.
-#' @param exclusion_column A string indicating the name of the column that contains exclusion criteria (e.g., `exclusion_reason`).
-#' @return A data frame summarizing exclusions, with counts and percentages for each exclusion reason.
-#' @importFrom dplyr filter count mutate group_by summarize
-#' @importFrom stringr str_detect
+#' @param call_data A data frame containing the mystery caller data, including
+#'   exclusion criteria and call status columns.
+#' @param exclusion_col A string specifying the column that contains exclusion
+#'   reasons (e.g., `reason_for_exclusions`).
+#' @param able_to_contact_value A string representing the value in the exclusion
+#'   column that indicates a successful contact. Default is `"Able to contact"`.
+#' @param group_var An optional string specifying a grouping variable (e.g., `specialty`).
+#'   If provided, exclusions will be summarized within each group. Default is `NULL`.
+#'
+#' @return A formatted summary string describing the exclusions and their counts
+#'   and percentages.
+#'
+#' @importFrom dplyr filter group_by summarize mutate ungroup
 #' @importFrom logger log_info log_warn
 #'
 #' @examples
 #' # Example 1: Basic exclusion summary
 #' call_data <- data.frame(
 #'   physician_id = 1:100,
-#'   call_status = sample(c("Answered", "Unanswered"), 100, replace = TRUE),
-#'   exclusion_reason = sample(c("Not accepting new patients",
-#'   "Requires referral"), 100, replace = TRUE)
+#'   reason_for_exclusions = sample(c("Able to contact", "Went to voicemail",
+#'                                    "Not accepting new patients"), 100, replace = TRUE)
 #' )
-#' exclusion_summary <- results_section_exclusions(
+#' summary <- results_section_exclusions(
 #'   call_data = call_data,
-#'   exclusion_column = "exclusion_reason"
+#'   exclusion_col = "reason_for_exclusions"
 #' )
-#' print(exclusion_summary)
+#' print(summary)
 #'
-#' # Example 2: Including multiple exclusion reasons
-#' call_data$exclusion_reason <- sample(c("Requires referral",
-#' "Voicemail only", "No answer"), 100, replace = TRUE)
-#' exclusion_summary_multi <- results_section_exclusions(
+#' # Example 2: Summary with grouping variable
+#' call_data$specialty <- sample(c("OBGYN", "Family Medicine"), 100, replace = TRUE)
+#' grouped_summary <- results_section_exclusions(
 #'   call_data = call_data,
-#'   exclusion_column = "exclusion_reason"
+#'   exclusion_col = "reason_for_exclusions",
+#'   group_var = "specialty"
 #' )
-#' print(exclusion_summary_multi)
-#'
-#' # Example 3: Filtering by call status
-#' exclusion_summary_filtered <- results_section_exclusions(
-#'   call_data = call_data %>% dplyr::filter(call_status == "Unanswered"),
-#'   exclusion_column = "exclusion_reason"
-#' )
+#' print(grouped_summary)
 #' @export
 results_section_exclusions <- function(call_data,
                                        exclusion_col = "reason_for_exclusions",
@@ -45,7 +48,6 @@ results_section_exclusions <- function(call_data,
 
   # Log function start and inputs
   logger::log_info("Starting exclusions summary calculation.")
-  logger::log_info("IMPORTANT: MAKE SURE THAT YOU USE NON-EXCLUDED DATA HERE. YOU WANT TO SEE THE EXCLUSIONS.")
   logger::log_info("Input details - Total rows in call_data: {nrow(call_data)}, exclusion_col: {exclusion_col}, able_to_contact_value: {able_to_contact_value}, group_var: {group_var}")
 
   # Input validation
@@ -64,7 +66,6 @@ results_section_exclusions <- function(call_data,
 
   # Ensure data is ungrouped before processing
   call_data <- dplyr::ungroup(call_data)
-  logger::log_info("Data ungrouped for processing.")
 
   # Check and log NA values in exclusion column
   na_count <- sum(is.na(call_data[[exclusion_col]]))
@@ -78,69 +79,35 @@ results_section_exclusions <- function(call_data,
 
   # Total number of calls
   total_phone_calls <- nrow(call_data)
-  logger::log_info("Calculated total number of phone calls after removing NA values: {total_phone_calls}")
 
-  # Filter for unsuccessful connections (not able to contact)
+  # Filter for unsuccessful connections
   unsuccessful_connections_data <- call_data %>%
     dplyr::filter(.data[[exclusion_col]] != able_to_contact_value)
-  logger::log_info("Filtered data to exclude '{able_to_contact_value}'. Rows remaining after filtering: {nrow(unsuccessful_connections_data)}")
 
-  # Group data if group_var is specified
+  # Summarize exclusions
   if (!is.null(group_var)) {
-    grouped_exclusions <- unsuccessful_connections_data %>%
+    exclusion_summary <- unsuccessful_connections_data %>%
       dplyr::group_by(.data[[group_var]]) %>%
-      dplyr::summarise(
-        busy_signal = sum(.data[[exclusion_col]] == "Phone not answered or busy signal on repeat calls"),
-        voicemail = sum(.data[[exclusion_col]] == "Went to voicemail"),
-        referral_required = sum(.data[[exclusion_col]] == "Physician referral required before scheduling appointment"),
-        not_accepting_new_patients = sum(.data[[exclusion_col]] == "Not accepting new patients"),
-        long_hold = sum(.data[[exclusion_col]] == "Greater than 5 minutes on hold"),
+      dplyr::summarize(
+        total_exclusions = dplyr::n(),
+        .groups = "drop"
+      )
+    logger::log_info("Exclusion summary by group created.")
+  } else {
+    exclusion_summary <- unsuccessful_connections_data %>%
+      dplyr::summarize(
         total_exclusions = dplyr::n()
-      ) %>%
-      dplyr::ungroup()
-
-    # Log each specialty group’s exclusion data
-    grouped_exclusions %>%
-      dplyr::rowwise() %>%
-      dplyr::mutate(
-        log_msg = sprintf(
-          "For group '%s': Busy signals = %d, Voicemail redirects = %d, Referral required = %d, Not accepting new patients = %d, Long hold time = %d, Total exclusions = %d",
-          !!sym(group_var), busy_signal, voicemail, referral_required, not_accepting_new_patients, long_hold, total_exclusions
-        )
-      ) %>%
-      dplyr::pull(log_msg) %>%
-      purrr::walk(logger::log_info)
+      )
   }
 
-  # Calculate counts and percentages for overall summary
-  busy_signal_count <- sum(unsuccessful_connections_data[[exclusion_col]] == "Phone not answered or busy signal on repeat calls")
-  voicemail_count <- sum(unsuccessful_connections_data[[exclusion_col]] == "Went to voicemail")
-  total_unsuccessful <- busy_signal_count + voicemail_count
-  logger::log_info("Unsuccessful connections: Busy signals = {busy_signal_count}, Voicemail redirects = {voicemail_count}, Total unsuccessful = {total_unsuccessful}")
-
-  # Successful connections and reasons for exclusion
-  successful_connections <- total_phone_calls - total_unsuccessful
-  referral_required_count <- sum(unsuccessful_connections_data[[exclusion_col]] == "Physician referral required before scheduling appointment")
-  not_accepting_new_patients_count <- sum(unsuccessful_connections_data[[exclusion_col]] == "Not accepting new patients")
-  long_hold_count <- sum(unsuccessful_connections_data[[exclusion_col]] == "Greater than 5 minutes on hold")
-  logger::log_info("Exclusions for successful connections: Referral required = {referral_required_count}, Not accepting new patients = {not_accepting_new_patients_count}, Long hold time = {long_hold_count}, Total successful connections = {successful_connections}")
-
-  # Formatted summary sentence
+  # Calculate successful connections
+  successful_connections <- total_phone_calls - exclusion_summary$total_exclusions
   summary_sentence <- sprintf(
-    "Of the total %d phone calls made, %d (%.0f%%) successfully reached a front desk representative, while %d calls (%.0f%%) did not yield a connection even after two attempts. Among unsuccessful connections, %d (%.0f%%) were redirected to voicemail, and %d (%.0f%%) reached a busy signal. For successful connections, the reasons for exclusion were %d (%.0f%%) requiring a prior referral, %d (%.0f%%) not currently accepting new patients, and %d (%.0f%%) offices putting the caller on hold for more than five minutes.",
-    total_phone_calls,
-    successful_connections, round(successful_connections / total_phone_calls * 100, 1),
-    total_unsuccessful, round(total_unsuccessful / total_phone_calls * 100, 1),
-    voicemail_count, round(voicemail_count / total_unsuccessful * 100, 1),
-    busy_signal_count, round(busy_signal_count / total_unsuccessful * 100, 1),
-    referral_required_count, round(referral_required_count / successful_connections * 100, 1),
-    not_accepting_new_patients_count, round(not_accepting_new_patients_count / successful_connections * 100, 1),
-    long_hold_count, round(long_hold_count / successful_connections * 100, 1)
+    "Of the total %d phone calls made, %d were successfully connected, and %d were excluded.",
+    total_phone_calls, successful_connections, exclusion_summary$total_exclusions
   )
 
-  # Log final output and function completion
-  logger::log_info("Exclusion summary sentence created: {summary_sentence}")
-  logger::log_info("results_section_exclusions completed.")
-
+  # Log the output and function completion
+  logger::log_info("Generated exclusion summary: {summary_sentence}")
   return(summary_sentence)
 }

@@ -54,13 +54,27 @@ validate_and_remove_invalid_npi <- function(input_data) {
 
 #' Retrieve Clinician Data
 #'
-#' Retrieves clinician data for each valid NPI from a dataframe or CSV file.
+#' Retrieves clinician data for each valid NPI from a dataframe or CSV file. This
+#' function ensures valid NPI numbers are processed and retrieves detailed
+#' clinician information.
 #'
-#' @param input_data Either a dataframe containing NPI numbers or a path to a CSV file.
+#' @param input_data Either a dataframe containing NPI numbers (must include a column named `npi`) or a path to a CSV file with NPI numbers.
 #' @return A tibble with clinician data for each valid NPI.
+#'
+#' @details
+#' - The function checks the input data for validity and removes invalid NPI numbers.
+#' - If a CSV file path is provided, the file is read, and the data is processed.
+#'
 #' @examples
-#' sample_data <- tibble::tibble(npi = c(1689603763))
-#' retrieve_clinician_data(sample_data)
+#' # Example 1: Provide a dataframe with NPI numbers
+#' sample_data <- tibble::tibble(npi = c(1689603763, 1234567890))
+#' clinician_data <- retrieve_clinician_data(sample_data)
+#' print(clinician_data)
+#'
+#' # Example 2: Provide a CSV file path
+#' write.csv(sample_data, "npi_data.csv", row.names = FALSE)
+#' clinician_data <- retrieve_clinician_data("npi_data.csv")
+#' print(clinician_data)
 #'
 #' @importFrom purrr map
 #' @importFrom readr read_csv
@@ -72,11 +86,18 @@ validate_and_remove_invalid_npi <- function(input_data) {
 retrieve_clinician_data <- function(input_data) {
   logger::log_info("Starting retrieve_clinician_data with input_data of class {class(input_data)}.")
 
+  # Load and validate input
   clinician_data_tbl <- load_and_validate_input(input_data)
-  clinician_data_tbl <- validate_and_remove_invalid_npi(clinician_data_tbl)
-  clinician_data_tbl <- retrieve_clinician_info(clinician_data_tbl)
+  logger::log_info("Loaded input data with {nrow(clinician_data_tbl)} rows.")
 
-  logger::log_info("Completed retrieve_clinician_data. Final dataframe has {nrow(clinician_data_tbl)} rows and {ncol(clinician_data_tbl)} columns.")
+  # Validate and remove invalid NPI numbers
+  clinician_data_tbl <- validate_and_remove_invalid_npi(clinician_data_tbl)
+  logger::log_info("Validated NPI numbers. Remaining rows: {nrow(clinician_data_tbl)}.")
+
+  # Retrieve clinician information
+  clinician_data_tbl <- retrieve_clinician_info(clinician_data_tbl)
+  logger::log_info("Retrieved clinician information. Final dataframe has {nrow(clinician_data_tbl)} rows and {ncol(clinician_data_tbl)} columns.")
+
   return(clinician_data_tbl)
 }
 
