@@ -8,7 +8,6 @@ library(readr)
 library(stringr)
 library(maps)
 library(tyler)       # Custom package; ensure it’s installed
-library(exploratory) 
 
 ## -----------------------------------------------------------------------------
 # Loading data from the patient-facing directory

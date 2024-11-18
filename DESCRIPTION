@@ -29,7 +29,6 @@ Imports:
     beepr,
     caret,
     effects,
-    exploratory,
     emmeans,
     fs,
     gender,
@@ -69,7 +68,8 @@ Imports:
 Suggests:
     ggspatial,
     zipcodeR, 
-    censusapi
+    censusapi,
+    exploratory
 Remotes: andrewallenbruce/provider, lmullen/genderdata
 LazyData: true
 Files: R/

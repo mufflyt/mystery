@@ -38,7 +38,7 @@ split_calls_to_lab_assistants_and_save_by_priority <- function(input_data_or_pat
                                                                split_column = "insurance",
                                                                priority_values = NULL) {
 
-  conflicted::conflicts_prefer(dplyr::lag)
+  # conflicted::conflicts_prefer(dplyr::lag)
 
   # Step 1: Load and validate input data
   input_data <- load_and_validate_input_data(input_data_or_path)

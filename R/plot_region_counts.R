@@ -65,7 +65,7 @@
 #' @importFrom logger log_info
 plot_region_counts <- function(state_counts, region_df, region_col, save_path = NULL) {
 
-  conflicted::conflicts_prefer(base::setdiff)
+  #conflicted::conflicts_prefer(base::setdiff)
 
   # Log the inputs to the function
   logger::log_info("Function `plot_region_counts` called with inputs:")

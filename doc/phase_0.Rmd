@@ -77,7 +77,6 @@ We search for spine surgeons by their taxonomy code and clean the results to inc
 # spine_surgeons_by_taxonomy_cleaned <- spine_surgeons_by_taxonomy %>%
 #   dplyr::distinct(npi, basic_first_name, basic_last_name, basic_gender, basic_enumeration_date, .keep_all = TRUE) %>%
 #   dplyr::filter(!is.na(addresses_telephone_number)) %>%
-#   dplyr::mutate(state = exploratory::statecode(addresses_state, output_type = "name")) %>%
 #   dplyr::mutate(zip_code = stringr::str_sub(addresses_postal_code, 1 ,5)) %>%
 #   readr::write_csv("ortho_spine/phase_0/spine_surgeons_by_taxonomy_cleaned.csv")
 # ```
