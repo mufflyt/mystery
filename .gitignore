@@ -38,3 +38,5 @@ vignettes/*.pdf
 _site/
 _site_libs/
 docs
+/doc/
+/Meta/

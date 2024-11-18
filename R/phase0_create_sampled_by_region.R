@@ -21,7 +21,6 @@
 #'                                                 output_csv_path = "test/sample.csv")
 #' @export
 #' @importFrom dplyr mutate filter group_by left_join select arrange row_number bind_rows sample_n
-#' @importFrom exploratory statecode
 #' @importFrom readr write_csv
 #' @importFrom logger log_info
 phase0_create_sampled_by_region <- function(taxonomy_and_aaos_tbl, census_bureau_tbl, output_csv_path = "ortho_spine/phase_0/sampled_by_region_ortho_spine.csv") {
@@ -49,25 +48,8 @@ phase0_create_sampled_by_region <- function(taxonomy_and_aaos_tbl, census_bureau
 
 # Helper Functions --------------------------------------------------------
 
-#' Add full state names using exploratory::statecode
-#' @param tbl A tibble with a `state_code` column.
-#' @return A tibble with `state_code` converted to full state names.
-#' @examples
-#' # Example 1: Convert state codes in a sample tibble
-#' sample_data <- tibble::tibble(state_code = c("CO", "CA", "NY"))
-#' add_full_state_names(sample_data)
-#'
-#' # Example 2: Using with dplyr chain for larger datasets
-#' sample_data %>%
-#'   add_full_state_names() %>%
-#'   dplyr::filter(state_code != "California")
-#'
-#' # Example 3: Handling mixed valid and invalid state codes
-#' sample_data <- tibble::tibble(state_code = c("CO", "XX", "CA"))
-#' add_full_state_names(sample_data)
+#' Add full state names using a lookup table
 #' @noRd
-#' @importFrom exploratory statecode
-#' @importFrom dplyr mutate
 add_full_state_names <- function(tbl) {
   logger::log_info("Converting state_code to full state names.")
   state_lookup <- tibble::tibble(
@@ -76,26 +58,12 @@ add_full_state_names <- function(tbl) {
   )
   tbl %>%
     dplyr::left_join(state_lookup, by = c("state_code" = "state_code")) %>%
-    dplyr::mutate(state_code = full_name) %>%
+    dplyr::mutate(state_code = ifelse(!is.na(full_name), full_name, state_code)) %>%
     dplyr::select(-full_name)
 }
+
 #' Filter out entries with missing phone, first name, or last name and exclude Guam
-#' @param tbl A tibble with `phone_number`, `first`, `last`, and `state_code` columns.
-#' @return A tibble filtered for valid entries.
-#' @examples
-#' # Example 1: Filter out missing values in sample tibble
-#' sample_data <- tibble::tibble(phone_number = c("123", NA), first = c("John", "Jane"), last = c("Doe", NA), state_code = c("CO", "Guam"))
-#' filter_valid_entries(sample_data)
-#'
-#' # Example 2: Filtering larger dataset with dplyr chaining
-#' sample_data %>%
-#'   filter_valid_entries() %>%
-#'   dplyr::arrange(state_code)
-#'
-#' # Example 3: Using within custom data wrangling functions
-#' filtered_data <- filter_valid_entries(taxonomy_and_aaos_tbl)
 #' @noRd
-#' @importFrom dplyr filter
 filter_valid_entries <- function(tbl) {
   logger::log_info("Filtering records with missing phone numbers, first or last names, and excluding Guam.")
   tbl %>%
@@ -103,22 +71,7 @@ filter_valid_entries <- function(tbl) {
 }
 
 #' Convert state codes to lowercase for joining
-#' @param tbl A tibble with `state_code` column.
-#' @return A tibble with `state_code` in lowercase.
-#' @examples
-#' # Example 1: Converting state codes in sample tibble
-#' sample_data <- tibble::tibble(state_code = c("CO", "CA", "NY"))
-#' lowercase_state_codes(sample_data)
-#'
-#' # Example 2: Use within a pipeline
-#' sample_data %>%
-#'   lowercase_state_codes() %>%
-#'   dplyr::filter(state_code == "ca")
-#'
-#' # Example 3: Using as a standalone transformation
-#' lowercased_data <- lowercase_state_codes(sample_data)
 #' @noRd
-#' @importFrom dplyr mutate
 lowercase_state_codes <- function(tbl) {
   logger::log_info("Converting state_code to lowercase.")
   tbl %>%
@@ -126,23 +79,7 @@ lowercase_state_codes <- function(tbl) {
 }
 
 #' Join with Census Bureau data to add region and division information
-#' @param tbl A tibble with `state_code` column in lowercase.
-#' @param census_bureau_tbl A tibble with `State` column for joining.
-#' @return A tibble with Census region and division information.
-#' @examples
-#' # Example 1: Join with Census Bureau data in a pipeline
-#' sample_data <- tibble::tibble(state_code = c("colorado", "california"))
-#' join_census_regions(sample_data, census_bureau_tbl)
-#'
-#' # Example 2: Using with dplyr pipeline
-#' sample_data %>%
-#'   lowercase_state_codes() %>%
-#'   join_census_regions(census_bureau_tbl)
-#'
-#' # Example 3: Test with partial census data for specific regions
-#' join_census_regions(sample_data, dplyr::filter(census_bureau_tbl, Region == "West"))
 #' @noRd
-#' @importFrom dplyr left_join
 join_census_regions <- function(tbl, census_bureau_tbl) {
   logger::log_info("Joining with Census Bureau data for region and division information.")
   tbl %>%
@@ -150,28 +87,12 @@ join_census_regions <- function(tbl, census_bureau_tbl) {
 }
 
 #' Sample 14 records per division with a seed for reproducibility
-#' @param tbl A tibble grouped by `Division`.
-#' @return A tibble with 14 sampled records per division.
-#' @examples
-#' # Example 1: Sample by division on grouped dataset
-#' sampled_data <- sample_by_division(grouped_tbl)
-#'
-#' # Example 2: Use within pipeline on original dataset
-#' taxonomy_and_aaos_tbl %>%
-#'   join_census_regions(census_bureau_tbl) %>%
-#'   sample_by_division()
-#'
-#' # Example 3: Test sampling with varied seed
-#' sampled_data <- sample_by_division(taxonomy_and_aaos_tbl, seed = 2023)
 #' @noRd
-#' @importFrom dplyr group_by mutate row_number bind_rows arrange
 sample_by_division <- function(tbl) {
   logger::log_info("Sampling up to 14 records per Division for reproducibility.")
-
   tbl %>%
     dplyr::group_by(Division) %>%
     dplyr::group_modify(~ {
-      # Determine the sample size for each group without calling dplyr::n() directly
       sample_size <- min(14, nrow(.x))
       .x %>%
         dplyr::slice_sample(n = sample_size, replace = (nrow(.x) < 14))
@@ -181,21 +102,7 @@ sample_by_division <- function(tbl) {
 }
 
 #' Assign alternating insurance types to sampled rows
-#' @param tbl A tibble with sampled rows.
-#' @return A tibble with alternating insurance types.
-#' @examples
-#' # Example 1: Assign insurance types on duplicated sample tibble
-#' assign_alternating_insurance(sampled_tbl)
-#'
-#' # Example 2: Applying on tibble in pipeline
-#' sample_by_division(grouped_tbl) %>%
-#'   assign_alternating_insurance()
-#'
-#' # Example 3: Using directly after row duplication
-#' dplyr::bind_rows(sampled_tbl, sampled_tbl) %>%
-#'   assign_alternating_insurance()
 #' @noRd
-#' @importFrom dplyr mutate
 assign_alternating_insurance <- function(tbl) {
   logger::log_info("Assigning alternating insurance values to each row.")
   tbl %>%
@@ -203,21 +110,7 @@ assign_alternating_insurance <- function(tbl) {
 }
 
 #' Arrange final columns and remove temporary ID
-#' @param tbl A tibble with columns to arrange by `state_code` and `npi`.
-#' @return A tibble arranged with temporary ID column removed.
-#' @examples
-#' # Example 1: Arranging after insurance assignment
-#' arrange_final_columns(tibble_with_insurance)
-#'
-#' # Example 2: Using after all transformations
-#' assign_alternating_insurance(sampled_tbl) %>%
-#'   arrange_final_columns()
-#'
-#' # Example 3: Final cleanup in a pipeline
-#' tibble_with_temp_id %>%
-#'   arrange_final_columns()
 #' @noRd
-#' @importFrom dplyr arrange select
 arrange_final_columns <- function(tbl) {
   logger::log_info("Arranging by state_code and NPI, and removing temporary ID column.")
   tbl %>%

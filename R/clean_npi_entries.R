@@ -10,7 +10,6 @@
 #' @return A cleaned dataframe with summarized NPI entries.
 #' @importFrom dplyr mutate filter select group_by summarise first
 #' @importFrom stringr str_remove_all str_squish str_detect regex
-#' @importFrom exploratory statecode
 #' @importFrom logger log_info
 #' @export
 #' @examples
@@ -23,7 +22,6 @@
 #' # Example 3: Cleaning NPI entries, specifying different credentials
 #' clean_npi_entries(npi_results, basic_credentials = c("PA", "NP"))
 clean_npi_entries <- function(npi_entries, basic_credentials = c("MD", "DO"), taxonomy_filter = "Obstetrics & Gynecology") {
-
   # Start logging
   logger::log_info("Starting clean_npi_entries function")
   logger::log_info("Input basic credentials: {basic_credentials}")
@@ -39,6 +37,12 @@ clean_npi_entries <- function(npi_entries, basic_credentials = c("MD", "DO"), ta
     credential <- toupper(credential)                                # Convert to uppercase
     return(credential)
   }
+
+  # Create a lookup table for state abbreviations to full names
+  state_lookup <- tibble::tibble(
+    abbreviation = state.abb,
+    full_name = state.name
+  )
 
   # Normalize the basic credentials and filter
   logger::log_info("Normalizing basic credentials and applying filter")
@@ -63,9 +67,11 @@ clean_npi_entries <- function(npi_entries, basic_credentials = c("MD", "DO"), ta
     dplyr::select(-identifiers_desc, -basic_status)
 
   # Convert state abbreviations to full state names
-  logger::log_info("Converting state abbreviations to full state names using exploratory::statecode")
+  logger::log_info("Converting state abbreviations to full state names using a lookup table")
   npi_entries <- npi_entries %>%
-    dplyr::mutate(addresses_state = exploratory::statecode(addresses_state, output_type = "name"))
+    dplyr::left_join(state_lookup, by = c("addresses_state" = "abbreviation")) %>%
+    dplyr::mutate(addresses_state = ifelse(!is.na(full_name), full_name, addresses_state)) %>%
+    dplyr::select(-full_name) # Drop the helper column after mapping
 
   # Filter to keep only LOCATION purpose entries
   logger::log_info("Filtering for LOCATION address purpose")
