@@ -20,7 +20,6 @@
 #'   interaction effects. Sentences include confidence intervals and p-values
 #'   where available.
 #'
-#' @importFrom broom tidy
 #' @importFrom emmeans emmeans
 #' @importFrom dplyr filter mutate select
 #' @importFrom stringr str_c

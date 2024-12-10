@@ -68,7 +68,6 @@
 #'     y_label = "Waiting Times in Days",
 #'     plot_title = "Scatter Plot Without Transformation"
 #' )
-
 create_scatter_plot <- function(data,
                                 x_var,
                                 y_var,
@@ -111,7 +110,10 @@ create_scatter_plot <- function(data,
     ggplot2::theme(
       panel.background = ggplot2::element_rect(fill = "white"),
       plot.background = ggplot2::element_rect(fill = "white"),
-      axis.title.x = ggplot2::element_blank()
+      axis.text.x = ggplot2::element_text(angle = 45, hjust = 1), # Tilt x-axis labels
+      axis.title.x = ggplot2::element_text(size = 12),
+      axis.title.y = ggplot2::element_text(size = 12),
+      plot.title = ggplot2::element_text(hjust = 0.5)
     )
 
   # Display the plot

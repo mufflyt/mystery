@@ -16,6 +16,10 @@ get_census_data <- function(us_fips_list, vintage = 2022) {
     stop("The 'censusapi' package is required but not installed. Please install it using install.packages('censusapi').")
   }
 
+  if (!requireNamespace("zipcodeR", quietly = TRUE)) {
+    stop("The 'zipcodeR' package is required for this function. Please install it.")
+  }
+
   # Initialize an empty list to store state data
   state_data <- list()
 

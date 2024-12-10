@@ -13,10 +13,8 @@
 #' new_data <- remove_near_zero_var(data_frame)
 #' }
 #'
-#'@importFrom caret nearZeroVar
-#'@importFrom glue glue
-#'@importFrom dplyr select
-#'
+#' @importFrom glue glue
+#' @importFrom dplyr select
 #' @export
 remove_near_zero_var <- function(data_frame, freqCut = 19, uniqueCut = 10) {
   # Log: Starting the function
@@ -28,10 +26,20 @@ remove_near_zero_var <- function(data_frame, freqCut = 19, uniqueCut = 10) {
     return(data_frame)
   }
 
-  # Identify near-zero variance variables
-  message("Identifying near-zero variance variables...")
-  remove_cols <- caret::nearZeroVar(data_frame, names = TRUE, freqCut = freqCut, uniqueCut = uniqueCut)
-  remove_cols <- sort(remove_cols)
+  # Function to calculate the most-to-second most frequent ratio and percent unique
+  calculate_metrics <- function(column) {
+    freq_table <- table(column)
+    freq_sorted <- sort(freq_table, decreasing = TRUE)
+    freq_ratio <- if (length(freq_sorted) > 1) freq_sorted[1] / freq_sorted[2] else Inf
+    percent_unique <- length(unique(column)) / length(column) * 100
+    list(freq_ratio = freq_ratio, percent_unique = percent_unique)
+  }
+
+  # Apply the metrics to each column and find near-zero variance variables
+  nzv_metrics <- lapply(data_frame, calculate_metrics)
+  remove_cols <- names(nzv_metrics)[sapply(nzv_metrics, function(metrics) {
+    metrics$freq_ratio > freqCut && metrics$percent_unique < uniqueCut
+  })]
 
   # Log: Number of near-zero variance variables found
   message(glue::glue("Found {length(remove_cols)} near-zero variance variables."))
@@ -51,6 +59,3 @@ remove_near_zero_var <- function(data_frame, freqCut = 19, uniqueCut = 10) {
 
   return(data_frame)
 }
-
-# Example usage:
-# new_data <- remove_near_zero_var(d)

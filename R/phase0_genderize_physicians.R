@@ -11,6 +11,7 @@
 #'                   If no directory is provided, the current working directory is used.
 #' @return A tibble with genderized information joined to the original data. The output file is also saved in the specified output directory.
 #' @importFrom gender gender
+#' @import genderdata
 #' @importFrom dplyr select rename distinct left_join mutate
 #' @importFrom readr read_csv
 #' @importFrom logger log_info log_error
@@ -100,6 +101,15 @@ phase0_genderize_physicians <- function(input_csv, output_dir = getwd()) {
     logger::log_error("Missing 'first_name' column in the input data.")
     stop("The input CSV must contain a 'first_name' column.")
   }
+
+  if (!requireNamespace("genderdata", quietly = TRUE)) {
+    stop("The 'genderdata' package is required to process gender-related data. Install it using devtools::install_github('lmullen/genderdata').")
+  }
+
+  if (!requireNamespace("gender", quietly = TRUE)) {
+    stop("The 'genderdata' package is required to process gender-related data. Install it using install.packages'gender').")
+  }
+
 
   # Genderize the first names
   logger::log_info("Genderizing first names...")

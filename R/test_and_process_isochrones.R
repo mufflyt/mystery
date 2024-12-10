@@ -117,7 +117,6 @@ test_and_process_isochrones <- function(input_file) {
 #'
 #' @importFrom dplyr mutate filter row_number
 #' @importFrom sf st_as_sf st_write
-#' @importFrom hereR isoline set_key
 #'
 #' @examples
 #' # Load the input file (e.g., from a CSV)
@@ -130,12 +129,19 @@ test_and_process_isochrones <- function(input_file) {
 #' sf::st_write(isochrones_data, dsn =
 #' "data/isochrones/isochrones_all_combined",
 #'              layer = "isochrones", driver = "ESRI Shapefile", quiet = FALSE)
-#'
-
 process_and_save_isochrones <- function(input_file, chunk_size = 25) {
+  if (!requireNamespace("hereR", quietly = TRUE)) {
+    warning("The 'hereR' package is needed for advanced mapping features. Please install it.")
+    return(NULL)  # Exit the function if hereR is not available
+  }
+
   # Parameter validation
-  stopifnot(is.data.frame(input_file), all(c("lat", "long") %in% colnames(input_file)),
-            is.numeric(chunk_size), chunk_size > 0)
+  stopifnot(
+    is.data.frame(input_file),
+    all(c("lat", "long") %in% colnames(input_file)),
+    is.numeric(chunk_size),
+    chunk_size > 0
+  )
 
   Sys.setenv(HERE_API_KEY = "VnDX-Rafqchcmb4LUDgEpYlvk8S1-LCYkkrtb1ujOrM")
   readRenviron("~/.Renviron")
@@ -185,7 +191,7 @@ process_and_save_isochrones <- function(input_file, chunk_size = 25) {
     if (!is.null(isochrones)) {
       # Create the file name with the current date and time
       current_datetime <- format(Sys.time(), "%Y%m%d%H%M%S")
-      file_name <- paste("data/isochrones/isochrones_", current_datetime, "_chunk_", i)
+      file_name <- paste0("data/isochrones/isochrones_", current_datetime, "_chunk_", i)
 
       # Assuming "arrival" field is originally in character format with both date and time
       # Convert it to a DateTime object

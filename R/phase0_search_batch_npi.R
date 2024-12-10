@@ -6,14 +6,9 @@
 #' each step, including function start, input validation, NPI query status,
 #' data transformation, and file saving.
 #'
-#' @param df A dataframe with two columns: `first` (first names) and `last`
-#' (last names).
-#'   Each row represents a unique name query.
-#' @param limit An integer specifying the number of results to request for
-#' each NPI query.  Default is 5.
-#' @param write_csv_path An optional character string specifying the file path
-#'   to save the results as a CSV file. If `NULL`, no CSV file is saved.
-#'   Default is `NULL`.
+#' @param df A data frame with columns ...
+#' @param limit Number of results per query.
+#' @param write_csv_path File path for saving the results as a CSV.
 #'
 #' @return A dataframe containing flattened NPI results, including columns for
 #' the queried `first` and `last` names. If no results are found, an empty
@@ -49,7 +44,9 @@
 #' }
 #'
 #' @export
-phase0_search_batch_npi <- function(df, limit = 5, write_csv_path = NULL) {
+phase0_search_batch_npi <- function(df,
+                                    limit = 5,
+                                    write_csv_path = NULL) {
   # Log function start and inputs
   logger::log_info("Starting phase0_search_batch_npi function...")
   logger::log_info("Input dataframe has {nrow(df)} rows and {ncol(df)} columns.")

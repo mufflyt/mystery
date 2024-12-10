@@ -12,10 +12,9 @@ Date: 2023-09-11
 Keywords: healthcare, patient access, audit study, NPI, mystery caller
 Maintainer: Tyler Muffly <tyler.muffly@dhha.org>
 Depends:
-    R (>= 3.5.0)
+    R (>= 3.5.0),
+    dplyr
 Imports:
-    dplyr,
-    duckdb,
     glue,
     lifecycle,
     npi,
@@ -26,53 +25,37 @@ Imports:
     tidyr,
     logger,
     arsenal,
-    beepr,
-    caret,
-    effects,
-    emmeans,
-    fs,
-    gender,
-    genderdata,
-    ggmap,
     ggplot2,
-    here,
-    hereR,
-    memoise,
-    provider,
-    rnaturalearth,
-    rmarkdown,
-    scales,
     sf,
-    stats,
-    testthat,
-    tigris,
-    viridis,
-    broom,
-    conflicted,
-    data.table,
     httr,
-    humaniformat,
+    readr,
+    rlang,
+    viridis,
+    hereR,
+    effects,
+    ggmap,
+    tigris,
+    fs,
     jsonlite,
     lme4,
     magrittr,
-    readr,
-    readxl,
-    rlang,
-    lmerTest,
-    robustlmm,
-    maps,
-    broom.mixed,
+    methods,
+    provider,
+    scales,
     tidycensus,
-    knitr, 
-    methods
+    tigris,
+    gender,
+    genderdata,
+    emmeans,
+    zipcodeR
 Suggests:
-    ggspatial,
-    zipcodeR, 
-    censusapi,
-    exploratory
-Remotes: andrewallenbruce/provider, lmullen/genderdata
+    knitr,
+    rmarkdown,
+    data.table
+Remotes: 
+    andrewallenbruce/provider, 
+    lmullen/genderdata
 LazyData: true
-Files: R/
 VignetteBuilder: knitr
 VignetteEngine: knitr::rmarkdown
 Config/testthat/edition: 3

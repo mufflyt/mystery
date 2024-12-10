@@ -19,7 +19,6 @@
 #' @importFrom ggplot2 ggplot geom_density scale_x_log10 scale_x_sqrt labs theme_light theme ggsave
 #' @importFrom viridis viridis_pal
 #' @importFrom rlang sym .data
-#' @export
 #' @examples
 #' # Example 1: Basic density plot with log transformation
 #' create_density_plot(
@@ -62,17 +61,18 @@
 #'     y_label = "Density",
 #'     plot_title = "Density Plot Without Transformation"
 #' )
+#' @export
 create_density_plot <- function(data,
-x_var,
-fill_var,
-x_transform = "none",
-dpi = 100,
-output_dir = "output",
-file_prefix = "density_plot",
-x_label = NULL,
-y_label = "Density",
-plot_title = NULL,
-verbose = TRUE) {
+                                x_var,
+                                fill_var,
+                                x_transform = "none",
+                                dpi = 100,
+                                output_dir = "output",
+                                file_prefix = "density_plot",
+                                x_label = NULL,
+                                y_label = "Density",
+                                plot_title = NULL,
+                                verbose = TRUE) {
 
   # Filter out zero or negative values and NAs from the x_var column
   data <- dplyr::filter(data, .data[[x_var]] > 0, !is.na(.data[[x_var]]))
@@ -96,7 +96,7 @@ verbose = TRUE) {
       y = y_label,
       title = plot_title
     ) +
-    ggplot2::scale_fill_viridis_d() +  # Use viridis color palette
+    viridis::scale_fill_viridis(discrete = TRUE, option = "D") +  # Updated for correct viridis usage
     ggplot2::theme_light() +
     ggplot2::theme(
       legend.position = "bottom"

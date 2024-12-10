@@ -12,7 +12,6 @@
 #' @return Nothing is returned. The function saves the output table as a PDF file.
 #' @importFrom arsenal tableby write2pdf
 #' @importFrom readr read_rds read_csv
-#' @importFrom readxl read_excel
 #' @importFrom fs dir_create dir_exists
 #' @importFrom dplyr select all_of
 #' @importFrom logger log_info log_error
@@ -87,6 +86,10 @@ ensure_output_directory <- function(output_directory) {
 read_input_data <- function(input_file_path) {
   file_extension <- tools::file_ext(input_file_path)
   log_info("Reading data from file: {input_file_path} (file extension: {file_extension})")
+
+  if (!requireNamespace("readxl", quietly = TRUE)) {
+    warning("The 'readxl' package is needed.   Please install it.")
+  }
 
   data_input <- tryCatch({
     switch(

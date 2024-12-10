@@ -40,6 +40,11 @@ validate_inputs <- function(remove_ak_hi,
 #' Load U.S. states shapefile data
 #' @noRd
 load_states_shapefile <- function() {
+  # Check if rnaturalearth is available
+  if (!requireNamespace("rnaturalearth", quietly = TRUE)) {
+    stop("The rnaturalearth package is required for this function. Please install it using install.packages('rnaturalearth').")
+  }
+
   logger::log_info("Loading U.S. states shapefile data from rnaturalearth...")
   states_sf <- rnaturalearth::ne_states(country = "United States of America",
                                         returnclass = "sf")
@@ -202,27 +207,10 @@ save_map_to_file <- function(map_plot, save_path) {
 #'   ggplot2::labs(title = "Map of U.S. Regions (Excluding Alaska)")
 #' print(regions_map)
 #'
-#' # Example 2: Create a map of U.S. states by ACOG districts,
-#' including Alaska and Hawaii
-#' create_region_map(
-#'   remove_ak_hi = FALSE,
-#'   districts_per_group = "acog_districts",
-#'   alpha_level = 0.5
-#' )
-#'
-#' # Example 3: Create a map of U.S. states by ENT Board of Governors Regions
-#' and save it to a file
-#' create_region_map(
-#'   remove_ak_hi = TRUE,
-#'   districts_per_group = "ENT_Board_of_Governors_Regions",
-#'   save_path = "ent_bog_regions_map.png",
-#'   alpha_level = 0.3
-#' )
 #'
 #' @importFrom sf st_sf st_read st_transform st_union
 #' @importFrom ggplot2 ggplot geom_sf aes_string theme_minimal labs scale_fill_manual ggsave
 #' @importFrom dplyr left_join filter pull mutate
-#' @importFrom rnaturalearth ne_states
 #' @importFrom viridis viridis
 #' @importFrom logger log_info log_success log_error
 #' @export

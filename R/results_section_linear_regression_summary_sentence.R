@@ -16,7 +16,6 @@
 #' )
 #' print(summary_sentence)
 #' @import dplyr
-#' @import beepr
 #' @importFrom stats lm na.omit poisson sd setNames
 #' @export
 linear_regression_race_drive_time_generate_summary_sentence <- function(tabulated_data, driving_time_minutes = 180, race = "American Indian/Alaska Native") {
@@ -82,9 +81,6 @@ linear_regression_race_drive_time_generate_summary_sentence <- function(tabulate
     stop("No data available for the specified 'Driving Time (minutes)'.")
   }
 
-  # Progress beep
-  beepr::beep(1)
-
   # Ensure the Year column is numeric
   filtered_data <- filtered_data %>%
     dplyr::mutate(Year = as.numeric(as.character(Year)))
@@ -140,17 +136,6 @@ linear_regression_race_drive_time_generate_summary_sentence <- function(tabulate
   # Log the generated summary sentence
   message("Generated summary sentence: ", summary_sentence)
 
-  # Completion beep
-  beepr::beep(2)
-
   # Return the summary sentence
   return(summary_sentence)
 }
-
-# Use Case Example
-#linear_regression_summary_sentence <- linear_regression_race_drive_time_generate_summary_sentence(
-# tabulated_data = tabulated_all_years_numeric,
-# driving_time_minutes = 60,
-# race = "all"
-# )
-# print(linear_regression_summary_sentence)

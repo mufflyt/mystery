@@ -12,7 +12,6 @@
 #' @importFrom dplyr filter
 #' @importFrom npi npi_flatten npi_search
 #' @importFrom purrr map keep
-#' @importFrom data.table rbindlist
 #' @importFrom readr write_csv
 #' @importFrom logger log_info log_error
 #' @export
@@ -22,17 +21,6 @@
 #' npi_list <- data.frame(npi = c("1234567890", "1098765432", "1987654321"))
 #' phase0_search_npi_by_number(npi_dataframe = npi_list)
 #'
-#' # Example 2: Save results in chunks of 5, specifying a custom directory
-#' phase0_search_npi_by_number(npi_dataframe = npi_list, records_per_chunk = 5,
-#' save_directory = "custom_directory")
-#'
-#' # Example 3: Large dataset with default chunking
-#' large_npi_list <- data.frame(npi = replicate(50, paste0(sample(0:9, 10,
-#' replace = TRUE), collapse = "")))
-#' phase0_search_npi_by_number(npi_dataframe = large_npi_list)
-#'
-#' # Expected output: Combined data frame with clinician information,
-#' saved to CSV files by chunks.
 phase0_search_npi_by_number <- function(npi_dataframe,
                                         records_per_chunk = 10,
                                         save_directory = NULL) {
@@ -64,7 +52,7 @@ phase0_search_npi_by_number <- function(npi_dataframe,
   return(combined_clinician_info)
 }
 
-# Helper functions with minimal roxygen comments
+# Helper functions
 
 #' Log function inputs
 #' @noRd
@@ -115,6 +103,9 @@ retrieve_clinician_data <- function(npi_numbers) {
 #' Combine clinician data into a single data frame
 #' @noRd
 combine_clinician_info <- function(clinician_info_list) {
+  if (!requireNamespace("data.table", quietly = TRUE)) {
+    stop("The 'data.table' package is required but not installed. Please install it to use this function.")
+  }
   combined_clinician_info <- data.table::rbindlist(clinician_info_list, fill = TRUE)
   logger::log_info(glue::glue("Combined all clinician information. Total rows: {nrow(combined_clinician_info)}, Total columns: {ncol(combined_clinician_info)}"))
   return(combined_clinician_info)

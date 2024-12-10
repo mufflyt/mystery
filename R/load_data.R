@@ -44,11 +44,11 @@ load_data <- function(data_dir, file_name, verbose = TRUE) {
       cat("  Data successfully loaded. Number of rows:", nrow(df), "\n")
     }
 
-    # Rename the 'ID' column to 'id_number'
-    df <- dplyr::rename(df, id_number = ID)
-    if (verbose) {
-      cat("  Column 'ID' renamed to 'id_number'.\n")
-    }
+    # # Rename the 'ID' column to 'id_number'
+    # df <- dplyr::rename(df, id_number = ID)
+    # if (verbose) {
+    #   cat("  Column 'ID' renamed to 'id_number'.\n")
+    # }
 
     # Log the output
     if (verbose) {

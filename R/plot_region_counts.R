@@ -1,20 +1,21 @@
 #' Plot Regional Physician Counts by Specified Grouping
 #'
-#' This function creates a choropleth map of physician counts by region, with options for different regional groupings.
-#' It merges state counts with regional data, calculates centroids for text labels, and generates a plot using ggplot2.
-#' Extensive logging is provided to the console for each major step, including data transformations, plot generation, and file saving.
+#' This function creates a choropleth map visualizing physician counts by region, with options for grouping states into custom regions. It handles merging state counts with regional data, calculating centroids for text labels, and generating plots using ggplot2. Logging is included to provide insights into the execution flow and data transformations.
 #'
-#' @param state_counts A dataframe containing state-level physician counts. Must have columns `state_code` and `total_available`.
-#' @param region_df A dataframe with columns `State` and a region grouping column. Each row maps a state to its region.
-#' @param region_col A string specifying the name of the column in `region_df` used to group the states by region.
-#' @param save_path An optional string specifying the file path to save the generated plot. If `NULL`, the plot displays onscreen only.
+#' @param state_counts A dataframe containing state-level physician counts. Must have columns `state_code` (lowercase state names) and `total_available` (numerical counts).
+#' @param region_df A dataframe mapping states to regions. Must include `State` (state names in lowercase) and a column for the region grouping.
+#' @param region_col A string specifying the column in `region_df` to use for grouping states into regions (e.g., "Region").
+#' @param save_path Optional. A string specifying the file path to save the plot as an image. If `NULL` (default), the plot is displayed onscreen but not saved.
 #'
 #' @return A ggplot object representing the choropleth map.
 #'
+#' @details
+#' The function merges `state_counts` and `region_df` by state name, aggregates physician counts by region, and maps these counts onto a choropleth. Labels representing the counts are added at region centroids.
+#'
 #' @examples
-#' # Example 1: Plot region counts for ENT_BOG regions, saving output to a file
+#' # Example 1: Plot and save a map grouped by ENT_BOG regions
 #' ent_bog_regions <- data.frame(
-#'   State = c("Alabama", "Alaska", "Arizona"),
+#'   State = c("alabama", "alaska", "arizona"),
 #'   ENT_BOG_Region = c("Region 4", "Region 9", "Region 9")
 #' )
 #' state_counts <- data.frame(
@@ -28,9 +29,9 @@
 #'   save_path = "ent_bog_region_map.png"
 #' )
 #'
-#' # Example 2: Plot without saving, grouping by ACOG districts
+#' # Example 2: Plot ACOG Districts without saving
 #' ACOG_Districts_sf <- data.frame(
-#'   State = c("California", "Nevada", "Utah"),
+#'   State = c("california", "nevada", "utah"),
 #'   ACOG_District = c("District IX", "District IX", "District VIII")
 #' )
 #' state_counts <- data.frame(
@@ -43,9 +44,9 @@
 #'   region_col = "ACOG_District"
 #' )
 #'
-#' # Example 3: Grouping by custom region data, saving output to file
+#' # Example 3: Plot custom regions and save output
 #' custom_regions <- data.frame(
-#'   State = c("Texas", "New York", "Florida"),
+#'   State = c("texas", "new york", "florida"),
 #'   Custom_Region = c("South", "Northeast", "South")
 #' )
 #' state_counts <- data.frame(
@@ -59,13 +60,12 @@
 #'   save_path = "custom_region_map.png"
 #' )
 #'
-#' @importFrom dplyr mutate left_join group_by summarise arrange
-#' @importFrom ggplot2 aes geom_polygon theme_void labs geom_text scale_fill_viridis_d scale_color_identity
+#' @importFrom dplyr mutate left_join group_by summarise
+#' @importFrom ggplot2 aes geom_polygon theme_void labs geom_text scale_fill_manual scale_color_identity
 #' @importFrom viridis scale_fill_viridis
 #' @importFrom logger log_info
+#' @export
 plot_region_counts <- function(state_counts, region_df, region_col, save_path = NULL) {
-
-  #conflicted::conflicts_prefer(base::setdiff)
 
   # Log the inputs to the function
   logger::log_info("Function `plot_region_counts` called with inputs:")
@@ -118,7 +118,6 @@ plot_region_counts <- function(state_counts, region_df, region_col, save_path = 
   logger::log_info("Centroids calculated for each region. `region_centroids` has {nrow(region_centroids)} rows.")
 
   # Plot the choropleth map with region_col as fill
-  # Log the beginning of the plot creation process
   logger::log_info("Creating the choropleth map with regions as fill and centroid labels.")
 
   # Ensure the region_col is a factor
@@ -128,7 +127,7 @@ plot_region_counts <- function(state_counts, region_df, region_col, save_path = 
   # Create the choropleth map
   region_plot <- ggplot2::ggplot(map_data_with_regions, ggplot2::aes(long, lat, group = group, fill = .data[[region_col]])) +
     ggplot2::geom_polygon(color = "gray30", size = 0.2) +
-    viridis::scale_fill_viridis_d(option = "C", name = region_col) +  # Use discrete viridis scale
+    viridis::scale_fill_viridis(discrete = TRUE, option = "C", name = region_col) +  # Corrected viridis usage
     ggplot2::theme_void() +
     ggplot2::labs(
       title = paste("Choropleth Map of Physicians Available by", region_col),
@@ -144,7 +143,6 @@ plot_region_counts <- function(state_counts, region_df, region_col, save_path = 
     ) +
     ggplot2::scale_color_identity()  # Ensures the color mapping works without legends for text colors
 
-  # Log completion of the plot
   logger::log_info("Plot creation complete.")
 
   # Save plot if a path is provided
@@ -159,45 +157,6 @@ plot_region_counts <- function(state_counts, region_df, region_col, save_path = 
   # Display the plot
   print(region_plot)
 
-  # Log output of function
   logger::log_info("Function `plot_region_counts` completed execution.")
   logger::log_info("Outputs: Displayed or saved choropleth map with regional physician counts.")
 }
-
-# # Assuming state_counts looks like this:
-# state_counts <- data.frame(
-#   state_code = c("connecticut", "maine", "massachusetts", "new york", "california", "texas", "florida", "idaho"),
-#   total_available = c(20, 15, 10, 30, 40, 35, 25, 5)
-# )
-# # Example 1: Plot with ENT Board of Governors (ENT_BOG) Regions
-# # ent_bog_regions contains columns "State" and "ENT_BOG_Region"
-# plot_region_counts(
-#   state_counts = state_counts,
-#   region_df = ent_bog_regions,
-#   region_col = "ENT_BOG_Region",
-#   state_col = "state_code",
-#   save_path = "ent_bog_region_map.png",
-#   color_scale = "C"
-# )
-#
-# # Example 2: Plot with ACOG Districts
-# # ACOG_Districts_sf contains columns "State" and "ACOG_District"
-# plot_region_counts(
-#   state_counts = state_counts,
-#   region_df = ACOG_Districts_sf,
-#   region_col = "ACOG_District",
-#   state_col = "state_code",
-#   save_path = "acog_district_map.png",
-#   color_scale = "D"
-# )
-#
-# # Example 3: Plot with General U.S. Census Regions
-# # regions_df contains columns "State" and "Region"
-# plot_region_counts(
-#   state_counts = state_counts,
-#   region_df = regions_df,
-#   region_col = "Region",
-#   state_col = "state_code",
-#   save_path = "us_census_region_map.png",
-#   color_scale = "B"
-# )

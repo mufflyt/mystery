@@ -20,8 +20,8 @@
 #' @importFrom dplyr filter mutate group_by summarize n row_number
 #' @importFrom ggplot2 ggplot geom_sf aes scale_fill_viridis_c theme_minimal theme labs ggsave
 #' @importFrom logger log_info log_debug log_error
-#' @importFrom rnaturalearth ne_countries
 #' @importFrom sf st_transform st_make_grid st_intersection st_sf st_union st_join
+#' @import tigris
 #' @export
 honeycomb_generate_maps <- function(
     physician_locations_sf = NULL,
@@ -34,6 +34,11 @@ honeycomb_generate_maps <- function(
   # Check for ggspatial
   if (!requireNamespace("ggspatial", quietly = TRUE)) {
     stop("The ggspatial package is required to generate maps but is not installed. Please install it using install.packages('ggspatial').")
+  }
+
+  # Check if rnaturalearth is available
+  if (!requireNamespace("rnaturalearth", quietly = TRUE)) {
+    stop("The rnaturalearth package is required for this function. Please install it using install.packages('rnaturalearth').")
   }
 
   # Default to dummy physician and district data if none is provided

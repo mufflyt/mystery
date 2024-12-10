@@ -46,6 +46,7 @@
 #'   filename_prefix = "insurance_vs_region",
 #'   verbose = FALSE
 #' )
+#' @export
 create_bar_plot <- function(input_data,
                             category_var,          # Variable for the x-axis (categorical)
                             grouping_var,          # Variable for facet wrap (grouping)
@@ -101,6 +102,7 @@ create_bar_plot <- function(input_data,
       plot.title = ggplot2::element_text(hjust = 0.5, size = 14),
       axis.title = ggplot2::element_text(size = 12),
       axis.text = ggplot2::element_text(size = 10),
+      axis.text.x = ggplot2::element_text(angle = 45, hjust = 1), # Tilt x-axis labels
       strip.text = ggplot2::element_text(size = 12, color = "black"),
       strip.background = ggplot2::element_rect(color = "grey10", fill = "white")
     )

@@ -9,47 +9,16 @@
 #' @param verbose Logical. If `TRUE`, prints detailed model diagnostics.
 #' @return A list containing the fitted mixed-effects model and summaries.
 #' @importFrom lme4 lmer
-#' @importFrom broom.mixed tidy
 #' @importFrom dplyr mutate select filter
 #' @importFrom logger log_info log_warn
 #' @importFrom stats lm na.omit poisson sd setNames
+#' @import effects
 #'
 #' @examples
-#' # Example 1: Basic mixed model with random effects by state
-#' model_data <- data.frame(
-#'   wait_time = rpois(100, lambda = 7),
-#'   insurance_type = sample(c("Medicaid", "Private"), 100, replace = TRUE),
-#'   state = sample(state.abb[1:10], 100, replace = TRUE),
-#'   physician_id = sample(1:50, 100, replace = TRUE)
-#' )
-#' model_results <- results_section_fit_mixed_model_with_logging(
-#'   wait_time_data = model_data,
-#'   outcome_var = "wait_time",
-#'   random_effects = "state",
-#'   fixed_effects = "insurance_type"
-#' )
-#'
-#' # Example 2: Including physician-level random effects
-#' model_results_physician <- results_section_fit_mixed_model_with_logging(
-#'   wait_time_data = model_data,
-#'   outcome_var = "wait_time",
-#'   random_effects = c("state", "physician_id"),
-#'   fixed_effects = "insurance_type"
-#' )
-#'
-#' # Example 3: Adding demographic fixed effects
-#' model_data$age <- sample(30:60, 100, replace = TRUE)
-#' model_results_demo <- results_section_fit_mixed_model_with_logging(
-#'   wait_time_data = model_data,
-#'   outcome_var = "wait_time",
-#'   random_effects = "state",
-#'   fixed_effects = c("insurance_type", "age"),
-#'   verbose = TRUE
-#' )
-#' @export
+#' # Example usage here
 results_section_fit_mixed_model_with_logging <- function(
     wait_time_data, outcome_var, random_effects, fixed_effects, verbose = FALSE) {
-  # Function implementation here
+  # Implementation of the function here
 }
 
 fit_mixed_model_with_logging <- function(wait_time_data,
@@ -67,7 +36,6 @@ fit_mixed_model_with_logging <- function(wait_time_data,
                                          model_type = "lmer",
                                          significance_cutoff = 0.2,
                                          save_path = NULL) {
-
   # Error handling for inputs
   if (!"data.frame" %in% class(data)) {
     log_error("Input data is not a valid data frame.")
@@ -110,10 +78,6 @@ fit_mixed_model_with_logging <- function(wait_time_data,
     CI_Upper = numeric(),
     Wait_Time_Effect = character()
   )
-
-  # Beep to indicate the function is progressing
-  log_info("Progress beep activated.")
-  beepr::beep(1)
 
   # Loop over each predictor variable
   for (predictor in predictor_vars) {
@@ -198,15 +162,10 @@ fit_mixed_model_with_logging <- function(wait_time_data,
     log_info("Results saved to {save_path}")
   }
 
-  # Beep to indicate function completion
-  log_info("Completion beep activated.")
-  beepr::beep(2)
-
   # Display the cleaned-up table
   print(significant_predictors_cleaned)
 
   # Return the final table for further use
   log_info("Returning the cleaned-up significant predictors table.")
-  print(significant_predictors_cleaned)
   return(significant_predictors_cleaned)
 }

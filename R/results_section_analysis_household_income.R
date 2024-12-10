@@ -34,6 +34,21 @@
 #' @export
 results_section_analysis_household_income <- function(year = 2022, physician_information_with_zip) {
 
+  if (!requireNamespace("zipcodeR", quietly = TRUE)) {
+    stop("The 'zipcodeR' package is required for this function. Please install it.")
+  }
+
+
+  if (!requireNamespace("duckdb", quietly = TRUE)) {
+    stop("The 'duckdb' package is required for this function. Please install it.")
+  }
+
+  con <- duckdb::dbConnect(duckdb::duckdb())
+
+
+  con <- duckdb::dbConnect(duckdb::duckdb())
+
+
   # Log the start of the function
   logger::log_info("Starting analysis of physician distribution by household income quartile.")
 
