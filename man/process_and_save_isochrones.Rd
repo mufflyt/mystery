@@ -38,5 +38,4 @@ isochrones_data <- process_and_save_isochrones(input_file, chunk_size = 25)
 sf::st_write(isochrones_data, dsn =
 "data/isochrones/isochrones_all_combined",
              layer = "isochrones", driver = "ESRI Shapefile", quiet = FALSE)
-
 }

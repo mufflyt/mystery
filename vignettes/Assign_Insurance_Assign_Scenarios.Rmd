@@ -1,0 +1,122 @@
+---
+title: "Sampling Spine Surgeons and Assigning Cases"
+author: "Tyler Muffly"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Sampling Spine Surgeons and Assigning Cases}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+<!-- ```{r setup, include=FALSE} -->
+<!-- knitr::opts_chunk$set(echo = TRUE) -->
+
+<!-- library(tyler) -->
+<!-- library(dplyr) -->
+<!-- library(tidyr) -->
+<!-- library(readxl) -->
+<!-- library(logger) -->
+<!-- library(stringr) -->
+<!-- ``` -->
+
+<!-- ## Overview -->
+<!-- This vignette demonstrates how to: -->
+
+<!-- * Load and process data for physicians -->
+<!-- * Expand the dataset to assign multiple insurance scenarios to each physician. -->
+<!-- * Add identifying information (e.g., row numbers) and create a combined descriptive column. -->
+<!-- * Distribute cases among lab assistants using a splitting function. -->
+
+<!-- ## Step 1: Load and Prepare the Data -->
+<!-- We start by loading a dataset of spine surgeons from an Excel file. We clean and transform the data to standardize names, map state abbreviations to full state names, and add time zones. -->
+
+<!-- ```{r cars} -->
+<!-- # Load the data -->
+<!-- sample_specialists <- readxl::read_xlsx("ortho_spine/data/from_nick_after_phase1/Spine Physician List.xlsx") %>% -->
+<!--   dplyr::rename( -->
+<!--     phone_number = `Correct Number`, -->
+<!--     specialty_primary = taxonomies_desc, -->
+<!--     NPI = npi -->
+<!--   ) %>% -->
+<!--   dplyr::filter(`Include (Y/N)` == "Y") %>% -->
+<!--   dplyr::select(-`Include (Y/N)`, -`Reason for Exclusion`) %>% -->
+<!--   dplyr::mutate( -->
+<!--     last = stringr::str_to_title(last), -->
+<!--     first = stringr::str_to_title(first), -->
+<!--     full_name = paste("Dr.", first, last), -->
+<!--     addresses_state = dplyr::case_when( -->
+<!--       `State Code` %in% state.abb ~ state.name[match(`State Code`, state.abb)], -->
+<!--       TRUE ~ `State Code` -->
+<!--     ), -->
+<!--     timezone = dplyr::case_when( -->
+<!--       addresses_state %in% c("Maine", "New Hampshire", "Vermont", "Massachusetts", "Rhode Island",  -->
+<!--                              "Connecticut", "New York", "New Jersey", "Delaware", "Maryland",  -->
+<!--                              "Pennsylvania", "Virginia", "West Virginia", "North Carolina",  -->
+<!--                              "South Carolina", "Georgia", "Florida", "Ohio", "Indiana", "Michigan") ~ "Eastern Time", -->
+<!--       addresses_state %in% c("Wisconsin", "Illinois", "Missouri", "North Dakota", "South Dakota",  -->
+<!--                              "Nebraska", "Kansas", "Minnesota", "Iowa", "Kentucky", "Tennessee",  -->
+<!--                              "Alabama", "Mississippi", "Arkansas", "Louisiana", "Texas", "Oklahoma") ~ "Central Time", -->
+<!--       addresses_state %in% c("Montana", "Idaho", "Wyoming", "Utah", "Colorado", "New Mexico", "Arizona") ~ "Mountain Time", -->
+<!--       addresses_state %in% c("California", "Nevada", "Oregon", "Washington") ~ "Pacific Time", -->
+<!--       addresses_state == "Hawaii" ~ "Hawaii-Aleutian Time", -->
+<!--       addresses_state == "Alaska" ~ "Alaska Time", -->
+<!--       TRUE ~ "Unknown Timezone" -->
+<!--     ), -->
+<!--     NPI = paste("NPI:", NPI), -->
+<!--     combined_info = paste(full_name, ",", phone_number, ",", addresses_state, ",", timezone, ",", NPI) -->
+<!--   ) %>% -->
+<!--   dplyr::relocate(combined_info, .before = everything()) -->
+
+<!-- glimpse(sample_specialists) -->
+<!-- ``` -->
+
+<!-- ## Step 2: Expand Data by Insurance Scenarios -->
+<!-- Using the phase2_sample_surgeons function, we assign multiple insurance scenarios to each physician while retaining all original columns. -->
+
+<!-- ```{r pressure, echo=FALSE} -->
+<!-- # Assign multiple insurance scenarios -->
+<!-- phase2_sample_surgeons_output <- phase2_sample_surgeons( -->
+<!--   data = sample_specialists, -->
+<!--   insurance_types = c("Medicare", "Medicaid", "BCBS"), -->
+<!--   ensure_unique_phone_numbers = TRUE, -->
+<!--   output_csv_path = "data/phase_2", -->
+<!--   seed = 1978 -->
+<!-- ) %>% -->
+<!--   dplyr::mutate(combined_info = paste0(combined_info, ", ", insurance)) -->
+
+<!-- glimpse(phase2_sample_surgeons_output) -->
+<!-- ``` -->
+
+
+<!-- ## Step 3: Assign Cases to Lab Assistants -->
+<!-- The split_calls_to_lab_assistants_and_save_by_priority function assigns cases to lab assistants. Each assistant receives cases randomly based on the insurance column. -->
+
+<!-- ```{r} -->
+<!-- # Define lab assistants -->
+<!-- assistant_names <- c( -->
+<!--   "Amy Du", "Bret Hatzinger", "Paul Botolin", "Jasmine Hartman Budnik", -->
+<!--   "Miranda Manfre", "Jason Sidrak", "Daniel Stokes", "Ryan Tseng", -->
+<!--   "Tristan Seawalt", "Christopher Hawryluk", "Lind" -->
+<!-- ) -->
+
+<!-- # Assign cases and save -->
+<!-- split_calls_to_lab_assistants_and_save_by_priority( -->
+<!--   input_data_or_path = phase2_sample_surgeons_output, -->
+<!--   output_folder = "ortho_spine/data/caller_assignments", -->
+<!--   assistant_names = assistant_names, -->
+<!--   seed_value = 1978, -->
+<!--   complete_file_prefix = "complete_version_", -->
+<!--   split_file_prefix = "", -->
+<!--   recursive_create = TRUE, -->
+<!--   split_column = "insurance", -->
+<!--   priority_values = NULL -->
+<!-- ) -->
+<!-- ``` -->
+
+<!-- ## Conclusion -->
+<!-- This vignette demonstrates how to: -->
+
+<!-- * Load and process spine surgeon data. -->
+<!-- * Expand the dataset with multiple insurance scenarios. -->
+<!-- * Assign cases to lab assistants and save the results for further analysis. -->
+<!-- * Use this workflow to scale and manage physician assignments efficiently in your studies or projects. -->

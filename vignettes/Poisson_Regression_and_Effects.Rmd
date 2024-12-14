@@ -1,0 +1,83 @@
+---
+title: "Analyzing Wait Times for Appointments: Poisson Regression and Interaction Effects"
+author: "Tyler Muffly, MD"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Analyzing Wait Times for Appointments}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+---
+
+# Introduction
+In healthcare, understanding wait times for medical appointments is a crucial factor in improving patient care. This vignette demonstrates how to analyze waiting times for appointments using Poisson regression, which is appropriate for count data, such as the number of business days until a patient's appointment. Specifically, we investigate how insurance type and medical scenario influence waiting times and explore interaction effects between these two variables. Additionally, we will use Estimated Marginal Means (EMMs) to interpret the results, allowing for clearer comparisons across groups.
+
+## 1. Data Preparation
+Before we begin the analysis, we need to prepare and load the data. The data we’ll use contains the following columns:
+
+The dataset contains the following columns:
+
+- **Scenario**: Different medical conditions (e.g., Tubo-Ovarian Abscess, Pregnancy after Tubal Ligation, UTI, Vaginitis).
+- **Insurance**: Patient insurance types (e.g., Medicaid, Blue Cross/Blue Shield).
+- **Business Days Until Appointment**: Number of days it takes for patients to secure an appointment.
+- **NPI**: National Provider Identifier, representing healthcare providers (used as a random effect).
+
+### Simulating Example Data
+We also simulate the data here for demonstration purposes.
+
+```{r, include = TRUE, message=TRUE}
+# Load required libraries
+library(dplyr)
+library(ggplot2)
+library(lme4)
+library(emmeans)
+library(knitr)
+library(tidyr)
+
+# Example data preparation
+set.seed(123)
+df <- data.frame(
+  scenario = rep(c("TOA", "Pregnancy after Tubal Ligation", "UTI", "Vaginitis"), each = 50),
+  insurance = rep(c("Medicaid", "Blue Cross/Blue Shield"), times = 100),
+  business_days_until_appointment = rpois(200, lambda = 20),
+  NPI = sample(1:20, 200, replace = TRUE)
+)
+```
+
+```{r knitr options, include=FALSE, collapse = TRUE, warning = FALSE}
+knitr::opts_chunk$set(
+  message=FALSE, echo=TRUE, include = TRUE, fig.width = 6, fig.height = 4, progress = TRUE, warning = FALSE, collapse = FALSE)
+
+options(scipen=999)
+```
+Here, we've simulated data where the outcome variable, business_days_until_appointment, follows a Poisson distribution, a suitable model for count data like this. The insurance column includes two types of insurance, Medicaid and Blue Cross/Blue Shield, while the scenario column includes different medical situations.
+
+# 2. Fitting a Poisson Regression Model
+## 2.1 Fit the Interaction Model
+To analyze the effect of insurance and scenario on waiting times, we fit a Poisson regression model using the glmer function from the lme4 package. This model accounts for the interaction between insurance type and scenario, as well as a random intercept for NPI (since different healthcare providers might have different waiting times).
+
+```{r, include = TRUE}
+interaction_model <- glmer(
+  business_days_until_appointment ~ scenario * insurance + (1 | NPI),
+  data = df,
+  family = poisson(link = "log")
+)
+```
+
+The **Poisson regression model** assumes that the count data (waiting time in days) follows a Poisson distribution and allows us to estimate the effects of the predictor variables (`insurance` and `scenario`) on the outcome (`business_days_until_appointment`). The glmer function includes a random intercept for `NPI`, accounting for the fact that healthcare providers may have systematically different wait times.
+
+The Poisson regression model assumes that the count data (waiting time in days) follows a Poisson distribution and allows us to estimate the effects of the predictor variables (insurance and scenario) on the outcome (business_days_until_appointment). The glmer function includes a random intercept for NPI, accounting for the fact that healthcare providers may have systematically different wait times.
+
+# 3. Estimated Marginal Means (EMMs)
+## 3.1 Extract EMMs
+We now use the Estimated Marginal Means (EMMs) to obtain adjusted estimates for waiting times. EMMs allow us to make comparisons between levels of the predictor variables (e.g., insurance type), while controlling for other factors in the model.
+
+```{r, include = TRUE}
+interaction_result <- emmeans::emmeans(interaction_model, ~ scenario * insurance, type = "response")
+interaction_data <- as.data.frame(interaction_result)
+```
+
+The emmeans function computes estimated marginal means for each combination of scenario and insurance type, providing us with adjusted waiting times. These adjusted means account for other variables in the model, helping us focus on the effect of insurance type on wait times.
+

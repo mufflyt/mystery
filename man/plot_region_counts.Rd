@@ -7,26 +7,27 @@
 plot_region_counts(state_counts, region_df, region_col, save_path = NULL)
 }
 \arguments{
-\item{state_counts}{A dataframe containing state-level physician counts. Must have columns \code{state_code} and \code{total_available}.}
+\item{state_counts}{A dataframe containing state-level physician counts. Must have columns \code{state_code} (lowercase state names) and \code{total_available} (numerical counts).}
 
-\item{region_df}{A dataframe with columns \code{State} and a region grouping column. Each row maps a state to its region.}
+\item{region_df}{A dataframe mapping states to regions. Must include \code{State} (state names in lowercase) and a column for the region grouping.}
 
-\item{region_col}{A string specifying the name of the column in \code{region_df} used to group the states by region.}
+\item{region_col}{A string specifying the column in \code{region_df} to use for grouping states into regions (e.g., "Region").}
 
-\item{save_path}{An optional string specifying the file path to save the generated plot. If \code{NULL}, the plot displays onscreen only.}
+\item{save_path}{Optional. A string specifying the file path to save the plot as an image. If \code{NULL} (default), the plot is displayed onscreen but not saved.}
 }
 \value{
 A ggplot object representing the choropleth map.
 }
 \description{
-This function creates a choropleth map of physician counts by region, with options for different regional groupings.
-It merges state counts with regional data, calculates centroids for text labels, and generates a plot using ggplot2.
-Extensive logging is provided to the console for each major step, including data transformations, plot generation, and file saving.
+This function creates a choropleth map visualizing physician counts by region, with options for grouping states into custom regions. It handles merging state counts with regional data, calculating centroids for text labels, and generating plots using ggplot2. Logging is included to provide insights into the execution flow and data transformations.
+}
+\details{
+The function merges \code{state_counts} and \code{region_df} by state name, aggregates physician counts by region, and maps these counts onto a choropleth. Labels representing the counts are added at region centroids.
 }
 \examples{
-# Example 1: Plot region counts for ENT_BOG regions, saving output to a file
+# Example 1: Plot and save a map grouped by ENT_BOG regions
 ent_bog_regions <- data.frame(
-  State = c("Alabama", "Alaska", "Arizona"),
+  State = c("alabama", "alaska", "arizona"),
   ENT_BOG_Region = c("Region 4", "Region 9", "Region 9")
 )
 state_counts <- data.frame(
@@ -40,9 +41,9 @@ plot_region_counts(
   save_path = "ent_bog_region_map.png"
 )
 
-# Example 2: Plot without saving, grouping by ACOG districts
+# Example 2: Plot ACOG Districts without saving
 ACOG_Districts_sf <- data.frame(
-  State = c("California", "Nevada", "Utah"),
+  State = c("california", "nevada", "utah"),
   ACOG_District = c("District IX", "District IX", "District VIII")
 )
 state_counts <- data.frame(
@@ -55,9 +56,9 @@ plot_region_counts(
   region_col = "ACOG_District"
 )
 
-# Example 3: Grouping by custom region data, saving output to file
+# Example 3: Plot custom regions and save output
 custom_regions <- data.frame(
-  State = c("Texas", "New York", "Florida"),
+  State = c("texas", "new york", "florida"),
   Custom_Region = c("South", "Northeast", "South")
 )
 state_counts <- data.frame(
