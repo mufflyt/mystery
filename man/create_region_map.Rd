@@ -60,21 +60,5 @@ regions_map <- us_census_bureau_regions_df \%>\%
   ggplot2::labs(title = "Map of U.S. Regions (Excluding Alaska)")
 print(regions_map)
 
-# Example 2: Create a map of U.S. states by ACOG districts,
-including Alaska and Hawaii
-create_region_map(
-  remove_ak_hi = FALSE,
-  districts_per_group = "acog_districts",
-  alpha_level = 0.5
-)
-
-# Example 3: Create a map of U.S. states by ENT Board of Governors Regions
-and save it to a file
-create_region_map(
-  remove_ak_hi = TRUE,
-  districts_per_group = "ENT_Board_of_Governors_Regions",
-  save_path = "ent_bog_regions_map.png",
-  alpha_level = 0.3
-)
 
 }
