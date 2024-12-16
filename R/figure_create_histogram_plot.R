@@ -1,4 +1,4 @@
-#' Create a Histogram Plot with Logging
+#' Create a Histogram Plot with Logging and Validation
 #'
 #' This function generates a histogram plot with optional faceting and includes the total sample size
 #' in the plot title. It logs all inputs, outputs, data transformations, and file paths to the console.
@@ -19,50 +19,16 @@
 #' @return A ggplot object representing the histogram. The plot is also saved to the specified
 #'   `output_file` if provided.
 #'
-#' @examples
-#' # Example 1: Basic usage with faceting and a custom title
-#' create_figure_histogram_plot(
-#'   df = mtcars,
-#'   x_var = "mpg",
-#'   facet_var = "cyl",
-#'   binwidth = 2,
-#'   title = "Histogram of Miles Per Gallon",
-#'   x_label = "Miles Per Gallon",
-#'   y_label = "Frequency"
-#' )
-#'
-#' # Example 2: Save the plot to an output file
-#' create_figure_histogram_plot(
-#'   df = mtcars,
-#'   x_var = "hp",
-#'   facet_var = "gear",
-#'   binwidth = 20,
-#'   title = "Histogram of Horsepower",
-#'   x_label = "Horsepower",
-#'   y_label = "Frequency",
-#'   output_file = "output/histogram_hp_gear.png"
-#' )
-#'
-#' # Example 3: Custom bin width and labels with no output file
-#' create_figure_histogram_plot(
-#'   df = iris,
-#'   x_var = "Sepal.Length",
-#'   facet_var = "Species",
-#'   binwidth = 0.5,
-#'   title = "Sepal Length by Species",
-#'   x_label = "Sepal Length (cm)",
-#'   y_label = "Number of Observations"
-#' )
-#'
 #' @importFrom ggplot2 ggplot aes_string geom_histogram facet_wrap ggtitle xlab ylab theme_light
 #' @importFrom ggplot2 theme element_text element_rect ggsave
 #' @importFrom stats as.formula
 #' @importFrom logger log_info
 #' @importFrom glue glue
+#' @importFrom assertthat assert_that is.string has_name
 #' @export
 create_histogram_plot <- function(df, x_var, facet_var, binwidth = 1,
-                                         title = "", x_label = "", y_label = "Count",
-                                         output_file = NULL) {
+                                  title = "", x_label = "", y_label = "Count",
+                                  output_file = NULL) {
   # Log inputs
   logger::log_info("Creating a histogram plot with the following inputs:")
   logger::log_info("  x_var: {x_var}")
@@ -75,14 +41,14 @@ create_histogram_plot <- function(df, x_var, facet_var, binwidth = 1,
     logger::log_info("  output_file: {output_file}")
   }
 
-  # Validate input data frame
-  if (!x_var %in% names(df)) {
-    stop(glue::glue("The variable '{x_var}' is not found in the data frame."))
-  }
-  if (!facet_var %in% names(df)) {
-    stop(glue::glue("The variable '{facet_var}' is not found in the data frame."))
-  }
-  logger::log_info("Input data validation successful.")
+  # Validate inputs using assertthat
+  assertthat::assert_that(is.data.frame(df), msg = "The input `df` must be a data frame.")
+  assertthat::assert_that(assertthat::is.string(x_var), msg = "`x_var` must be a string.")
+  assertthat::assert_that(assertthat::is.string(facet_var), msg = "`facet_var` must be a string.")
+  assertthat::assert_that(assertthat::has_name(df, x_var),
+                          msg = glue::glue("The variable '{x_var}' is not found in the data frame."))
+  assertthat::assert_that(assertthat::has_name(df, facet_var),
+                          msg = glue::glue("The variable '{facet_var}' is not found in the data frame."))
 
   # Log data transformation
   total_n <- nrow(df)

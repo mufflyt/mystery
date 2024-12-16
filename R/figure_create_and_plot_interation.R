@@ -2,8 +2,6 @@
 #'
 #' This function reads data from a specified file, fits a generalized linear mixed model (GLMM) with a specified
 #' interaction term, and creates a plot to visualize the interaction effects. The plot is saved to a specified directory.
-#' This is particularly useful for analyzing how two categorical variables interact to affect a response variable,
-#' controlling for a random intercept.
 #'
 #' @param data_path A character string specifying the path to the .rds file containing the dataset.
 #' @param response_variable A character string specifying the name of the response variable in the dataset.
@@ -15,149 +13,86 @@
 #'
 #' @return A list containing the fitted GLMM (`model`) and the summarized data used for the effects plot (`effects_plot_data`).
 #'
-#' @details The function performs the following steps:
-#' - Reads the data from the provided file path.
-#' - Renames and converts the specified columns to appropriate types.
-#' - Fits a Poisson GLMM with an interaction term and a random intercept.
-#' - Summarizes the interaction effects and creates a plot.
-#' - Saves the plot to the specified directory.
-#'
-#' This function is useful in scenarios where you want to examine the interaction between two categorical variables
-#' and their combined effect on a count-based response variable (e.g., the number of business days until an appointment).
-#' It can handle complex data structures and controls for variability across groups using random intercepts.
-#'
 #' @examples
 #' \dontrun{
-#' # Example 1: Analyzing the effect of gender and appointment center on wait times
 #' result <- create_and_plot_interaction(
 #'   data_path = "data/phase2_analysis.rds",
 #'   response_variable = "business_days_until_appointment",
-#'   variable_of_interest = "central_number_e_g_appointment_center",
+#'   variable_of_interest = "appointment_center",
 #'   interaction_variable = "gender",
 #'   random_intercept = "city",
 #'   output_path = "results/figures",
 #'   resolution = 100
 #' )
-#'
-#' # Example 2: Examining the interaction between insurance type and scenario on appointment delays
-#' result <- create_and_plot_interaction(
-#'   data_path = "data/healthcare_calls.rds",
-#'   response_variable = "business_days_until_appointment",
-#'   variable_of_interest = "insurance_type",
-#'   interaction_variable = "scenario",
-#'   random_intercept = "state",
-#'   output_path = "results/insurance_scenario_interaction",
-#'   resolution = 150
-#' )
-#'
-#' # Example 3: Studying the interaction between gender and subspecialty in wait times
-#' result <- create_and_plot_interaction(
-#'   data_path = "data/mystery_caller_study.rds",
-#'   response_variable = "waiting_time_days",
-#'   variable_of_interest = "subspecialty",
-#'   interaction_variable = "gender",
-#'   random_intercept = "clinic_id",
-#'   output_path = "results/waiting_times",
-#'   resolution = 300
-#' )
 #' }
-#'
 #' @importFrom lme4 glmer
 #' @importFrom dplyr rename mutate group_by summarise
 #' @importFrom ggplot2 ggsave ggplot aes geom_point geom_line labs theme_minimal
-#' @importFrom rlang sym
-#' @importFrom stats lm na.omit poisson sd setNames
+#' @importFrom assertthat assert_that is.string is.number is.dir
 #' @export
 create_and_plot_interaction <- function(data_path, response_variable, variable_of_interest, interaction_variable, random_intercept, output_path, resolution = 100) {
+  # Validate inputs using assertthat
+  assertthat::assert_that(assertthat::is.string(data_path) && file.exists(data_path),
+                          msg = "`data_path` must be a valid file path.")
+  assertthat::assert_that(assertthat::is.string(response_variable),
+                          msg = "`response_variable` must be a non-empty character string.")
+  assertthat::assert_that(assertthat::is.string(variable_of_interest),
+                          msg = "`variable_of_interest` must be a non-empty character string.")
+  assertthat::assert_that(assertthat::is.string(interaction_variable),
+                          msg = "`interaction_variable` must be a non-empty character string.")
+  assertthat::assert_that(assertthat::is.string(random_intercept),
+                          msg = "`random_intercept` must be a non-empty character string.")
+  assertthat::assert_that(assertthat::is.dir(output_path),
+                          msg = "`output_path` must be a valid directory.")
+  assertthat::assert_that(assertthat::is.number(resolution) && resolution > 0,
+                          msg = "`resolution` must be a positive number.")
+
   # Read the data
   data <- readRDS(data_path)
+  assertthat::assert_that(is.data.frame(data), msg = "`data` must be a data frame.")
 
-  # Ensure the data is a data frame
-  if (!is.data.frame(data)) {
-    stop("Data must be a data.frame")
-  }
+  # Check if required columns exist
+  required_columns <- c(response_variable, variable_of_interest, interaction_variable, random_intercept)
+  missing_columns <- setdiff(required_columns, colnames(data))
+  assertthat::assert_that(length(missing_columns) == 0,
+                          msg = paste("The following required columns are missing in the dataset:", paste(missing_columns, collapse = ", ")))
 
-  # Log inputs
-  cat("Inputs:\n")
-  cat("response_variable:", response_variable, "\n")
-  cat("variable_of_interest:", variable_of_interest, "\n")
-  cat("interaction_variable:", interaction_variable, "\n")
-  cat("random_intercept:", random_intercept, "\n")
-  cat("output_path:", output_path, "\n")
-  cat("resolution:", resolution, "\n\n")
-
-  # Rename the columns for simplicity
+  # Rename and transform columns
   data <- data %>%
     dplyr::rename(
       response_var = !!rlang::sym(response_variable),
       var_interest = !!rlang::sym(variable_of_interest),
       int_var = !!rlang::sym(interaction_variable)
-    )
-
-  # Ensure the columns are in the correct format
-  data <- data %>%
+    ) %>%
     dplyr::mutate(
       response_var = as.numeric(response_var),
       var_interest = as.factor(var_interest),
       int_var = as.factor(int_var)
     )
 
-  # Remove any rows with NA values
+  # Remove rows with NA values
   data <- stats::na.omit(data)
 
-  # Log the first few rows of data to check formats
-  cat("Data preview after renaming and type conversion:\n")
-  print(head(data))
-  cat("\n\n")
+  # Construct and fit the model
+  model_formula <- as.formula(paste("response_var ~ int_var * var_interest + (1 |", random_intercept, ")"))
+  glmer_model <- lme4::glmer(model_formula, data = data, family = poisson(link = "log"))
 
-  # Construct the model formula
-  interaction_term <- "int_var * var_interest"
-  model_formula <- as.formula(paste("response_var ~", interaction_term, "+ (1 |", random_intercept, ")"))
-
-  # Log model formula
-  cat("Model formula:", deparse(model_formula), "\n\n")
-
-  # Fit the model with interaction
-  cat("Fitting the model...\n")
-  glmer_model <- lme4::glmer(model_formula,
-                             data = data,
-                             family = poisson(link = "log"),
-                             nAGQ = 0,
-                             verbose = 0L)
-  cat("Model fitted successfully.\n\n")
-
-  # Log model summary
-  cat("Model summary:\n")
-  print(summary(glmer_model))
-  cat("\n\n")
-
-  # Create the effects plot manually
-  cat("Creating effects plot...\n")
+  # Summarize interaction effects for plotting
   pred_data <- data %>%
-    dplyr::mutate(pred = predict(glmer_model, type = "response"))
+    dplyr::mutate(pred = predict(glmer_model, type = "response")) %>%
+    dplyr::group_by(int_var, var_interest) %>%
+    dplyr::summarise(mean_pred = mean(pred), .groups = "drop")
 
-  plot_data <- pred_data %>%
-    group_by(int_var, var_interest) %>%
-    summarise(mean_pred = mean(pred), .groups = 'drop')
-
-  ggplot(plot_data, aes(x = int_var, y = mean_pred, color = var_interest)) +
+  # Create and save the plot
+  plot <- ggplot(pred_data, aes(x = int_var, y = mean_pred, color = var_interest)) +
     geom_point() +
     geom_line(aes(group = var_interest)) +
     labs(title = "Interaction Effect Plot", y = response_variable, x = interaction_variable) +
     theme_minimal()
 
-  # Save the plot
-  plot_filename <- file.path(output_path, paste0("interaction_", interaction_variable, "_", variable_of_interest, ".png"))
-  cat("Saving effects plot to:", plot_filename, "\n")
-  ggsave(plot_filename, width = 6, height = 4, dpi = resolution)
-  cat("Effects plot saved successfully.\n\n")
+  plot_filename <- file.path(output_path, paste0("interaction_", variable_of_interest, "_", interaction_variable, ".png"))
+  ggplot2::ggsave(plot_filename, plot, width = 6, height = 4, dpi = resolution)
 
-  # Log outputs
-  cat("Outputs:\n")
-  print(glmer_model)
-  print("Effects plot object:\n")
-  print(plot_data)
-
-  # Return the model and effects plot data
-  return(list(model = glmer_model, effects_plot_data = plot_data))
+  # Return results
+  return(list(model = glmer_model, effects_plot_data = pred_data))
 }

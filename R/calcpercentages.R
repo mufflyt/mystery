@@ -32,9 +32,19 @@
 #' print(result)
 #'
 #' @importFrom dplyr count slice_max mutate
+#' @importFrom assertthat assert_that is.string has_name
 #' @export
 calcpercentages <- function(df, variable) {
-  variable <- as.character(variable)  # Convert variable name to character
+  # Input validation using assertthat
+  assertthat::assert_that(is.data.frame(df),
+                          msg = "The `df` argument must be a data frame.")
+  assertthat::assert_that(assertthat::is.string(variable),
+                          msg = "The `variable` argument must be a single string.")
+  assertthat::assert_that(assertthat::has_name(df, variable),
+                          msg = paste("The variable", variable, "is not found in the data frame."))
+
+  # Convert variable name to character to ensure compatibility with dplyr
+  variable <- as.character(variable)
 
   # Calculate counts and identify the most common value
   x <- df %>%

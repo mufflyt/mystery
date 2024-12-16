@@ -48,8 +48,31 @@ fetch_population_data <- function(state = c("CO"),
   # Log inputs
   log_inputs(state, years, race_vars)
 
-  # Validate inputs
-  validate_inputs(state, years, race_vars)
+  # Validate inputs using assertthat
+  assertthat::assert_that(
+    is.character(state),
+    msg = "`state` must be a character vector of state abbreviations."
+  )
+  assertthat::assert_that(
+    assertthat::noNA(state),
+    msg = "`state` contains NA values, which are not allowed."
+  )
+  assertthat::assert_that(
+    is.numeric(years),
+    msg = "`years` must be a numeric vector."
+  )
+  assertthat::assert_that(
+    assertthat::noNA(years),
+    msg = "`years` contains NA values, which are not allowed."
+  )
+  assertthat::assert_that(
+    is.character(race_vars) && length(names(race_vars)) > 0,
+    msg = "`race_vars` must be a named character vector."
+  )
+  assertthat::assert_that(
+    assertthat::noNA(names(race_vars)),
+    msg = "`race_vars` contains unnamed elements, which are not allowed."
+  )
 
   # Fetch population data for all years
   logger::log_info("Fetching population data from ACS...")
@@ -71,29 +94,6 @@ log_inputs <- function(state, years, race_vars) {
   logger::log_info("States: {paste(state, collapse = ', ')}")
   logger::log_info("Years: {paste(years, collapse = ', ')}")
   logger::log_info("Race/Ethnicity Variables: {paste(names(race_vars), collapse = ', ')}")
-}
-
-#' @noRd
-validate_inputs <- function(state, years, race_vars) {
-  if (missing(state) || missing(years) || missing(race_vars)) {
-    logger::log_error("One or more required inputs (`state`, `years`, `race_vars`) are missing.")
-    stop("Missing required inputs: `state`, `years`, and/or `race_vars`.")
-  }
-
-  if (!is.character(state)) {
-    logger::log_error("`state` must be a character vector of state abbreviations.")
-    stop("`state` must be a character vector of state abbreviations.")
-  }
-
-  if (!is.numeric(years)) {
-    logger::log_error("`years` must be a numeric vector.")
-    stop("`years` must be a numeric vector.")
-  }
-
-  if (!is.character(race_vars) || !length(names(race_vars))) {
-    logger::log_error("`race_vars` must be a named character vector.")
-    stop("`race_vars` must be a named character vector.")
-  }
 }
 
 #' @noRd

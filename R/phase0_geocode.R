@@ -24,11 +24,11 @@
 #' # Here we geocode addresses from "addresses.csv" without saving to an output file
 #' google_maps_api_key <- "YOUR_API_KEY"
 #' file_path <- "addresses.csv"
-#' geocoded_data <- geocode_unique_addresses(file_path, google_maps_api_key)
+#' geocoded_data <- phase0_geocode(file_path, google_maps_api_key)
 #'
 #' # Output:
 #' # Geocoding unique addresses...
-#' # Starting geocode_unique_addresses function
+#' # Starting phase0_geocode function
 #' # Input file path: addresses.csv
 #' # Output file path: NULL
 #' # Reading data from addresses.csv
@@ -38,11 +38,11 @@
 #'
 #' # Example 2: Specifying an output file path to save the geocoded results
 #' save_to_file_path <- "geocoded_addresses.csv"
-#' geocoded_data <- geocode_unique_addresses(file_path, google_maps_api_key, save_to_file_path)
+#' geocoded_data <- phase0_geocode(file_path, google_maps_api_key, save_to_file_path)
 #'
 #' # Output:
 #' # Geocoding unique addresses...
-#' # Starting geocode_unique_addresses function
+#' # Starting phase0_geocode function
 #' # Input file path: addresses.csv
 #' # Output file path: geocoded_addresses.csv
 #' # Reading data from addresses.csv
@@ -53,11 +53,11 @@
 #' # Example 3: Geocoding with a dataset that lacks the 'address' column
 #' # This example demonstrates error handling for a missing 'address' column.
 #' file_path <- "invalid_addresses.csv" # Assume this file does not have 'address' column
-#' try(geocode_unique_addresses(file_path, google_maps_api_key))
+#' try(phase0_geocode(file_path, google_maps_api_key))
 #'
 #' # Output:
 #' # Geocoding unique addresses...
-#' # Starting geocode_unique_addresses function
+#' # Starting phase0_geocode function
 #' # Input file path: invalid_addresses.csv
 #' # Output file path: NULL
 #' # Reading data from invalid_addresses.csv
@@ -68,7 +68,7 @@
 phase0_geocode <- function(file_path, google_maps_api_key, save_to_file_path = NULL) {
 
   # Log function start and inputs
-  logger::log_info("Starting geocode_unique_addresses function")
+  logger::log_info("Starting phase0_geocode function")
   logger::log_info("Input file path: {file_path}")
   logger::log_info("Google Maps API key provided: {if (!is.null(google_maps_api_key)) 'Yes' else 'No'}")
   logger::log_info("Output file path: {save_to_file_path}")
@@ -93,7 +93,7 @@ phase0_geocode <- function(file_path, google_maps_api_key, save_to_file_path = N
   }
 
   # Log function completion and output details
-  logger::log_info("geocode_unique_addresses function completed successfully")
+  logger::log_info("phase0_geocode function completed successfully")
   logger::log_info("Output data has {nrow(geocoded_addresses)} rows and {ncol(geocoded_addresses)} columns")
 
   # Return the geocoded data frame

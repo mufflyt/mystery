@@ -12,7 +12,7 @@
 #' @return A formula object representing the specified model.
 #' @importFrom dplyr select setdiff
 #' @importFrom logger log_info log_debug log_warn
-#'
+#' @importFrom assertthat assert_that is.string noNA
 #' @examples
 #' # Example 1: Default behavior with pre-defined exclude_columns
 #' dataset <- data.frame(
@@ -54,6 +54,36 @@ create_formula <- function(
       "Teledermatology"
     )
 ) {
+  # Validate inputs using assertthat
+  assertthat::assert_that(
+    is.data.frame(dataset),
+    msg = "Error: 'dataset' must be a data frame."
+  )
+  assertthat::assert_that(
+    assertthat::is.string(outcome_var),
+    msg = "Error: 'outcome_var' must be a single string."
+  )
+  assertthat::assert_that(
+    is.null(group_var) || assertthat::is.string(group_var),
+    msg = "Error: 'group_var' must be NULL or a single string."
+  )
+  assertthat::assert_that(
+    assertthat::is.character(exclude_columns),
+    msg = "Error: 'exclude_columns' must be a character vector."
+  )
+  assertthat::assert_that(
+    outcome_var %in% names(dataset),
+    msg = paste("Error: Outcome variable", outcome_var, "is not found in the dataset.")
+  )
+  assertthat::assert_that(
+    is.null(group_var) || group_var %in% names(dataset),
+    msg = paste("Error: Group variable", group_var, "is not found in the dataset.")
+  )
+  assertthat::assert_that(
+    all(!is.na(names(dataset))),
+    msg = "Error: Dataset contains columns with missing names."
+  )
+
   # Log inputs
   logger::log_info("Starting create_formula function")
   logger::log_debug("Input dataset has {ncol(dataset)} columns and {nrow(dataset)} rows.")

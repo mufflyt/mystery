@@ -7,10 +7,11 @@
 #' @return A data frame with each table name and its corresponding columns.
 #' @export
 #' @importFrom dplyr bind_cols
-#' @importFrom purrr map_dfc map_int
+#' @importFrom purrr map_dfc map_int map_chr
 #' @importFrom stringr str_detect
 #' @importFrom tibble tibble
 #' @importFrom glue glue
+#' @importFrom assertthat assert_that
 #' @examples
 #' # Example 1: Convert a list of column names to an expanded data frame
 #' test_list <- list(table1 = c("col1", "col2"), table2 = c("col1", "col2", "col3"))
@@ -27,11 +28,35 @@
 #' expanded_df_empty <- convert_list_to_df_expanded(empty_list)
 #' print(expanded_df_empty)  # Should return an empty data frame
 convert_list_to_df_expanded <- function(column_list) {
+  # Validate input using assertthat
+  assertthat::assert_that(
+    is.list(column_list),
+    msg = "Error: 'column_list' must be a list."
+  )
+  assertthat::assert_that(
+    assertthat::is.named(column_list),
+    msg = "Error: 'column_list' must be a named list."
+  )
+  assertthat::assert_that(
+    all(purrr::map_lgl(column_list, is.character)),
+    msg = "Error: Each element of 'column_list' must be a character vector."
+  )
+
   # Log function input
   message("Converting list to data frame...")
+  if (length(column_list) == 0) {
+    message("The input list is empty. Returning an empty data frame.")
+    return(tibble::tibble())
+  }
 
   # Filter for general tables (tables that match the "OP_DTL_GNRL_" pattern)
   filtered_list <- column_list[stringr::str_detect(names(column_list), "^OP_DTL_GNRL_")]
+
+  # Validate that filtered list is not empty
+  if (length(filtered_list) == 0) {
+    message("No tables matched the pattern '^OP_DTL_GNRL_'. Returning an empty data frame.")
+    return(tibble::tibble())
+  }
 
   # Log filtered tables
   message(glue::glue("Filtered tables: {paste(names(filtered_list), collapse = ', ')}"))

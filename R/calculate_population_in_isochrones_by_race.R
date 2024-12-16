@@ -26,7 +26,10 @@
 #' @importFrom sf st_as_sf st_join st_intersection st_area st_union
 #' @importFrom dplyr filter summarize group_by mutate n_distinct
 #' @importFrom tibble tibble
+#' @importFrom assertthat assert_that is.string has_name
+#'
 #' @export
+#'
 calculate_population_in_isochrones_by_race <- function(
     population_data,
     isochrone_geometries,
@@ -35,21 +38,34 @@ calculate_population_in_isochrones_by_race <- function(
 ) {
   logger::log_info("Starting the calculation of aggregated population by race/ethnicity in unified isochrones.")
 
-  # Validate inputs
-  if (missing(year) || is.null(year)) stop("The 'year' parameter is mandatory and must be specified.")
-  if (!inherits(population_data, "sf")) stop("`population_data` must be an sf object.")
-  if (!all(c("id", "population", "race_ethnicity", "geometry", "year") %in% names(population_data))) {
-    stop("`population_data` must contain columns: 'id', 'population', 'race_ethnicity', 'geometry', and 'year'.")
+  # Validate inputs using assertthat
+  assertthat::assert_that(
+    inherits(population_data, "sf"),
+    msg = "`population_data` must be an sf object."
+  )
+  assertthat::assert_that(
+    all(c("id", "population", "race_ethnicity", "geometry", "year") %in% names(population_data)),
+    msg = "`population_data` must contain columns: 'id', 'population', 'race_ethnicity', 'geometry', and 'year'."
+  )
+  assertthat::assert_that(
+    is.data.frame(isochrone_geometries),
+    msg = "`isochrone_geometries` must be a data frame or tibble."
+  )
+  assertthat::assert_that(
+    all(c("id", "year", "travel_time", "wkt") %in% names(isochrone_geometries)),
+    msg = "`isochrone_geometries` must contain columns: 'id', 'year', 'travel_time', and 'wkt'."
+  )
+  assertthat::assert_that(
+    is.numeric(year) && length(year) == 1,
+    msg = "`year` must be a single numeric value."
+  )
+  if (!is.null(travel_time)) {
+    valid_travel_times <- c(30, 60, 120, 180)
+    assertthat::assert_that(
+      travel_time %in% valid_travel_times,
+      msg = "Invalid `travel_time`. Must be one of: 30, 60, 120, 180, or NULL for all times."
+    )
   }
-  valid_travel_times <- c(30, 60, 120, 180)
-  if (!is.null(travel_time) && !travel_time %in% valid_travel_times) {
-    stop("Invalid travel_time. Must be one of: 30, 60, 120, 180, or NULL for all times.")
-  }
-
-  # Memoized helper function to cache results
-  cached_intersection <- memoise::memoise(function(population_data, isochrones) {
-    sf::st_intersection(population_data, isochrones)
-  })
 
   # Filter population data by year
   logger::log_info("Filtering population data for year: {year}.")
@@ -69,7 +85,9 @@ calculate_population_in_isochrones_by_race <- function(
 
   # Perform spatial intersection using memoized function
   logger::log_info("Performing spatial intersection to aggregate population.")
-  intersected <- cached_intersection(population_data_filtered, unified_isochrones)
+  intersected <- memoise::memoise(function(population_data, isochrones) {
+    sf::st_intersection(population_data, isochrones)
+  })(population_data_filtered, unified_isochrones)
 
   # Check for empty intersections
   if (nrow(intersected) == 0) {
@@ -109,32 +127,4 @@ calculate_population_in_isochrones_by_race <- function(
 
   logger::log_info("Completed aggregation of population counts by race/ethnicity.")
   return(aggregated_population)
-}
-
-# Helper function: Convert a data frame with WKT to sf polygons
-#' @noRd
-convert_to_sf_polygons <- function(polygon_data, wkt_col, crs = 4326) {
-  logger::log_info("Converting polygon data to sf object.")
-  sf_object <- sf::st_as_sf(polygon_data, wkt = wkt_col, crs = crs)
-  logger::log_debug("Converted to sf object with {nrow(sf_object)} rows.")
-  return(sf_object)
-}
-
-# Helper function: Generate empty results
-#' @noRd
-generate_empty_results <- function(year, travel_time, isochrones_sf, unified_isochrones) {
-  tibble::tibble(
-    race_ethnicity = character(),
-    total_population = numeric(),
-    uncovered_population = numeric(),
-    coverage_percentage = numeric(),
-    num_population_areas = integer(),
-    num_isochrones = nrow(isochrones_sf),
-    total_isochrone_area = sf::st_area(unified_isochrones) %>% sum(),
-    largest_isochrone_area = sf::st_area(isochrones_sf) %>% max(),
-    smallest_isochrone_area = sf::st_area(isochrones_sf) %>% min(),
-    year = year,
-    travel_time = ifelse(is.null(travel_time), "all", as.character(travel_time)),
-    timestamp = Sys.time()
-  )
 }

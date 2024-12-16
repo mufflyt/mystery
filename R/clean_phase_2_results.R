@@ -10,59 +10,73 @@
 #' @importFrom readr read_csv write_csv
 #' @importFrom dplyr rename_with mutate select
 #' @importFrom stringr str_to_lower str_replace_all
+#' @importFrom assertthat assert_that is.string is.readable
 #' @examples
 #' # Example 1: Cleaning data from a CSV file
 #' input_path <- "path_to_your_data.csv"
 #' required_strings <- c("physician_information", "able_to_contact_office")
 #' standard_names <- c("physician_info", "contact_office")
 #' cleaned_data <- clean_phase_2_data(input_path, required_strings, standard_names)
-#' # cleaned_data will now have updated column names
 #'
 #' # Example 2: Directly using a data frame
-#' df <- data.frame(
-#'   DocInfo = 1:5,
-#'   ContactData = 6:10
-#' )
+#' df <- data.frame(DocInfo = 1:5, ContactData = 6:10)
 #' required_strings <- c("doc_info", "contact_data")
 #' standard_names <- c("doctor_info", "patient_contact_info")
 #' cleaned_df <- clean_phase_2_data(df, required_strings, standard_names)
 #' print(cleaned_df)  # Should show updated column names
 #'
-#' # Example 3: Attempting to clean with missing columns
-#' df2 <- data.frame(
-#'   appointment_date = 1:5,
-#'   patient_name = 6:10
-#' )
-#' required_strings <- c("doctor_info", "contact_data")  # Note: these do not exist
-#' standard_names <- c("physician_info", "patient_contact_info")
-#' cleaned_df2 <- clean_phase_2_data(df2, required_strings, standard_names)
-#' print(cleaned_df2)  # Should issue warnings about missing columns
 #' @export
 clean_phase_2_data <- function(data_or_path, required_strings, standard_names, output_csv_path = NULL) {
+  # Validate inputs using assertthat
+  assertthat::assert_that(
+    is.character(required_strings) && length(required_strings) > 0,
+    msg = "Error: 'required_strings' must be a non-empty character vector."
+  )
+  assertthat::assert_that(
+    is.character(standard_names) && length(standard_names) > 0,
+    msg = "Error: 'standard_names' must be a non-empty character vector."
+  )
+  assertthat::assert_that(
+    length(required_strings) == length(standard_names),
+    msg = "Error: 'required_strings' and 'standard_names' must have the same length."
+  )
+  if (is.character(data_or_path)) {
+    assertthat::assert_that(
+      assertthat::is.string(data_or_path) && assertthat::is.readable(data_or_path),
+      msg = "Error: If 'data_or_path' is a string, it must be a valid, readable file path."
+    )
+  } else {
+    assertthat::assert_that(
+      is.data.frame(data_or_path),
+      msg = "Error: 'data_or_path' must be either a valid file path or a data frame."
+    )
+  }
+  if (!is.null(output_csv_path)) {
+    assertthat::assert_that(
+      assertthat::is.string(output_csv_path),
+      msg = "Error: 'output_csv_path', if provided, must be a string."
+    )
+  }
+
   # Log the input parameters
   cat("--- Starting data cleaning process ---\n")
   cat("Input data or path: ", data_or_path, "\n")
   cat("Required strings for renaming: ", paste(required_strings, collapse = ", "), "\n")
   cat("Standard names to apply: ", paste(standard_names, collapse = ", "), "\n")
 
-  # Data loading and initial checks
+  # Data loading
   if (is.character(data_or_path)) {
-    if (!file.exists(data_or_path)) {
-      stop("Error: File does not exist at the specified path: ", data_or_path)
-    }
     data <- readr::read_csv(data_or_path, show_col_types = FALSE)
     message("Data read from file at: ", data_or_path)
-  } else if (is.data.frame(data_or_path)) {
+  } else {
     data <- data_or_path
     message("Data loaded from provided data frame.")
-  } else {
-    stop("Error: Data input must be either a data frame or a valid file path.")
   }
 
   # Log the initial dimensions of the data
   cat("Initial data dimensions: ", dim(data), "\n")
 
-  # Clean and standardize column names using tidyverse
+  # Clean and standardize column names
   data <- data %>%
     dplyr::rename_with(
       .fn = ~ stringr::str_to_lower(stringr::str_replace_all(., "[^[:alnum:]_]", "_"))
@@ -90,9 +104,11 @@ clean_phase_2_data <- function(data_or_path, required_strings, standard_names, o
 
 # Helper Function: Rename Columns by Substring Matching
 rename_columns_by_substring <- function(data, required_strings, standard_names) {
-  if (length(required_strings) != length(standard_names)) {
-    stop("Error: The length of 'required_strings' must match the length of 'standard_names'.")
-  }
+  # Validate column renaming logic
+  assertthat::assert_that(
+    length(required_strings) == length(standard_names),
+    msg = "Error: 'required_strings' and 'standard_names' must have the same length."
+  )
 
   # Map required strings to their corresponding standard names
   column_map <- setNames(standard_names, required_strings)

@@ -8,10 +8,10 @@
 #' @param taxonomy_filter A string for filtering taxonomies (default is `"Obstetrics & Gynecology"`).
 #'
 #' @return A cleaned dataframe with summarized NPI entries.
-#' @importFrom dplyr mutate filter select group_by summarise first
+#' @importFrom dplyr mutate filter select group_by summarise first left_join
 #' @importFrom stringr str_remove_all str_squish str_detect regex
+#' @importFrom assertthat assert_that is.string has_name
 #' @importFrom logger log_info
-#' @export
 #' @examples
 #' # Example 1: Basic cleaning of NPI entries with default parameters
 #' clean_npi_entries(npi_results)
@@ -21,10 +21,41 @@
 #'
 #' # Example 3: Cleaning NPI entries, specifying different credentials
 #' clean_npi_entries(npi_results, basic_credentials = c("PA", "NP"))
+#' @export
 clean_npi_entries <- function(npi_entries, basic_credentials = c("MD", "DO"), taxonomy_filter = "Obstetrics & Gynecology") {
+  # Validate inputs using assertthat
+  assertthat::assert_that(
+    assertthat::is.data.frame(npi_entries),
+    msg = "`npi_entries` must be a data frame."
+  )
+  assertthat::assert_that(
+    assertthat::is.character(basic_credentials),
+    msg = "`basic_credentials` must be a character vector."
+  )
+  assertthat::assert_that(
+    assertthat::is.string(taxonomy_filter),
+    msg = "`taxonomy_filter` must be a single string."
+  )
+  assertthat::assert_that(
+    assertthat::has_name(npi_entries, "basic_credential"),
+    msg = "`npi_entries` must contain a `basic_credential` column."
+  )
+  assertthat::assert_that(
+    assertthat::has_name(npi_entries, "taxonomies_desc"),
+    msg = "`npi_entries` must contain a `taxonomies_desc` column."
+  )
+  assertthat::assert_that(
+    assertthat::has_name(npi_entries, "addresses_state"),
+    msg = "`npi_entries` must contain an `addresses_state` column."
+  )
+  assertthat::assert_that(
+    assertthat::has_name(npi_entries, "addresses_address_purpose"),
+    msg = "`npi_entries` must contain an `addresses_address_purpose` column."
+  )
+
   # Start logging
   logger::log_info("Starting clean_npi_entries function")
-  logger::log_info("Input basic credentials: {basic_credentials}")
+  logger::log_info("Input basic credentials: {paste(basic_credentials, collapse = ', ')}")
   logger::log_info("Input taxonomy filter: {taxonomy_filter}")
 
   # Log the initial input data
@@ -63,8 +94,10 @@ clean_npi_entries <- function(npi_entries, basic_credentials = c("MD", "DO"), ta
 
   # Remove unnecessary columns (identifiers, basic_status)
   logger::log_info("Removing identifiers_desc and basic_status columns")
-  npi_entries <- npi_entries %>%
-    dplyr::select(-identifiers_desc, -basic_status)
+  if ("identifiers_desc" %in% names(npi_entries) && "basic_status" %in% names(npi_entries)) {
+    npi_entries <- npi_entries %>%
+      dplyr::select(-identifiers_desc, -basic_status)
+  }
 
   # Convert state abbreviations to full state names
   logger::log_info("Converting state abbreviations to full state names using a lookup table")

@@ -9,23 +9,28 @@
 #' @return A list containing the median, 25th percentile (Q1), and 75th percentile (Q3) of the specified column.
 #' @importFrom dplyr pull
 #' @importFrom stats median quantile
+#' @importFrom assertthat assert_that is.string has_name
 #' @examples
 #' # Example: Calculate descriptive statistics for a column with logging
 #' stats <- calculate_descriptive_stats(df, "business_days_until_appointment", verbose = TRUE)
 #'
 #' @export
 calculate_descriptive_stats <- function(df, column, verbose = TRUE) {
+  # Validate inputs using assertthat
+  assertthat::assert_that(is.data.frame(df),
+                          msg = "The `df` argument must be a data frame.")
+  assertthat::assert_that(assertthat::is.string(column),
+                          msg = "The `column` argument must be a single string.")
+  assertthat::assert_that(assertthat::has_name(df, column),
+                          msg = paste("The specified column", column, "is not found in the data frame."))
+  assertthat::assert_that(is.logical(verbose),
+                          msg = "The `verbose` argument must be a logical value (TRUE or FALSE).")
 
   # Log the inputs to the function
   if (verbose) {
     cat("Function calculate_descriptive_stats called with the following inputs:\n")
     cat("  Column:", column, "\n")
     cat("  Dataframe has", nrow(df), "rows and", ncol(df), "columns\n")
-  }
-
-  # Check if the column exists in the dataframe
-  if (!column %in% names(df)) {
-    stop("Column not found in the dataframe: ", column)
   }
 
   # Calculate the median

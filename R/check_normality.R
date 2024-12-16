@@ -7,20 +7,42 @@
 #' @param variable A string specifying the column name of the variable to be checked and summarized.
 #'
 #' @return A list containing the summary statistics (mean and standard deviation if normal, median and IQR if not normal).
-#' @export
 #' @importFrom ggplot2 ggplot aes geom_histogram geom_density labs stat_qq stat_qq_line
 #' @importFrom dplyr %>%
 #' @importFrom stats shapiro.test IQR median
+#' @importFrom assertthat assert_that is.string
 #'
 #' @examples
 #' # Example usage with a dataframe 'df' and outcome variable 'business_days_until_appointment'
 #' check_normality(df, "business_days_until_appointment")
+#'
+#' @export
+#'
 check_normality <- function(data, variable) {
+  # Validate inputs using assertthat
+  assertthat::assert_that(
+    is.data.frame(data),
+    msg = "Error: 'data' must be a data frame."
+  )
+  assertthat::assert_that(
+    assertthat::is.string(variable),
+    msg = "Error: 'variable' must be a string."
+  )
+  assertthat::assert_that(
+    variable %in% names(data),
+    msg = paste("Error: Column", variable, "not found in the data frame.")
+  )
+  assertthat::assert_that(
+    is.numeric(data[[variable]]),
+    msg = paste("Error: Column", variable, "must be numeric.")
+  )
+
   # Start logging
   message("Starting normality check and summary calculation for variable: ", variable)
 
   # Extract the variable data and remove NA values
   data_var <- data[[variable]]
+  data_var <- data_var[!is.na(data_var)]
   message("Data extracted for variable: ", variable)
 
   # Check if the sample size is adequate for the Shapiro-Wilk test
@@ -41,14 +63,14 @@ check_normality <- function(data, variable) {
   }
 
   # Create Histogram with Density Plot
-  hist_plot <- ggplot2::ggplot(data, ggplot2::aes(x = !!sym(variable))) +
+  hist_plot <- ggplot2::ggplot(data, ggplot2::aes(x = !!rlang::sym(variable))) +
     ggplot2::geom_histogram(binwidth = 0.5, fill = "lightblue", color = "black", na.rm = TRUE) +
     ggplot2::geom_density(alpha = 0.2, fill = "#FF6666", na.rm = TRUE) +
     ggplot2::labs(title = paste("Histogram and Density Plot of", variable), x = variable)
   message("Histogram with Density Plot created.")
 
   # Create Q-Q Plot
-  qq_plot <- ggplot2::ggplot(data, ggplot2::aes(sample = !!sym(variable))) +
+  qq_plot <- ggplot2::ggplot(data, ggplot2::aes(sample = !!rlang::sym(variable))) +
     ggplot2::stat_qq(na.rm = TRUE) +
     ggplot2::stat_qq_line(na.rm = TRUE) +
     ggplot2::labs(title = paste("Q-Q Plot of", variable))
@@ -61,16 +83,16 @@ check_normality <- function(data, variable) {
   # Determine summary statistic based on normality
   if (p_value > 0.05) {
     # Data is approximately normal
-    mean_value <- mean(data_var, na.rm = TRUE)
-    sd_value <- sd(data_var, na.rm = TRUE)
+    mean_value <- round(mean(data_var, na.rm = TRUE), 2)
+    sd_value <- round(sd(data_var, na.rm = TRUE), 2)
     result <- list(mean = mean_value, sd = sd_value)
     message("Data is approximately normal. Mean: ", mean_value, ", SD: ", sd_value)
   } else {
     # Data is not normal
-    median_value <- stats::median(data_var, na.rm = TRUE)
-    iqr_value <- stats::IQR(data_var, na.rm = TRUE)
+    median_value <- round(stats::median(data_var, na.rm = TRUE), 2)
+    iqr_value <- round(stats::IQR(data_var, na.rm = TRUE), 2)
     result <- list(median = median_value, iqr = iqr_value)
-    message("Data is NOT normally distributed. Use non-parametric measures like median: ", median_value, ", IQR: ", iqr_value)
+    message("Data is NOT normally distributed. Median: ", median_value, ", IQR: ", iqr_value)
   }
 
   # Output results
@@ -79,6 +101,3 @@ check_normality <- function(data, variable) {
 
   return(result)
 }
-
-# Example usage with your dataframe and outcome variable
-# check_normality(df, "business_days_until_appointment")

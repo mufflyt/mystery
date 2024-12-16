@@ -1,11 +1,15 @@
 #' Create a Scatter Plot for Mystery Caller Studies with Optional Transformations, Jitter, and Custom Labels
 #'
-#' This function generates a scatter plot designed for mystery caller studies, allowing for the visualization of waiting times or similar outcomes across different categories, such as insurance types. The function supports transformations on the y-axis, custom jitter, and colors each category in the x-axis using the `viridis` color palette. The plot is automatically displayed and saved with a specified resolution.
+#' This function generates a scatter plot designed for mystery caller studies, allowing for the visualization of
+#' waiting times or similar outcomes across different categories, such as insurance types. The function supports
+#' transformations on the y-axis, custom jitter, and colors each category in the x-axis using the `viridis` color
+#' palette. The plot is automatically displayed and saved with a specified resolution.
 #'
 #' @param data A dataframe containing the data to be plotted. Must contain the variables specified in `x_var` and `y_var`.
 #' @param x_var A string representing the column name for the x-axis variable. This should be a categorical or factor variable (e.g., insurance type).
 #' @param y_var A string representing the column name for the y-axis variable. This should be a numeric variable (e.g., waiting time in days).
-#' @param y_transform A string specifying the transformation for the y-axis: "log" for log transformation (log1p), "sqrt" for square root transformation, or "none" for no transformation. Default is "none".
+#' @param y_transform A string specifying the transformation for the y-axis: "log" for log transformation (log1p),
+#'   "sqrt" for square root transformation, or "none" for no transformation. Default is "none".
 #' @param dpi An integer specifying the resolution of the saved plot in dots per inch (DPI). Default is 100.
 #' @param output_dir A string representing the directory where the plot files will be saved. Default is "output".
 #' @param file_prefix A string used as the prefix for the generated plot filenames. The filenames will have a timestamp appended to ensure uniqueness. Default is "scatter_plot".
@@ -18,11 +22,13 @@
 #' @param verbose A boolean indicating whether to print messages about the saved plot locations. Default is TRUE.
 #'
 #' @return This function displays the plot and saves it to the specified directory.
-#' @importFrom dplyr filter mutate %>%
+#' @importFrom dplyr filter mutate
 #' @importFrom ggplot2 ggplot geom_jitter scale_y_log10 scale_y_sqrt labs theme_minimal element_rect element_blank ggsave
 #' @importFrom viridis viridis_pal
-#' @importFrom rlang sym .data
+#' @importFrom rlang sym
+#' @import assertthat
 #' @export
+#'
 #' @examples
 #' # Example 1: Basic scatter plot with log transformation
 #' create_scatter_plot(
@@ -83,7 +89,20 @@ create_scatter_plot <- function(data,
                                 plot_title = NULL,
                                 verbose = TRUE) {
 
-  # Filter out zero or negative values and NAs from the y_var column
+  # Validate inputs using assertthat
+  assertthat::assert_that(is.data.frame(data), msg = "`data` must be a data frame.")
+  assertthat::assert_that(assertthat::is.string(x_var), msg = "`x_var` must be a string.")
+  assertthat::assert_that(assertthat::is.string(y_var), msg = "`y_var` must be a string.")
+  assertthat::assert_that(x_var %in% colnames(data), msg = paste0("Column `", x_var, "` not found in `data`."))
+  assertthat::assert_that(y_var %in% colnames(data), msg = paste0("Column `", y_var, "` not found in `data`."))
+  assertthat::assert_that(y_transform %in% c("none", "log", "sqrt"), msg = "`y_transform` must be one of 'none', 'log', or 'sqrt'.")
+  assertthat::assert_that(is.numeric(dpi) && dpi > 0, msg = "`dpi` must be a positive numeric value.")
+  assertthat::assert_that(is.numeric(jitter_width) && jitter_width >= 0, msg = "`jitter_width` must be non-negative.")
+  assertthat::assert_that(is.numeric(jitter_height) && jitter_height >= 0, msg = "`jitter_height` must be non-negative.")
+  assertthat::assert_that(is.numeric(point_alpha) && point_alpha > 0 && point_alpha <= 1, msg = "`point_alpha` must be between 0 and 1.")
+  assertthat::assert_that(assertthat::is.string(output_dir), msg = "`output_dir` must be a string.")
+
+  # Filter and clean the data
   data <- dplyr::filter(data, .data[[y_var]] > 0, !is.na(.data[[y_var]]))
 
   # Handle transformations
@@ -97,7 +116,7 @@ create_scatter_plot <- function(data,
     y_label <- if (is.null(y_label)) y_var else y_label
   }
 
-  # Create the scatter plot with colored points by x_var
+  # Create the scatter plot with colored points
   scatter_plot <- ggplot2::ggplot(data, ggplot2::aes(x = !!rlang::sym(x_var), y = !!rlang::sym(y_var), color = !!rlang::sym(x_var))) +
     ggplot2::geom_jitter(width = jitter_width, height = jitter_height, alpha = point_alpha) +
     ggplot2::labs(
@@ -105,21 +124,18 @@ create_scatter_plot <- function(data,
       y = y_label,
       title = plot_title
     ) +
-    ggplot2::scale_color_viridis_d() +  # Use viridis color palette
-    ggplot2::theme_minimal() +
-    ggplot2::theme(
-      panel.background = ggplot2::element_rect(fill = "white"),
-      plot.background = ggplot2::element_rect(fill = "white"),
-      axis.text.x = ggplot2::element_text(angle = 45, hjust = 1), # Tilt x-axis labels
-      axis.title.x = ggplot2::element_text(size = 12),
-      axis.title.y = ggplot2::element_text(size = 12),
-      plot.title = ggplot2::element_text(hjust = 0.5)
-    )
+    ggplot2::scale_color_viridis_d() +
+    ggplot2::theme_minimal()
 
-  # Display the plot
-  print(scatter_plot)
+  # Ensure the output directory exists
+  if (!dir.exists(output_dir)) {
+    dir.create(output_dir, recursive = TRUE)
+    if (verbose) {
+      message("Created output directory: ", output_dir)
+    }
+  }
 
-  # Automatic Filename Generation
+  # Automatic filename generation
   timestamp <- format(Sys.time(), "%Y%m%d_%H%M%S")
   tiff_filename <- file.path(output_dir, paste0(file_prefix, "_", timestamp, ".tiff"))
   png_filename <- file.path(output_dir, paste0(file_prefix, "_", timestamp, ".png"))

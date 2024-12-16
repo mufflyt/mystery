@@ -8,6 +8,7 @@
 #' @param save_column_in_each_nppes_year A logical value indicating whether to save a sample to an Excel file.
 #' @param excel_file_path A character string specifying the path to save the Excel file if `save_column_in_each_nppes_year` is `TRUE`.
 #' @return A data frame containing the cleaned NPPES data for one year, saved to the specified file path.
+#' @importFrom assertthat assert_that is.string
 #' @export
 nppes_get_data_for_one_year <- function(
     npi_file_path,
@@ -21,6 +22,38 @@ nppes_get_data_for_one_year <- function(
   # Helper function to log messages with timestamps
   log_message <- function(message) {
     cat(sprintf("[%s] %s\n", Sys.time(), message))
+  }
+
+  # Validate inputs using assertthat
+  assertthat::assert_that(
+    assertthat::is.string(npi_file_path) && file.exists(npi_file_path),
+    msg = "Error: 'npi_file_path' must be a valid path to an existing file."
+  )
+  assertthat::assert_that(
+    assertthat::is.string(output_csv_path),
+    msg = "Error: 'output_csv_path' must be a valid string."
+  )
+  assertthat::assert_that(
+    assertthat::is.string(duckdb_file_path),
+    msg = "Error: 'duckdb_file_path' must be a valid string."
+  )
+  assertthat::assert_that(
+    is.character(taxonomy_codes_1) && length(taxonomy_codes_1) > 0,
+    msg = "Error: 'taxonomy_codes_1' must be a non-empty character vector."
+  )
+  assertthat::assert_that(
+    is.character(taxonomy_codes_2) && length(taxonomy_codes_2) > 0,
+    msg = "Error: 'taxonomy_codes_2' must be a non-empty character vector."
+  )
+  assertthat::assert_that(
+    is.logical(save_column_in_each_nppes_year),
+    msg = "Error: 'save_column_in_each_nppes_year' must be a logical value."
+  )
+  if (save_column_in_each_nppes_year) {
+    assertthat::assert_that(
+      !is.null(excel_file_path) && assertthat::is.string(excel_file_path),
+      msg = "Error: 'excel_file_path' must be a valid string when 'save_column_in_each_nppes_year' is TRUE."
+    )
   }
 
   # Start of function

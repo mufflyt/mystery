@@ -17,10 +17,9 @@
 #' @param verbose A boolean indicating whether to print messages about the saved plot locations. Default is TRUE.
 #'
 #' @return This function displays the plot and saves it to the specified directory.
-#' @importFrom dplyr %>% mutate
+#' @importFrom assertthat assert_that is.string is.dir is.flag has_name
+#' @importFrom dplyr group_by summarise
 #' @importFrom ggplot2 ggplot aes geom_point geom_errorbar labs theme_minimal theme element_text ggsave
-#' @importFrom readr write_csv
-#' @importFrom logger log_info log_error
 #' @export
 #'
 #' @examples
@@ -39,9 +38,9 @@
 #' )
 create_dot_plot <- function(dataset,
                             category_var,
-                            value_var = "median_days",            # Default value var
-                            lower_bound_var = "q1",               # Default lower bound
-                            upper_bound_var = "q3",               # Default upper bound
+                            value_var = "median_days",
+                            lower_bound_var = "q1",
+                            upper_bound_var = "q3",
                             dpi = 100,
                             output_directory = "output",
                             filename_prefix = "dot_plot",
@@ -49,92 +48,66 @@ create_dot_plot <- function(dataset,
                             y_label = NULL,
                             plot_title = NULL,
                             verbose = TRUE) {
+  # Validate inputs
+  assertthat::assert_that(assertthat::is.data.frame(dataset), msg = "`dataset` must be a data frame.")
+  assertthat::assert_that(assertthat::is.string(category_var), msg = "`category_var` must be a string.")
+  assertthat::assert_that(assertthat::is.string(value_var), msg = "`value_var` must be a string.")
+  assertthat::assert_that(assertthat::is.string(lower_bound_var), msg = "`lower_bound_var` must be a string.")
+  assertthat::assert_that(assertthat::is.string(upper_bound_var), msg = "`upper_bound_var` must be a string.")
+  assertthat::assert_that(assertthat::is.dir(output_directory), msg = paste0("`", output_directory, "` does not exist."))
+  assertthat::assert_that(assertthat::is.flag(verbose), msg = "`verbose` must be a logical value (TRUE/FALSE).")
 
-  # Error handling for input validation
-  if (!is.data.frame(dataset)) {
-    stop("Input dataset must be a dataframe.")
-  }
-
-  # Calculate overall statistics across all categories dynamically
-  logger::log_info(paste("Calculating overall statistics for all categories in", category_var))
-
-  df_summary <- dataset %>%
-    dplyr::group_by(.data[[category_var]]) %>%
-    dplyr::summarise(
-      median_value = median(.data[[value_var]], na.rm = TRUE),
-      q1 = quantile(.data[[value_var]], 0.25, na.rm = TRUE),
-      q3 = quantile(.data[[value_var]], 0.75, na.rm = TRUE)
-    )
-
-  logger::log_info("Summarized dataset:")
-  print(df_summary)
-
-  # Error check for required columns in the summarized dataset
-  required_vars <- c(category_var, "median_value", lower_bound_var, upper_bound_var)
-  missing_vars <- required_vars[!required_vars %in% names(df_summary)]
-
-  if (length(missing_vars) > 0) {
-    stop(paste("The following columns are missing from the summarized dataset:", paste(missing_vars, collapse = ", ")))
-  }
+  # Ensure required columns exist in dataset
+  required_vars <- c(category_var, value_var, lower_bound_var, upper_bound_var)
+  missing_vars <- setdiff(required_vars, names(dataset))
+  assertthat::assert_that(length(missing_vars) == 0, msg = paste("The following columns are missing from the dataset:", paste(missing_vars, collapse = ", ")))
 
   # Set default axis labels if not provided
   x_label <- if (is.null(x_label)) category_var else x_label
   y_label <- if (is.null(y_label)) value_var else y_label
 
-  # Log the axis labels being used
-  logger::log_info(paste("Using x_label:", x_label, ", y_label:", y_label))
+  # Summarize data for plotting
+  logger::log_info("Summarizing data for plotting...")
+  plot_data <- dataset %>%
+    dplyr::group_by(.data[[category_var]]) %>%
+    dplyr::summarise(
+      median_value = median(.data[[value_var]], na.rm = TRUE),
+      lower_bound = quantile(.data[[value_var]], 0.25, na.rm = TRUE),
+      upper_bound = quantile(.data[[value_var]], 0.75, na.rm = TRUE),
+      .groups = "drop"
+    )
 
-  # Create the dot plot
-  tryCatch({
-    dot_plot <- ggplot2::ggplot(df_summary, ggplot2::aes(x = .data[[category_var]], y = .data[["median_value"]], color = .data[[category_var]])) +
-      ggplot2::geom_point(size = 4) +
-      ggplot2::geom_errorbar(ggplot2::aes(ymin = .data[[lower_bound_var]], ymax = .data[[upper_bound_var]]), width = 0.2) +
-      ggplot2::labs(
-        title = plot_title,
-        x = x_label,
-        y = y_label,
-        color = x_label
-      ) +
-      ggplot2::theme_minimal() +
-      ggplot2::theme(
-        plot.title = ggplot2::element_text(hjust = 0.5, size = 14),
-        axis.title = ggplot2::element_text(size = 12),
-        axis.text = ggplot2::element_text(size = 10)
-      )
+  # Create dot plot
+  logger::log_info("Creating dot plot...")
+  dot_plot <- ggplot2::ggplot(plot_data, ggplot2::aes(x = .data[[category_var]], y = .data[["median_value"]])) +
+    ggplot2::geom_point(size = 4, color = "blue") +
+    ggplot2::geom_errorbar(ggplot2::aes(ymin = .data[["lower_bound"]], ymax = .data[["upper_bound"]]), width = 0.2, color = "black") +
+    ggplot2::labs(title = plot_title, x = x_label, y = y_label) +
+    ggplot2::theme_minimal() +
+    ggplot2::theme(
+      plot.title = ggplot2::element_text(hjust = 0.5, size = 14),
+      axis.title = ggplot2::element_text(size = 12),
+      axis.text = ggplot2::element_text(size = 10)
+    )
 
-    # Log the successful creation of the plot
-    logger::log_info("Dot plot created successfully.")
-
-    # Display the plot
+  # Display the plot if verbose
+  if (verbose) {
     print(dot_plot)
+  }
 
-    # Generate file names with timestamp
-    timestamp <- format(Sys.time(), "%Y%m%d_%H%M%S")
-    tiff_filename <- file.path(output_directory, paste0(filename_prefix, "_", timestamp, ".tiff"))
-    jpg_filename <- file.path(output_directory, paste0(filename_prefix, "_", timestamp, ".jpg"))
+  # Generate filenames
+  timestamp <- format(Sys.time(), "%Y%m%d_%H%M%S")
+  tiff_filename <- file.path(output_directory, paste0(filename_prefix, "_", timestamp, ".tiff"))
+  png_filename <- file.path(output_directory, paste0(filename_prefix, "_", timestamp, ".png"))
 
-    # Log file paths
-    logger::log_info(paste("Saving plot as TIFF at:", tiff_filename))
-    logger::log_info(paste("Saving plot as JPG at:", jpg_filename))
+  # Save the plot
+  logger::log_info(paste("Saving plot to:", tiff_filename, "and", png_filename))
+  ggplot2::ggsave(filename = tiff_filename, plot = dot_plot, dpi = dpi, width = 8, height = 6)
+  ggplot2::ggsave(filename = png_filename, plot = dot_plot, dpi = dpi, width = 8, height = 6)
 
-    # Save the plot as TIFF and JPG
-    ggplot2::ggsave(filename = tiff_filename, plot = dot_plot, dpi = dpi, width = 8, height = 6)
-    ggplot2::ggsave(filename = jpg_filename, plot = dot_plot, dpi = dpi, width = 8, height = 6)
+  # Log completion
+  logger::log_info("Dot plot created and saved successfully.")
 
-    # Verbose output to indicate success
-    if (verbose) {
-      message("Plots saved to: ", tiff_filename, " and ", jpg_filename)
-    }
-
-    # Log success
-    logger::log_info("Plot saved successfully to the output directory.")
-  }, error = function(e) {
-    logger::log_error(paste("Error in creating dot plot:", e$message))
-    stop(e)
-  })
-
-  # Log the completion of the function
-  logger::log_info("create_dot_plot function completed.")
-
+  # Return the plot
   return(dot_plot)
 }

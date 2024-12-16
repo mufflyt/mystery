@@ -7,17 +7,18 @@
 #' @importFrom logger log_info log_error log_threshold INFO
 #' @importFrom purrr map_dfr
 #' @importFrom stats var median
+#' @importFrom assertthat assert_that is.string noNA
 #'
-#' @param model_dataframe A data frame containing variables for mixed-effects model analysis
-#' @param grouping_column Name of the column representing grouping levels
-#' @param dependent_column Name of the dependent/response variable column
-#' @param significance_threshold Threshold for identifying significant predictors (default 0.2)
-#' @param verbose Logical indicating whether to print detailed diagnostic information (default TRUE)
+#' @param model_dataframe A data frame containing variables for mixed-effects model analysis.
+#' @param grouping_column Name of the column representing grouping levels.
+#' @param dependent_column Name of the dependent/response variable column.
+#' @param significance_threshold Threshold for identifying significant predictors (default 0.2).
+#' @param verbose Logical indicating whether to print detailed diagnostic information (default TRUE).
 #'
 #' @return A list containing:
-#' - suitable: Logical indicating model suitability
-#' - diagnostic_details: Detailed information about group levels and observations
-#' - summary_statistics: Descriptive statistics of numeric columns
+#' - suitable: Logical indicating model suitability.
+#' - diagnostic_details: Detailed information about group levels and observations.
+#' - summary_statistics: Descriptive statistics of numeric columns.
 #'
 #' @export
 #'
@@ -33,32 +34,6 @@
 #'   grouping_column = "patient_id",
 #'   dependent_column = "recovery_time"
 #' )
-#'
-#' # Example 2: Clinical trial with multiple significance thresholds
-#' clinical_trial <- data.frame(
-#'   hospital_id = rep(1:30, each = 5),
-#'   intervention = sample(c("drug", "placebo"), 150, replace = TRUE),
-#'   patient_outcomes = runif(150, min = 0, max = 100)
-#' )
-#' model_diagnosis_2 <- diagnose_mixed_effects_model(
-#'   model_dataframe = clinical_trial,
-#'   grouping_column = "hospital_id",
-#'   dependent_column = "patient_outcomes",
-#'   significance_threshold = 0.1
-#' )
-#'
-#' # Example 3: Educational research with verbose output suppressed
-#' education_data <- data.frame(
-#'   school_id = rep(1:20, each = 10),
-#'   teaching_method = sample(c("traditional", "innovative"), 200, replace = TRUE),
-#'   student_performance = rnorm(200, mean = 75, sd = 10)
-#' )
-#' model_diagnosis_3 <- diagnose_mixed_effects_model(
-#'   model_dataframe = education_data,
-#'   grouping_column = "school_id",
-#'   dependent_column = "student_performance",
-#'   verbose = FALSE
-#' )
 diagnose_mixed_effects_model <- function(
     model_dataframe,
     grouping_column,
@@ -66,11 +41,38 @@ diagnose_mixed_effects_model <- function(
     significance_threshold = 0.2,
     verbose = TRUE
 ) {
-  # Validate inputs
-  validate_inputs(
-    model_dataframe = model_dataframe,
-    grouping_column = grouping_column,
-    dependent_column = dependent_column
+  # Validate inputs using assertthat
+  assertthat::assert_that(
+    assertthat::is.data.frame(model_dataframe),
+    msg = "Error: 'model_dataframe' must be a data frame."
+  )
+  assertthat::assert_that(
+    grouping_column %in% names(model_dataframe),
+    msg = paste("Error: 'grouping_column' not found in the data frame: ", grouping_column)
+  )
+  assertthat::assert_that(
+    dependent_column %in% names(model_dataframe),
+    msg = paste("Error: 'dependent_column' not found in the data frame: ", dependent_column)
+  )
+  assertthat::assert_that(
+    is.numeric(model_dataframe[[dependent_column]]),
+    msg = paste("Error: 'dependent_column' must be numeric: ", dependent_column)
+  )
+  assertthat::assert_that(
+    assertthat::is.string(grouping_column),
+    msg = "Error: 'grouping_column' must be a string."
+  )
+  assertthat::assert_that(
+    assertthat::is.string(dependent_column),
+    msg = "Error: 'dependent_column' must be a string."
+  )
+  assertthat::assert_that(
+    assertthat::is.number(significance_threshold),
+    msg = "Error: 'significance_threshold' must be a numeric value."
+  )
+  assertthat::assert_that(
+    significance_threshold > 0 && significance_threshold <= 1,
+    msg = "Error: 'significance_threshold' must be between 0 and 1."
   )
 
   # Configure logging
@@ -112,15 +114,6 @@ diagnose_mixed_effects_model <- function(
   )
 
   return(diagnostic_results)
-}
-
-#' @noRd
-validate_inputs <- function(model_dataframe, grouping_column, dependent_column) {
-  stopifnot(
-    is.data.frame(model_dataframe),
-    grouping_column %in% names(model_dataframe),
-    dependent_column %in% names(model_dataframe)
-  )
 }
 
 #' @noRd

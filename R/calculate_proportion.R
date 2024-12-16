@@ -14,26 +14,39 @@
 #'
 #' @import dplyr
 #' @import logger
+#' @import assertthat
 #' @export
 calculate_proportion <- function(df, variable_name, log_file = "calculate_proportion.log") {
-
   # Set up logger to log to a file
   logger::log_appender(logger::appender_file(log_file))
-
   logger::log_info("Function calculate_proportion started.")
 
-  # Log the input data frame summary without using lists
-  logger::log_info("Input data frame first few rows:")
-  print(head(df))  # Print the data frame separately to avoid 'glue' issue
+  # Validate inputs using assertthat
+  assertthat::assert_that(
+    is.data.frame(df),
+    msg = "Error: 'df' must be a data frame."
+  )
+  assertthat::assert_that(
+    is.character(deparse(substitute(variable_name))),
+    msg = "Error: 'variable_name' must be a valid column name as an unquoted expression."
+  )
+  assertthat::assert_that(
+    deparse(substitute(variable_name)) %in% names(df),
+    msg = paste("Error: Column", deparse(substitute(variable_name)), "not found in the data frame.")
+  )
+  assertthat::assert_that(
+    is.character(log_file) && nchar(log_file) > 0,
+    msg = "Error: 'log_file' must be a non-empty string."
+  )
 
-  logger::log_info("Number of rows in data frame: ", nrow(df))
-  logger::log_info("Variable name: ", deparse(substitute(variable_name)))
+  # Log the input data frame summary
+  logger::log_info("Input data frame summary:")
+  logger::log_info("Number of rows: {nrow(df)}")
+  logger::log_info("Number of columns: {ncol(df)}")
+  logger::log_info("Variable name: {deparse(substitute(variable_name))}")
 
-  # Validate input parameters
-  if (!is.data.frame(df)) {
-    logger::log_error("Error: 'df' must be a data frame.")
-    stop("Error: 'df' must be a data frame.")
-  }
+  # Remove grouping if present
+  df <- df %>% dplyr::ungroup()
 
   # Count occurrences of each unique value and calculate proportions
   logger::log_info("Counting occurrences of each level in the variable.")

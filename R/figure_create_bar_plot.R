@@ -1,6 +1,8 @@
 #' Create a Bar Plot with Total Sample Size in the Title
 #'
-#' This function generates a bar plot based on a categorical variable and facets the plot by a grouping variable. The plot title automatically includes the total sample size (N). The function also supports custom axis labels, and it returns the plot object for further manipulation or saving.
+#' This function generates a bar plot based on a categorical variable and facets the plot by a grouping variable.
+#' The plot title automatically includes the total sample size (N). The function also supports custom axis labels,
+#' and it returns the plot object for further manipulation or saving.
 #'
 #' @param input_data A dataframe containing the data to be plotted.
 #' @param category_var A string representing the column name for the categorical variable on the x-axis (e.g., insurance type).
@@ -15,10 +17,7 @@
 #' @return This function returns the plot object for further manipulation or saving.
 #'
 #' @importFrom ggplot2 ggplot aes_string geom_bar geom_text facet_wrap after_stat theme_light theme ggsave element_text element_rect
-#' @importFrom grDevices png tiff
-#' @importFrom utils head
-#' @importFrom stats as.formula
-#'
+#' @importFrom assertthat assert_that is.string has_name is.dir is.flag
 #' @examples
 #' # Example 1: Basic usage with a categorical and facet variable
 #' create_bar_plot(
@@ -28,23 +27,6 @@
 #'   title = "Insurance Type Distribution by Region",
 #'   x_axis_label = "Insurance Type",
 #'   y_axis_label = "Number of Observations"
-#' )
-#'
-#' # Example 2: Using default axis labels and auto-generated title
-#' create_bar_plot(
-#'   input_data = my_data,
-#'   category_var = "insurance_type",
-#'   grouping_var = "region"
-#' )
-#'
-#' # Example 3: Saving the plot with a custom filename prefix and disabling verbose output
-#' create_bar_plot(
-#'   input_data = my_data,
-#'   category_var = "insurance_type",
-#'   grouping_var = "region",
-#'   output_directory = "plots",
-#'   filename_prefix = "insurance_vs_region",
-#'   verbose = FALSE
 #' )
 #' @export
 create_bar_plot <- function(input_data,
@@ -56,19 +38,22 @@ create_bar_plot <- function(input_data,
                             output_directory = "output", # Where to save the plot
                             filename_prefix = "bar_plot", # Prefix for the saved file
                             verbose = TRUE) {
+  # Validate inputs using assertthat
+  assertthat::assert_that(is.data.frame(input_data), msg = "`input_data` must be a dataframe.")
+  assertthat::assert_that(assertthat::is.string(category_var), msg = "`category_var` must be a string.")
+  assertthat::assert_that(assertthat::is.string(grouping_var), msg = "`grouping_var` must be a string.")
+  assertthat::assert_that(assertthat::has_name(input_data, category_var),
+                          msg = paste0("The column `", category_var, "` is not found in the input data."))
+  assertthat::assert_that(assertthat::has_name(input_data, grouping_var),
+                          msg = paste0("The column `", grouping_var, "` is not found in the input data."))
+  assertthat::assert_that(assertthat::is.string(output_directory), msg = "`output_directory` must be a string.")
+  assertthat::assert_that(assertthat::is.dir(output_directory),
+                          msg = paste0("The directory `", output_directory, "` does not exist."))
+  assertthat::assert_that(assertthat::is.string(filename_prefix), msg = "`filename_prefix` must be a string.")
+  assertthat::assert_that(assertthat::is.flag(verbose), msg = "`verbose` must be a logical (TRUE/FALSE).")
 
-  # Error handling for input validation
-  if (!is.data.frame(input_data)) {
-    stop("Input data must be a dataframe.")
-  }
-
-  if (!category_var %in% names(input_data)) {
-    stop(paste("The x-axis variable", category_var, "is not found in the input data."))
-  }
-
-  if (!grouping_var %in% names(input_data)) {
-    stop(paste("The facet variable", grouping_var, "is not found in the input data."))
-  }
+  # Calculate the total sample size
+  total_sample_size <- nrow(input_data)
 
   # If title is not provided, generate a default title
   if (is.null(title)) {
@@ -80,10 +65,7 @@ create_bar_plot <- function(input_data,
     x_axis_label <- category_var
   }
 
-  # Calculate the total sample size
-  total_sample_size <- nrow(input_data)
-
-  # Log the input parameters
+  # Log inputs if verbose
   if (verbose) {
     message(paste("Creating bar plot for", category_var, "faceted by", grouping_var))
     message(paste("Total sample size is:", total_sample_size))
@@ -107,9 +89,11 @@ create_bar_plot <- function(input_data,
       strip.background = ggplot2::element_rect(color = "grey10", fill = "white")
     )
 
-  # Log the successful creation of the plot
+  # Save the plot
+  file_path <- file.path(output_directory, paste0(filename_prefix, ".png"))
+  ggplot2::ggsave(file_path, bar_plot, width = 8, height = 6, dpi = 300)
   if (verbose) {
-    message("Bar plot created successfully.")
+    message("Bar plot saved to:", file_path)
   }
 
   # Return the plot object for further use or testing

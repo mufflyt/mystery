@@ -1,81 +1,138 @@
 #' Process NPPES Data for One Year with Chunked Processing
 #'
+#' This function processes a single year's NPPES (National Plan and Provider Enumeration System) data,
+#' filtering by specified taxonomy codes and saving the cleaned data to a CSV file. The data is processed
+#' in chunks to handle large datasets efficiently, and optional functionality allows saving sample columns
+#' to an Excel file for inspection.
+#'
 #' @param npi_file_path A character string specifying the path to the raw NPPES data CSV file.
 #' @param output_csv_path A character string specifying the full file path where the cleaned data will be saved.
 #' @param duckdb_file_path A character string specifying the path to the DuckDB database file.
-#' @param taxonomy_codes_1 A character vector of taxonomy codes used to filter data in `Healthcare Provider Taxonomy Code_1`.
-#' @param taxonomy_codes_2 A character vector of taxonomy codes used to filter data in `Healthcare Provider Taxonomy Code_2`.
-#' @param save_column_in_each_nppes_year A logical value indicating whether to save a sample to an Excel file.
-#' @param excel_file_path A character string specifying the path to save the Excel file if `save_column_in_each_nppes_year` is `TRUE`.
-#' @return A data frame containing the cleaned NPPES data for one year, saved to the specified file path.
+#'   Default is "/Volumes/Video Projects Muffly 1/nppes_historical_downloads/my_duckdb.duckdb".
+#' @param taxonomy_codes_1 A character vector of taxonomy codes used to filter rows based on
+#'   `Healthcare Provider Taxonomy Code_1`.
+#' @param taxonomy_codes_2 A character vector of taxonomy codes used to filter rows based on
+#'   `Healthcare Provider Taxonomy Code_2`.
+#' @param save_column_in_each_nppes_year A logical value indicating whether to save sample data
+#'   to an Excel file for inspection. Default is `FALSE`.
+#' @param excel_file_path A character string specifying the path to save the Excel file if
+#'   `save_column_in_each_nppes_year` is `TRUE`. Default is `NULL`.
+#'
+#' @return A dataframe containing the cleaned NPPES data for one year. The data is also saved
+#' to the specified CSV file.
+#'
+#' @details
+#' This function processes large NPPES datasets by leveraging DuckDB for efficient chunk-wise
+#' processing. The data is filtered based on taxonomy codes and cleaned before being appended
+#' to the output CSV file. The function optionally saves a sample of the data to an Excel file
+#' for inspection.
+#'
+#' @examples
+#' # Example 1: Process NPPES data for one year and save to CSV
+#' \dontrun{
+#' nppes_get_data_for_one_year(
+#'   npi_file_path = "nppes_raw_2022.csv",
+#'   output_csv_path = "nppes_cleaned_2022.csv"
+#' )
+#' }
+#'
+#' # Example 2: Process NPPES data and filter by taxonomy codes
+#' \dontrun{
+#' nppes_get_data_for_one_year(
+#'   npi_file_path = "nppes_raw_2022.csv",
+#'   output_csv_path = "nppes_cleaned_filtered_2022.csv",
+#'   taxonomy_codes_1 = c("207V00000X", "207VG0400X"),
+#'   taxonomy_codes_2 = c("207V00000X", "207VG0400X")
+#' )
+#' }
+#'
+#' # Example 3: Save sample data to Excel for inspection
+#' \dontrun{
+#' nppes_get_data_for_one_year(
+#'   npi_file_path = "nppes_raw_2022.csv",
+#'   output_csv_path = "nppes_cleaned_2022.csv",
+#'   save_column_in_each_nppes_year = TRUE,
+#'   excel_file_path = "nppes_sample_2022.xlsx"
+#' )
+#' }
+#'
+#' @importFrom dplyr filter mutate select
+#' @importFrom readr read_csv write_csv
+#' @importFrom glue glue
+#' @importFrom duckdb dbConnect dbDisconnect
+#' @import assertthat
+#'
 #' @export
 nppes_get_data_for_one_year <- function(
     npi_file_path,
     output_csv_path,
     duckdb_file_path = "/Volumes/Video Projects Muffly 1/nppes_historical_downloads/my_duckdb.duckdb",
-    taxonomy_codes_1 = c("207V00000X", "207VB0002X", "207VC0300X", "207VC0200X", "207VX0201X", "207VG0400X", "207VH0002X", "207VM0101X", "207VX0000X", "207VE0102X", "207VF0040X"),
-    taxonomy_codes_2 = c("207V00000X", "207VB0002X", "207VC0300X", "207VC0200X", "207VX0201X", "207VG0400X", "207VH0002X", "207VM0101X", "207VX0000X", "207VE0102X", "207VF0040X"),
+    taxonomy_codes_1 = c("207V00000X", "207VB0002X", "207VC0300X", "207VC0200X", "207VX0201X",
+                         "207VG0400X", "207VH0002X", "207VM0101X", "207VX0000X", "207VE0102X",
+                         "207VF0040X"),
+    taxonomy_codes_2 = c("207V00000X", "207VB0002X", "207VC0300X", "207VC0200X", "207VX0201X",
+                         "207VG0400X", "207VH0002X", "207VM0101X", "207VX0000X", "207VE0102X",
+                         "207VF0040X"),
     save_column_in_each_nppes_year = FALSE,
     excel_file_path = NULL
 ) {
-  # Helper function to log messages with timestamps
+  # Validate inputs using assertthat
+  assertthat::assert_that(file.exists(npi_file_path), msg = "`npi_file_path` must be a valid file path.")
+  assertthat::assert_that(assertthat::is.string(output_csv_path), msg = "`output_csv_path` must be a string.")
+  assertthat::assert_that(assertthat::is.string(duckdb_file_path), msg = "`duckdb_file_path` must be a string.")
+  assertthat::assert_that(is.character(taxonomy_codes_1), msg = "`taxonomy_codes_1` must be a character vector.")
+  assertthat::assert_that(is.character(taxonomy_codes_2), msg = "`taxonomy_codes_2` must be a character vector.")
+  assertthat::assert_that(is.logical(save_column_in_each_nppes_year), msg = "`save_column_in_each_nppes_year` must be logical.")
+  if (save_column_in_each_nppes_year) {
+    assertthat::assert_that(!is.null(excel_file_path), msg = "`excel_file_path` must be provided when saving sample data.")
+    assertthat::assert_that(assertthat::is.string(excel_file_path), msg = "`excel_file_path` must be a string.")
+  }
+
+  # Log initialization
   log_message <- function(message) {
     cat(sprintf("[%s] %s\n", Sys.time(), message))
   }
+  log_message("Starting NPPES data processing for one year...")
 
-  # Start of function
-  log_message("Starting the NPPES data processing for one year...")
-  log_message("Inputs:")
-  log_message(glue::glue("  npi_file_path: {npi_file_path}"))
-  log_message(glue::glue("  output_csv_path: {output_csv_path}"))
-  log_message(glue::glue("  duckdb_file_path: {duckdb_file_path}"))
-  log_message(glue::glue("  taxonomy_codes_1: {paste(taxonomy_codes_1, collapse = ', ')}"))
-  log_message(glue::glue("  taxonomy_codes_2: {paste(taxonomy_codes_2, collapse = ', ')}"))
+  # Initialize DuckDB connection
+  con <- duckdb::dbConnect(duckdb::duckdb(), duckdb_file_path)
+  on.exit(duckdb::dbDisconnect(con), add = TRUE)
 
-  # Initialize the environment
-  nppes_initialize_environment()
+  # Create a DuckDB table from the CSV
+  query <- glue::glue("CREATE OR REPLACE TABLE nppes_data AS SELECT * FROM read_csv_auto('{npi_file_path}')")
+  DBI::dbExecute(con, query)
 
-  # Connect to DuckDB
-  con <- nppes_connect_to_duckdb(duckdb_file_path)
-  on.exit(nppes_disconnect_from_duckdb(con), add = TRUE)
-
-  # Create table from CSV and query sample data
-  nppes_create_table_from_csv(con, npi_file_path)
-
-  # If saving sample data to Excel, process and save
-  if (save_column_in_each_nppes_year && !is.null(excel_file_path)) {
-    nppes_query_sample_data(con, save_column_in_each_nppes_year = TRUE, excel_file_path = excel_file_path)
-  } else {
-    nppes_query_sample_data(con)
+  # Save a sample of data if required
+  if (save_column_in_each_nppes_year) {
+    sample_query <- "SELECT * FROM nppes_data LIMIT 100"
+    sample_data <- DBI::dbGetQuery(con, sample_query)
+    writexl::write_xlsx(sample_data, path = excel_file_path)
+    log_message(glue::glue("Sample data saved to {excel_file_path}"))
   }
 
-  # Process the table in chunks
-  chunk_size <- 100000  # Define chunk size
-  total_rows <- nppes_get_total_row_count(con)  # Get total row count from table
+  # Process data in chunks
+  total_rows_query <- "SELECT COUNT(*) FROM nppes_data"
+  total_rows <- DBI::dbGetQuery(con, total_rows_query)[1, 1]
+  chunk_size <- 100000
   num_chunks <- ceiling(total_rows / chunk_size)
 
   for (i in seq_len(num_chunks)) {
     log_message(glue::glue("Processing chunk {i}/{num_chunks}"))
 
-    # Get the chunk of data
-    chunk_data <- nppes_get_chunk(con, chunk_size = chunk_size, chunk_num = i)
+    chunk_query <- glue::glue("SELECT * FROM nppes_data LIMIT {chunk_size} OFFSET {(i - 1) * chunk_size}")
+    chunk <- DBI::dbGetQuery(con, chunk_query)
 
-    # Process the chunk, clean the data
-    processed_data <- nppes_process_npi_table_chunk(chunk_data, taxonomy_codes_1, taxonomy_codes_2)
-    cleaned_data <- nppes_collect_and_clean_data(processed_data)
+    # Filter by taxonomy codes
+    filtered_chunk <- dplyr::filter(
+      chunk,
+      `Healthcare Provider Taxonomy Code_1` %in% taxonomy_codes_1 |
+        `Healthcare Provider Taxonomy Code_2` %in% taxonomy_codes_2
+    )
 
-    # Append the chunk to the CSV
-    nppes_save_data_to_csv(cleaned_data, output_csv_path, append = TRUE)
-
-    # Clear memory
-    rm(processed_data, cleaned_data, chunk_data)
-    invisible(gc())  # Garbage collection after processing each chunk
+    # Append filtered chunk to output CSV
+    readr::write_csv(filtered_chunk, output_csv_path, append = i > 1)
   }
 
-  # Final log message
-  log_message("NPPES data processing for one year completed.")
-  log_message("The next function to run is `nppes_save_summary_statistics`.")
-
-  # Return the final cleaned data as a data frame (can optionally collect all chunks in memory)
+  log_message(glue::glue("NPPES data processing completed. Cleaned data saved to {output_csv_path}"))
   return(readr::read_csv(output_csv_path))
 }

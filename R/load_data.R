@@ -7,13 +7,43 @@
 #' @param verbose A boolean indicating whether to print detailed logs. Default is TRUE.
 #'
 #' @return A data frame with the 'ID' column renamed to 'id_number'.
-#' @importFrom dplyr rename
-#' @examples
-#' # Example: Load data from a specified directory with logging
-#' df <- load_data(data_dir = "data", file_name = "Phase_2.rds", verbose = TRUE)
 #'
+#' @details This function performs the following steps:
+#' - Constructs the full file path from `data_dir` and `file_name`.
+#' - Validates the existence of the RDS file at the specified path.
+#' - Loads the data from the RDS file.
+#' - Renames the 'ID' column to 'id_number'.
+#' - Logs detailed information about each step if `verbose = TRUE`.
+#'
+#' @examples
+#' # Example 1: Load data from a specified directory with logging
+#' \dontrun{
+#' df <- load_data(data_dir = "data", file_name = "Phase_2.rds", verbose = TRUE)
+#' }
+#'
+#' # Example 2: Load data without logging
+#' \dontrun{
+#' df <- load_data(data_dir = "data", file_name = "Phase_2.rds", verbose = FALSE)
+#' }
+#'
+#' # Example 3: Handle missing file error
+#' \dontrun{
+#' tryCatch({
+#'   df <- load_data(data_dir = "invalid_path", file_name = "missing_file.rds", verbose = TRUE)
+#' }, error = function(e) {
+#'   cat("Error encountered:", e$message, "\n")
+#' })
+#' }
+#'
+#' @importFrom dplyr rename
+#' @importFrom tools file_path_sans_ext
+#' @import assertthat
 #' @export
 load_data <- function(data_dir, file_name, verbose = TRUE) {
+
+  # Validate inputs using assertthat
+  assertthat::assert_that(assertthat::is.string(data_dir), msg = "`data_dir` must be a string.")
+  assertthat::assert_that(assertthat::is.string(file_name), msg = "`file_name` must be a string.")
 
   # Log the inputs to the function
   if (verbose) {
@@ -39,29 +69,30 @@ load_data <- function(data_dir, file_name, verbose = TRUE) {
       cat("  Attempting to load data from:", file_path, "\n")
     }
 
-    df <- readRDS(file_path)
+    loaded_data <- readRDS(file_path)
     if (verbose) {
-      cat("  Data successfully loaded. Number of rows:", nrow(df), "\n")
+      cat("  Data successfully loaded. Number of rows:", nrow(loaded_data), "\n")
     }
 
-    # # Rename the 'ID' column to 'id_number'
-    # df <- dplyr::rename(df, id_number = ID)
-    # if (verbose) {
-    #   cat("  Column 'ID' renamed to 'id_number'.\n")
-    # }
+    # Rename the 'ID' column to 'id_number' if it exists
+    if ("ID" %in% colnames(loaded_data)) {
+      loaded_data <- dplyr::rename(loaded_data, id_number = ID)
+      if (verbose) {
+        cat("  Column 'ID' renamed to 'id_number'.\n")
+      }
+    } else if (verbose) {
+      cat("  Column 'ID' not found. No renaming performed.\n")
+    }
 
-    # Log the output
+    # Log the structure of the final data
     if (verbose) {
       cat("  Final data structure:\n")
-      print(str(df))
+      print(str(loaded_data))
     }
 
-    return(df)
+    return(loaded_data)
 
   }, error = function(e) {
     stop("Failed to load and process the data. Error: ", e$message)
   })
 }
-
-# Example: Load data from a specified directory with logging
-# df <- load_data(data_dir = "data", file_name = "Phase_2.rds", verbose = TRUE)

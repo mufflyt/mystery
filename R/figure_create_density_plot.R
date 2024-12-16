@@ -15,51 +15,24 @@
 #' @param verbose A boolean indicating whether to print messages about the saved plot locations. Default is TRUE.
 #'
 #' @return This function displays the plot and saves it to the specified directory.
+#' @importFrom assertthat assert_that is.string is.dir is.flag has_name
 #' @importFrom dplyr filter mutate %>%
-#' @importFrom ggplot2 ggplot geom_density scale_x_log10 scale_x_sqrt labs theme_light theme ggsave
-#' @importFrom viridis viridis_pal
-#' @importFrom rlang sym .data
+#' @importFrom ggplot2 ggplot geom_density labs theme_light theme ggsave
+#' @importFrom viridis scale_fill_viridis
+#' @importFrom rlang sym
 #' @examples
 #' # Example 1: Basic density plot with log transformation
 #' create_density_plot(
 #'     data = df3,
 #'     x_var = "business_days_until_appointment",
 #'     fill_var = "insurance",
-#'     x_transform = "log",  # Log transformation
+#'     x_transform = "log",
 #'     dpi = 100,
-#'     output_dir = "ortho_sports_med/Figures",
-#'     file_prefix = "ortho_sports_vs_insurance_density",
+#'     output_dir = "figures",
+#'     file_prefix = "waiting_time_density",
 #'     x_label = "Log (Waiting Times in Days)",
 #'     y_label = "Density",
 #'     plot_title = "Density Plot of Waiting Times by Insurance"
-#' )
-#'
-#' # Example 2: Density plot with square root transformation
-#' create_density_plot(
-#'     data = df3,
-#'     x_var = "business_days_until_appointment",
-#'     fill_var = "insurance",
-#'     x_transform = "sqrt",  # Square root transformation
-#'     dpi = 150,
-#'     output_dir = "ortho_sports_med/Figures",
-#'     file_prefix = "ortho_sports_vs_insurance_density_sqrt",
-#'     x_label = "Sqrt (Waiting Times in Days)",
-#'     y_label = "Density",
-#'     plot_title = "Square Root Transformed Density Plot"
-#' )
-#'
-#' # Example 3: Density plot without any transformation
-#' create_density_plot(
-#'     data = df3,
-#'     x_var = "business_days_until_appointment",
-#'     fill_var = "insurance",
-#'     x_transform = "none",  # No transformation
-#'     dpi = 200,
-#'     output_dir = "ortho_sports_med/Figures",
-#'     file_prefix = "ortho_sports_vs_insurance_density_none",
-#'     x_label = "Waiting Times in Days",
-#'     y_label = "Density",
-#'     plot_title = "Density Plot Without Transformation"
 #' )
 #' @export
 create_density_plot <- function(data,
@@ -74,16 +47,29 @@ create_density_plot <- function(data,
                                 plot_title = NULL,
                                 verbose = TRUE) {
 
+  # Validate inputs using assertthat
+  assertthat::assert_that(is.data.frame(data), msg = "`data` must be a dataframe.")
+  assertthat::assert_that(assertthat::is.string(x_var), msg = "`x_var` must be a string.")
+  assertthat::assert_that(assertthat::is.string(fill_var), msg = "`fill_var` must be a string.")
+  assertthat::assert_that(assertthat::has_name(data, x_var), msg = paste0("`", x_var, "` is not a column in `data`."))
+  assertthat::assert_that(assertthat::has_name(data, fill_var), msg = paste0("`", fill_var, "` is not a column in `data`."))
+  assertthat::assert_that(x_transform %in% c("log", "sqrt", "none"), msg = "`x_transform` must be one of 'log', 'sqrt', or 'none'.")
+  assertthat::assert_that(is.numeric(dpi) && dpi > 0, msg = "`dpi` must be a positive numeric value.")
+  assertthat::assert_that(assertthat::is.string(output_dir), msg = "`output_dir` must be a string.")
+  assertthat::assert_that(assertthat::is.dir(output_dir), msg = paste0("`", output_dir, "` does not exist."))
+  assertthat::assert_that(assertthat::is.string(file_prefix), msg = "`file_prefix` must be a string.")
+  assertthat::assert_that(assertthat::is.flag(verbose), msg = "`verbose` must be a logical value (TRUE/FALSE).")
+
   # Filter out zero or negative values and NAs from the x_var column
   data <- dplyr::filter(data, .data[[x_var]] > 0, !is.na(.data[[x_var]]))
 
   # Handle transformations
   if (x_transform == "log") {
     data <- dplyr::mutate(data, !!x_var := log1p(.data[[x_var]]))
-    x_label <- if (is.null(x_label)) paste("Log (", x_var, ")", sep = "") else x_label
+    x_label <- if (is.null(x_label)) paste("Log(", x_var, ")", sep = "") else x_label
   } else if (x_transform == "sqrt") {
     data <- dplyr::mutate(data, !!x_var := sqrt(.data[[x_var]]))
-    x_label <- if (is.null(x_label)) paste("Sqrt (", x_var, ")", sep = "") else x_label
+    x_label <- if (is.null(x_label)) paste("Sqrt(", x_var, ")", sep = "") else x_label
   } else {
     x_label <- if (is.null(x_label)) x_var else x_label
   }
@@ -96,26 +82,27 @@ create_density_plot <- function(data,
       y = y_label,
       title = plot_title
     ) +
-    viridis::scale_fill_viridis(discrete = TRUE, option = "D") +  # Updated for correct viridis usage
+    ggplot2::scale_fill_viridis_d(option = "D") +  # Use viridis for color palette
     ggplot2::theme_light() +
     ggplot2::theme(
       legend.position = "bottom"
     )
 
-  # Return the plot object before saving
+  # Log plot preview if verbose
   if (verbose) {
     print(density_plot)
   }
 
-  # Automatic Filename Generation
+  # Generate filenames with timestamps
   timestamp <- format(Sys.time(), "%Y%m%d_%H%M%S")
   tiff_filename <- file.path(output_dir, paste0(file_prefix, "_", timestamp, ".tiff"))
   png_filename <- file.path(output_dir, paste0(file_prefix, "_", timestamp, ".png"))
 
-  # Save the plot if necessary
+  # Save the plot
   ggplot2::ggsave(filename = tiff_filename, plot = density_plot, dpi = dpi, height = 8, width = 11)
   ggplot2::ggsave(filename = png_filename, plot = density_plot, dpi = dpi, height = 8, width = 11)
 
+  # Log saved file locations
   if (verbose) {
     cat("Plots saved to:", tiff_filename, "and", png_filename, "\n")
   }
