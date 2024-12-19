@@ -401,7 +401,6 @@ The `create_forest_plot` function creates a forest plot for significant predicto
 df <- data.frame(predictor = c("age", "gender", "income"), estimate = c(0.2, -0.5, 0.3), lower = c(0.1, -0.7, 0.2), upper = c(0.3, -0.3, 0.5))
 create_forest_plot(df, "target_variable", significant_vars = df)
 ```
-![Forest Plot Example](forest_plot.png)
 
 # RESULTS FIGURES 
 ## `tyler::create_insurance_by_insurance_scatter_plot`
@@ -414,7 +413,6 @@ create_and_plot_interaction(data, var1 = "var1", var2 = "var2")
 # Example with customized plot settings
 create_and_plot_interaction(data, var1 = "var1", var2 = "var2", plot_title = "Interaction Plot")
 ```
-![Scatter Plot Example](create_insurance_by_insurance_scatter_plot.png)
 
 # RESULTS FIGURES 
 ## `tyler::create_line_plot`
@@ -423,7 +421,6 @@ The create_line_plot function generates line plots for visualizing trends over t
 # Example: Creating a line plot
 create_line_plot(df, x = "year", y = "appointments", group = "insurance")
 ```
-![Line Plot Example](line_plot.png)
 
 # RESULTS FIGURES 
 ## `tyler::create_scatter_plot`
