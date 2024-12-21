@@ -1,4 +1,9 @@
-name: pkgdown
+name: Tyler's Mystery Shopper Package
+url: https://mufflyt.github.io/tyler/mysteryshopper
+description: >
+  Tyler's Mystery Shopper package is designed to analyze appointment wait times using Poisson regression, while exploring the effects of insurance types on access to care.
+template:
+  bootstrap: 5
 
 on:
   push:
@@ -37,14 +42,28 @@ jobs:
             ${{ runner.os }}-r-${{ hashFiles('**/*.Rproj') }}
             ${{ runner.os }}-r-
 
+      - name: Check pkgdown
+        run: |
+          Rscript -e 'pkgdown::check_pkgdown()'
+
       - name: Build pkgdown site
         run: |
-          Rscript -e 'remotes::install_cran("pkgdown")'
           Rscript -e 'pkgdown::build_site()'
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: gh-pages # default branch for pkgdown deployment
-          FOLDER: docs # default output folder for pkgdown
+          BRANCH: gh-pages
+          FOLDER: docs
+
+authors:
+  - name: Tyler Muffly
+    url: https://github.com/mufflyt
+    roles: ["author", "creator"]
+    orcid: 0000-0002-2044-1693
+
+search:
+  provider: lunr
+
+sitemap: true
