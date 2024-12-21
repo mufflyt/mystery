@@ -16,6 +16,7 @@
 #' @return NULL. The function saves the CSV file to the specified location.
 #'
 #' @importFrom utils write.csv
+#' @importFrom assertthat assert_that is.string
 #'
 #' @examples
 #' # Example 1: Save a data frame to the default directory with detailed logging
@@ -34,16 +35,13 @@
 write_output_csv <- function(df, filename, output_dir = "ortho_sports_med/Figures", verbose = TRUE) {
 
   # Validate inputs
-  if (!is.data.frame(df)) {
-    stop("The input 'df' must be a data frame.")
-  }
+  assertthat::assert_that(is.data.frame(df), msg = "The input 'df' must be a data frame.")
+  assertthat::assert_that(assertthat::is.string(filename), grepl("\\.csv$", filename),
+                          msg = "The 'filename' must be a string ending with '.csv'.")
+  assertthat::assert_that(assertthat::is.string(output_dir), msg = "The 'output_dir' must be a valid string.")
 
-  if (!is.character(filename) || !grepl("\\.csv$", filename)) {
-    stop("The 'filename' must be a string ending with '.csv'.")
-  }
-
-  if (!is.character(output_dir)) {
-    stop("The 'output_dir' must be a valid string.")
+  if (!is.logical(verbose)) {
+    stop("'verbose' must be a boolean.")
   }
 
   # Check and create the directory if it doesn't exist
@@ -62,7 +60,7 @@ write_output_csv <- function(df, filename, output_dir = "ortho_sports_med/Figure
 
   # Attempt to write the CSV file
   tryCatch({
-    write.csv(df, file = output_file_path, row.names = FALSE)
+    utils::write.csv(df, file = output_file_path, row.names = FALSE)
     if (verbose) {
       cat("File successfully saved to:", output_file_path, "\n")
     }
