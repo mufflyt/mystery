@@ -85,3 +85,4 @@ if (!all(required_columns %in% colnames(household_income))) {
 # Print a preview of the dataset
 print(head(household_income))
 
+#readr::write_rds(income_data, "/Users/tylermuffly/Dropbox (Personal)/Mystery shopper/mystery_shopper/data/reference/income_data_2022.rds")
