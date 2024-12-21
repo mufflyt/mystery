@@ -2,19 +2,49 @@
 % Please edit documentation in R/get_census_data.R
 \name{get_census_data}
 \alias{get_census_data}
-\title{Get Census data of all state block groups}
+\title{Retrieve Census Data for State Block Groups}
 \usage{
-get_census_data(us_fips_list, vintage = 2022)
+get_census_data(state_fips_codes, vintage_year = 2022)
 }
 \arguments{
-\item{us_fips_list}{A vector of state FIPS codes which Census data is to be retrieved.}
+\item{state_fips_codes}{A character vector of state FIPS codes for which Census data is to be retrieved.
+FIPS codes must be two-character strings representing U.S. states (e.g., "01" for Alabama).}
 
-\item{vintage}{The vintage year of Census data (default is 2022).}
+\item{vintage_year}{An integer specifying the vintage year of Census data. Default is 2022.}
 }
 \value{
-A dataframe containing Census data for all state block groups.
+A dataframe containing Census data for all specified state block groups, including metadata.
 }
 \description{
-This function retrieves Census data of all state block groups by looping
-over the specified list of state FIPS codes.
+This function retrieves Census data for all state block groups by looping
+over the specified list of state FIPS codes. The data is fetched using the
+Census API for a specified vintage year and aggregated into a single dataframe.
+}
+\details{
+This function uses the \code{censusapi} package to query Census data via the American Community Survey
+(ACS) API. Data is retrieved for block groups across all specified states and aggregated into a single dataframe.
+Users must provide a valid Census API key via the \code{key} argument or environment variables.
+}
+\examples{
+# Example 1: Retrieve Census data for two states with the default vintage year
+\dontrun{
+state_fips_codes <- c("01", "02") # Alabama and Alaska
+census_data <- get_census_data(state_fips_codes)
+head(census_data)
+}
+
+# Example 2: Retrieve Census data for multiple states with a different vintage year
+\dontrun{
+state_fips_codes <- c("04", "05", "06") # Arizona, Arkansas, California
+census_data <- get_census_data(state_fips_codes, vintage_year = 2021)
+print(dim(census_data)) # Display dimensions of the retrieved data
+}
+
+# Example 3: Retrieve Census data for a subset of states and save it to a CSV file
+\dontrun{
+state_fips_codes <- c("01", "02", "04", "05", "06", "08", "09")
+census_data <- get_census_data(state_fips_codes)
+write.csv(census_data, file = "census_data_block_groups.csv", row.names = FALSE)
+}
+
 }

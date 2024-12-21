@@ -29,47 +29,11 @@ against the target variable. It extracts coefficients and confidence intervals, 
 them as a forest plot. A vertical dashed red line at \code{x = 0} indicates no effect.
 }
 \examples{
-# Example 1: Preparing a dataset and identifying significant predictors
-
-# Define predictor variables by excluding specific columns
-predictor_vars <- prepare_dataset(
-  df,
-  target_variable = "cleaned_does_the_physician_accept_medicaid_numeric",
-  excluded_columns = c("does_the_physician_accept_medicaid",
-                       "cleaned_does_the_physician_accept_medicaid")
-)
-
-# Fit Poisson models for each predictor and extract p-values
-results <- fit_poisson_models(
-  df,
-  target_variable = "cleaned_does_the_physician_accept_medicaid_numeric",
-  predictor_vars = predictor_vars
-)
-
-# Filter for significant predictors (p-value < 0.2)
-significant_vars <- results \%>\%
-  dplyr::filter(P_Value < 0.2)
-
-# Determine directionality of effects for significant predictors
-significant_vars_with_direction <- determine_direction(
-  df,
-  target_variable = "cleaned_does_the_physician_accept_medicaid_numeric",
-  significant_vars = significant_vars
-)
-
-# Create a forest plot for significant predictors
+# Example: Creating a forest plot for significant predictors
 forest_plot <- create_forest_plot(
-  df,
-  target_variable = "cleaned_does_the_physician_accept_medicaid_numeric",
-  significant_vars = significant_vars_with_direction
+  df = data,
+  target_variable = "accepts_medicaid",
+  significant_vars = significant_predictors
 )
 print(forest_plot)
-
-# Example 2: Saving the forest plot to a file
-ggplot2::ggsave("forest_plot.png", plot = forest_plot, width = 10, height = 6)
-
 }
-\keyword{forest-plot}
-\keyword{plot}
-\keyword{regression}
-\keyword{visualization}

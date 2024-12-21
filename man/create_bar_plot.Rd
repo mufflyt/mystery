@@ -39,7 +39,9 @@ create_bar_plot(
 This function returns the plot object for further manipulation or saving.
 }
 \description{
-This function generates a bar plot based on a categorical variable and facets the plot by a grouping variable. The plot title automatically includes the total sample size (N). The function also supports custom axis labels, and it returns the plot object for further manipulation or saving.
+This function generates a bar plot based on a categorical variable and facets the plot by a grouping variable.
+The plot title automatically includes the total sample size (N). The function also supports custom axis labels,
+and it returns the plot object for further manipulation or saving.
 }
 \examples{
 # Example 1: Basic usage with a categorical and facet variable
@@ -50,22 +52,5 @@ create_bar_plot(
   title = "Insurance Type Distribution by Region",
   x_axis_label = "Insurance Type",
   y_axis_label = "Number of Observations"
-)
-
-# Example 2: Using default axis labels and auto-generated title
-create_bar_plot(
-  input_data = my_data,
-  category_var = "insurance_type",
-  grouping_var = "region"
-)
-
-# Example 3: Saving the plot with a custom filename prefix and disabling verbose output
-create_bar_plot(
-  input_data = my_data,
-  category_var = "insurance_type",
-  grouping_var = "region",
-  output_directory = "plots",
-  filename_prefix = "insurance_vs_region",
-  verbose = FALSE
 )
 }

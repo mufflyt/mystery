@@ -20,69 +20,81 @@ create_line_plot(
 )
 }
 \arguments{
-\item{data}{A dataframe containing the data to be plotted. Must contain the variables specified in \code{x_var} and \code{y_var}.}
+\item{data}{A dataframe containing the data to be plotted. Must include the variables specified in \code{x_var}
+and \code{y_var}.}
 
-\item{x_var}{A string representing the column name for the x-axis variable. This should be a categorical or factor variable.}
+\item{x_var}{A string representing the column name for the x-axis variable. This should be a categorical or
+factor variable.}
 
 \item{y_var}{A string representing the column name for the y-axis variable. This should be a numeric variable.}
 
-\item{y_transform}{A string specifying the transformation for the y-axis: "log" for log transformation (log1p), "sqrt" for square root transformation, or "none" for no transformation. Default is "none".}
+\item{y_transform}{A string specifying the transformation for the y-axis: "log" for log transformation (log1p),
+"sqrt" for square root transformation, or "none" for no transformation. Default is "none".}
 
 \item{dpi}{An integer specifying the resolution of the saved plot in dots per inch (DPI). Default is 100.}
 
 \item{output_dir}{A string representing the directory where the plot files will be saved. Default is "output".}
 
-\item{file_prefix}{A string used as the prefix for the generated plot filenames. The filenames will have a timestamp appended to ensure uniqueness. Default is "line_plot".}
+\item{file_prefix}{A string used as the prefix for the generated plot filenames. The filenames will have a
+timestamp appended to ensure uniqueness. Default is "line_plot".}
 
-\item{use_geom_line}{A boolean indicating whether to include lines connecting points for grouped data. Default is FALSE.}
+\item{use_geom_line}{A boolean indicating whether to include lines connecting points for grouped data.
+Default is FALSE.}
 
-\item{geom_line_group}{A string representing the column name to group the lines by when \code{use_geom_line} is TRUE. This should be a categorical or factor variable.}
+\item{geom_line_group}{A string representing the column name to group the lines by when \code{use_geom_line} is TRUE.
+This should be a categorical or factor variable.}
 
-\item{point_color}{A string specifying the color of the points. Default is "viridis", which uses the viridis color palette.}
+\item{point_color}{A string specifying the color of the points. Default is "viridis", which uses the viridis
+color palette.}
 
 \item{line_color}{A string specifying the color of the summary line (median). Default is "red".}
 
 \item{verbose}{A boolean indicating whether to print messages about the saved plot locations. Default is TRUE.}
 }
 \value{
-This function saves the plot to the specified directory and returns no value.
+This function saves the plot to the specified directory and returns the ggplot object.
 }
 \description{
-This function creates a line plot using ggplot2 with options for transforming the y-axis, grouping lines, and saving the plot with a specified resolution. The plot can be saved in both TIFF and PNG formats with automatic filename generation.
+This function creates a line plot using ggplot2 with options for transforming the y-axis, grouping lines,
+and saving the plot with a specified resolution. The plot can be saved in both TIFF and PNG formats with
+automatic filename generation.
 }
 \examples{
-# Example 1: Basic plot with log transformation
+# Example 1: Basic line plot with no transformations
 create_line_plot(
-    data = df3,
-    x_var = "insurance",
-    y_var = "business_days_until_appointment",
-    y_transform = "log",  # Log transformation
-    dpi = 100,
-    output_dir = "ortho_sports_med/Figures",
-    file_prefix = "ortho_sports_vs_insurance"
+  data = iris,
+  x_var = "Species",
+  y_var = "Sepal.Length",
+  y_transform = "none",
+  dpi = 100,
+  output_dir = "output",
+  file_prefix = "iris_sepal_length"
 )
 
-# Example 2: Plot with square root transformation and lines grouped by 'last'
+# Example 2: Line plot with log transformation and grouped lines
 create_line_plot(
-    data = df3,
-    x_var = "insurance",
-    y_var = "business_days_until_appointment",
-    y_transform = "sqrt",  # Square root transformation
-    dpi = 150,
-    output_dir = "ortho_sports_med/Figures",
-    file_prefix = "ortho_sports_vs_insurance_sqrt",
-    use_geom_line = TRUE,  # Include lines
-    geom_line_group = "last"  # Group lines by 'last' column
+  data = mtcars,
+  x_var = "cyl",
+  y_var = "mpg",
+  y_transform = "log",
+  dpi = 150,
+  output_dir = "plots",
+  file_prefix = "mtcars_log_mpg",
+  use_geom_line = TRUE,
+  geom_line_group = "gear"
 )
 
-# Example 3: Plot without any transformation and without lines
+# Example 3: Line plot with square root transformation and customized aesthetics
 create_line_plot(
-    data = df3,
-    x_var = "insurance",
-    y_var = "business_days_until_appointment",
-    y_transform = "none",  # No transformation
-    dpi = 200,
-    output_dir = "ortho_sports_med/Figures",
-    file_prefix = "ortho_sports_vs_insurance_none"
+  data = mtcars,
+  x_var = "gear",
+  y_var = "hp",
+  y_transform = "sqrt",
+  dpi = 300,
+  output_dir = "custom_plots",
+  file_prefix = "mtcars_sqrt_hp",
+  point_color = "blue",
+  line_color = "green",
+  verbose = TRUE
 )
 }

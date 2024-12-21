@@ -40,23 +40,66 @@ nppes_get_data_for_one_year(
 
 \item{output_csv_path}{A character string specifying the full file path where the cleaned data will be saved.}
 
-\item{duckdb_file_path}{A character string specifying the path to the DuckDB database file.}
+\item{duckdb_file_path}{A character string specifying the path to the DuckDB database file.
+Default is "/Volumes/Video Projects Muffly 1/nppes_historical_downloads/my_duckdb.duckdb".}
 
-\item{taxonomy_codes_1}{A character vector of taxonomy codes used to filter data in \verb{Healthcare Provider Taxonomy Code_1}.}
+\item{taxonomy_codes_1}{A character vector of taxonomy codes used to filter rows based on
+\verb{Healthcare Provider Taxonomy Code_1}.}
 
-\item{taxonomy_codes_2}{A character vector of taxonomy codes used to filter data in \verb{Healthcare Provider Taxonomy Code_2}.}
+\item{taxonomy_codes_2}{A character vector of taxonomy codes used to filter rows based on
+\verb{Healthcare Provider Taxonomy Code_2}.}
 
-\item{save_column_in_each_nppes_year}{A logical value indicating whether to save a sample to an Excel file.}
+\item{save_column_in_each_nppes_year}{A logical value indicating whether to save sample data
+to an Excel file for inspection. Default is \code{FALSE}.}
 
-\item{excel_file_path}{A character string specifying the path to save the Excel file if \code{save_column_in_each_nppes_year} is \code{TRUE}.}
+\item{excel_file_path}{A character string specifying the path to save the Excel file if
+\code{save_column_in_each_nppes_year} is \code{TRUE}. Default is \code{NULL}.}
 }
 \value{
 A data frame containing the cleaned NPPES data for one year, saved to the specified file path.
 
-A data frame containing the cleaned NPPES data for one year, saved to the specified file path.
+A dataframe containing the cleaned NPPES data for one year. The data is also saved
+to the specified CSV file.
 }
 \description{
-Process NPPES Data for One Year with Chunked Processing
+This function processes a single year's NPPES (National Plan and Provider Enumeration System) data,
+filtering by specified taxonomy codes and saving the cleaned data to a CSV file. The data is processed
+in chunks to handle large datasets efficiently, and optional functionality allows saving sample columns
+to an Excel file for inspection.
+}
+\details{
+This function processes large NPPES datasets by leveraging DuckDB for efficient chunk-wise
+processing. The data is filtered based on taxonomy codes and cleaned before being appended
+to the output CSV file. The function optionally saves a sample of the data to an Excel file
+for inspection.
+}
+\examples{
+# Example 1: Process NPPES data for one year and save to CSV
+\dontrun{
+nppes_get_data_for_one_year(
+  npi_file_path = "nppes_raw_2022.csv",
+  output_csv_path = "nppes_cleaned_2022.csv"
+)
+}
 
-Process NPPES Data for One Year with Chunked Processing
+# Example 2: Process NPPES data and filter by taxonomy codes
+\dontrun{
+nppes_get_data_for_one_year(
+  npi_file_path = "nppes_raw_2022.csv",
+  output_csv_path = "nppes_cleaned_filtered_2022.csv",
+  taxonomy_codes_1 = c("207V00000X", "207VG0400X"),
+  taxonomy_codes_2 = c("207V00000X", "207VG0400X")
+)
+}
+
+# Example 3: Save sample data to Excel for inspection
+\dontrun{
+nppes_get_data_for_one_year(
+  npi_file_path = "nppes_raw_2022.csv",
+  output_csv_path = "nppes_cleaned_2022.csv",
+  save_column_in_each_nppes_year = TRUE,
+  excel_file_path = "nppes_sample_2022.xlsx"
+)
+}
+
 }

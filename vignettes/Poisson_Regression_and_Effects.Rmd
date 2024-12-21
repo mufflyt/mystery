@@ -4,7 +4,7 @@ author: "Tyler Muffly, MD"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Analyzing Wait Times for Appointments}
+  %\VignetteIndexEntry{Analyzing Wait Times for Appointments: Poisson Regression and Interaction Effects}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 

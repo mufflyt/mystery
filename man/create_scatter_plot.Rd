@@ -28,7 +28,8 @@ create_scatter_plot(
 
 \item{y_var}{A string representing the column name for the y-axis variable. This should be a numeric variable (e.g., waiting time in days).}
 
-\item{y_transform}{A string specifying the transformation for the y-axis: "log" for log transformation (log1p), "sqrt" for square root transformation, or "none" for no transformation. Default is "none".}
+\item{y_transform}{A string specifying the transformation for the y-axis: "log" for log transformation (log1p),
+"sqrt" for square root transformation, or "none" for no transformation. Default is "none".}
 
 \item{dpi}{An integer specifying the resolution of the saved plot in dots per inch (DPI). Default is 100.}
 
@@ -54,7 +55,10 @@ create_scatter_plot(
 This function displays the plot and saves it to the specified directory.
 }
 \description{
-This function generates a scatter plot designed for mystery caller studies, allowing for the visualization of waiting times or similar outcomes across different categories, such as insurance types. The function supports transformations on the y-axis, custom jitter, and colors each category in the x-axis using the \code{viridis} color palette. The plot is automatically displayed and saved with a specified resolution.
+This function generates a scatter plot designed for mystery caller studies, allowing for the visualization of
+waiting times or similar outcomes across different categories, such as insurance types. The function supports
+transformations on the y-axis, custom jitter, and colors each category in the x-axis using the \code{viridis} color
+palette. The plot is automatically displayed and saved with a specified resolution.
 }
 \examples{
 # Example 1: Basic scatter plot with log transformation
