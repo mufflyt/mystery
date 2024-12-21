@@ -2,7 +2,7 @@
 % Please edit documentation in R/calculate_distribution.R
 \name{calculate_distribution}
 \alias{calculate_distribution}
-\title{Calculate Demographic Distribution with Logging}
+\title{Calculate Demographic Distribution with Robust Logging}
 \usage{
 calculate_distribution(df, column)
 }

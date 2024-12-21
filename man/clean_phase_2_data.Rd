@@ -32,25 +32,12 @@ input_path <- "path_to_your_data.csv"
 required_strings <- c("physician_information", "able_to_contact_office")
 standard_names <- c("physician_info", "contact_office")
 cleaned_data <- clean_phase_2_data(input_path, required_strings, standard_names)
-# cleaned_data will now have updated column names
 
 # Example 2: Directly using a data frame
-df <- data.frame(
-  DocInfo = 1:5,
-  ContactData = 6:10
-)
+df <- data.frame(DocInfo = 1:5, ContactData = 6:10)
 required_strings <- c("doc_info", "contact_data")
 standard_names <- c("doctor_info", "patient_contact_info")
 cleaned_df <- clean_phase_2_data(df, required_strings, standard_names)
 print(cleaned_df)  # Should show updated column names
 
-# Example 3: Attempting to clean with missing columns
-df2 <- data.frame(
-  appointment_date = 1:5,
-  patient_name = 6:10
-)
-required_strings <- c("doctor_info", "contact_data")  # Note: these do not exist
-standard_names <- c("physician_info", "patient_contact_info")
-cleaned_df2 <- clean_phase_2_data(df2, required_strings, standard_names)
-print(cleaned_df2)  # Should issue warnings about missing columns
 }

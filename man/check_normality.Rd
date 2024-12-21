@@ -21,4 +21,5 @@ and provides summary statistics (mean and standard deviation if normal, median a
 \examples{
 # Example usage with a dataframe 'df' and outcome variable 'business_days_until_appointment'
 check_normality(df, "business_days_until_appointment")
+
 }
