@@ -55,7 +55,7 @@ calculate_proportion <- function(df, variable_name, log_file = "calculate_propor
     dplyr::mutate(percent = n / sum(n) * 100)
 
   logger::log_info("Counts and percentages calculated. Preview of results:")
-  print(head(tabyl_result))  # Log the actual results
+  print(head(tabyl_result)) # Log the actual results
 
   # Round percentages to two decimal places
   logger::log_info("Rounding percentages to two decimal places.")
@@ -63,7 +63,7 @@ calculate_proportion <- function(df, variable_name, log_file = "calculate_propor
     dplyr::mutate(across(where(is.numeric), round, 2))
 
   logger::log_info("Final result prepared.")
-  print(head(tabyl_result))  # Log the final output
+  print(head(tabyl_result)) # Log the final output
 
   return(tabyl_result)
 }

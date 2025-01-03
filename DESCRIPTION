@@ -48,7 +48,12 @@ Imports:
     gender,
     genderdata,
     emmeans,
-    zipcodeR
+    zipcodeR,
+    assertthat,
+    censusapi,
+    duckdb,
+    readxl,
+    testthat
 Suggests:
     knitr,
     rmarkdown,

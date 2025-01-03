@@ -37,8 +37,10 @@
 #'
 #' # Plot cities in a specific state
 #' library(ggplot2)
-#' ggplot(subset(cityStateToLatLong, state == "California"),
-#'        aes(x = longitude, y = latitude)) +
+#' ggplot(
+#'   subset(cityStateToLatLong, state == "California"),
+#'   aes(x = longitude, y = latitude)
+#' ) +
 #'   geom_point() +
 #'   labs(title = "Cities in California", x = "Longitude", y = "Latitude") +
 #'   theme_minimal()

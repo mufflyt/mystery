@@ -45,5 +45,5 @@ tests/testthat/_snaps/
 .env
 
 # Miscellaneous
-*.log
-*.aux
+.log
+.aux

@@ -24,4 +24,3 @@ MinTable <- function(InVec, mult = FALSE) {
     levels(InVec)[which.min(A)]
   }
 }
-

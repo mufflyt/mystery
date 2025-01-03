@@ -64,8 +64,8 @@ clean_npi_entries <- function(npi_entries, basic_credentials = c("MD", "DO"), ta
   # Function to normalize credentials (remove punctuation and extra spaces)
   normalize_credential <- function(credential) {
     credential <- stringr::str_remove_all(credential, "[[:punct:]]") # Remove punctuation
-    credential <- stringr::str_squish(credential)                    # Remove extra spaces
-    credential <- toupper(credential)                                # Convert to uppercase
+    credential <- stringr::str_squish(credential) # Remove extra spaces
+    credential <- toupper(credential) # Convert to uppercase
     return(credential)
   }
 

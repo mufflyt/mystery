@@ -18,13 +18,17 @@
 calculate_descriptive_stats <- function(df, column, verbose = TRUE) {
   # Validate inputs using assertthat
   assertthat::assert_that(is.data.frame(df),
-                          msg = "The `df` argument must be a data frame.")
+    msg = "The `df` argument must be a data frame."
+  )
   assertthat::assert_that(assertthat::is.string(column),
-                          msg = "The `column` argument must be a single string.")
+    msg = "The `column` argument must be a single string."
+  )
   assertthat::assert_that(assertthat::has_name(df, column),
-                          msg = paste("The specified column", column, "is not found in the data frame."))
+    msg = paste("The specified column", column, "is not found in the data frame.")
+  )
   assertthat::assert_that(is.logical(verbose),
-                          msg = "The `verbose` argument must be a logical value (TRUE or FALSE).")
+    msg = "The `verbose` argument must be a logical value (TRUE or FALSE)."
+  )
 
   # Log the inputs to the function
   if (verbose) {

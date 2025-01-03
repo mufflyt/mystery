@@ -37,11 +37,14 @@
 calcpercentages <- function(df, variable) {
   # Input validation using assertthat
   assertthat::assert_that(is.data.frame(df),
-                          msg = "The `df` argument must be a data frame.")
+    msg = "The `df` argument must be a data frame."
+  )
   assertthat::assert_that(assertthat::is.string(variable),
-                          msg = "The `variable` argument must be a single string.")
+    msg = "The `variable` argument must be a single string."
+  )
   assertthat::assert_that(assertthat::has_name(df, variable),
-                          msg = paste("The variable", variable, "is not found in the data frame."))
+    msg = paste("The variable", variable, "is not found in the data frame.")
+  )
 
   # Convert variable name to character to ensure compatibility with dplyr
   variable <- as.character(variable)

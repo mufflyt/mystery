@@ -18,17 +18,21 @@
 calculate_distribution <- function(df, column) {
   # Input validation using assertthat
   assertthat::assert_that(is.data.frame(df),
-                          msg = "The `df` argument must be a data frame.")
+    msg = "The `df` argument must be a data frame."
+  )
   assertthat::assert_that(assertthat::is.string(column),
-                          msg = "The `column` argument must be a single string.")
+    msg = "The `column` argument must be a single string."
+  )
   assertthat::assert_that(assertthat::has_name(df, column),
-                          msg = paste("The specified column", column, "is not found in the data frame."))
+    msg = paste("The specified column", column, "is not found in the data frame.")
+  )
   assertthat::assert_that(nrow(df) > 0,
-                          msg = "The data frame `df` must not be empty.")
+    msg = "The data frame `df` must not be empty."
+  )
 
   cat("Starting calculate_distribution...\n")
   cat("Input Data Frame:\n")
-  print(head(df))  # Logging the first few rows of input data for debugging
+  print(head(df)) # Logging the first few rows of input data for debugging
 
   cat("Column to Calculate Distribution For:", column, "\n")
 
@@ -37,10 +41,11 @@ calculate_distribution <- function(df, column) {
     dplyr::filter(!is.na(.data[[column]]))
 
   assertthat::assert_that(nrow(df_filtered) > 0,
-                          msg = paste("The specified column", column, "contains only NA values."))
+    msg = paste("The specified column", column, "contains only NA values.")
+  )
 
   cat("Filtered Data Frame (NA removed):\n")
-  print(head(df_filtered))  # Logging the first few rows of filtered data for debugging
+  print(head(df_filtered)) # Logging the first few rows of filtered data for debugging
 
   # Calculate the distribution
   result <- df_filtered %>%
@@ -54,12 +59,14 @@ calculate_distribution <- function(df, column) {
     dplyr::slice(1)
 
   assertthat::assert_that(all(is.numeric(result$count)),
-                          msg = "The `count` column must contain numeric values.")
+    msg = "The `count` column must contain numeric values."
+  )
   assertthat::assert_that(all(is.numeric(result$percent)),
-                          msg = "The `percent` column must contain numeric values.")
+    msg = "The `percent` column must contain numeric values."
+  )
 
   cat("Final Distribution Result:\n")
-  print(result)  # Logging the final result
+  print(result) # Logging the final result
 
   return(result)
 }

@@ -34,8 +34,7 @@ calculate_population_in_isochrones_by_race <- function(
     population_data,
     isochrone_geometries,
     year,
-    travel_time = NULL
-) {
+    travel_time = NULL) {
   logger::log_info("Starting the calculation of aggregated population by race/ethnicity in unified isochrones.")
 
   # Validate inputs using assertthat
