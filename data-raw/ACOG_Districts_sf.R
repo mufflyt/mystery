@@ -59,8 +59,8 @@ shift_geometry <- function(sf_obj) {
   # Shift Hawaii and Alaska for better visualization
   sf_obj %>%
     mutate(geometry = case_when(
-      NAME == "Alaska" ~ st_geometry(.) + c(50, -30),  # Shift Alaska
-      NAME == "Hawaii" ~ st_geometry(.) + c(60, -20),  # Shift Hawaii
+      NAME == "Alaska" ~ st_geometry(.) + c(50, -30), # Shift Alaska
+      NAME == "Hawaii" ~ st_geometry(.) + c(60, -20), # Shift Hawaii
       TRUE ~ st_geometry(.)
     ))
 }
@@ -68,6 +68,6 @@ shift_geometry <- function(sf_obj) {
 # Apply the plot
 ggplot(acog_districts_sf) +
   geom_sf(aes(fill = ACOG_District), color = "black") +
-  coord_sf(crs = 'ESRI:102003') +
+  coord_sf(crs = "ESRI:102003") +
   theme_void() +
   labs(title = "ACOG Districts Across the U.S.", fill = "ACOG District")

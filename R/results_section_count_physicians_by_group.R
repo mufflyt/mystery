@@ -60,7 +60,6 @@ count_physicians_by_group <- function(data,
                                       last_name_column = "last",
                                       group_by = "state",
                                       output_to_csv = NULL) {
-
   # Log the inputs
   logger::log_info(glue::glue("Data dimensions: {nrow(data)} rows and {ncol(data)} columns"))
   logger::log_info(glue::glue("State name column: {state_name_column}, Phone column: {phone_column}, First name column: {first_name_column}, Last name column: {last_name_column}, Group by: {group_by}"))
@@ -74,9 +73,11 @@ count_physicians_by_group <- function(data,
   data <- data %>%
     dplyr::rename(State = !!rlang::sym(state_name_column)) %>%
     dplyr::mutate(State = tolower(State)) %>%
-    dplyr::left_join(us_census_bureau_regions_df %>%
-                       dplyr::mutate(State = tolower(State)),
-                     by = "State")
+    dplyr::left_join(
+      us_census_bureau_regions_df %>%
+        dplyr::mutate(State = tolower(State)),
+      by = "State"
+    )
 
   if (group_by == "state") {
     # Group by state and count physicians

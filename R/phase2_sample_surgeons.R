@@ -137,11 +137,14 @@ prepare_output_file <- function(output_csv_path) {
 
 #' @noRd
 save_to_csv <- function(data, file_path) {
-  tryCatch({
-    readr::write_csv(data, file_path)
-    logger::log_info("Saved expanded data to: {file_path}.")
-  }, error = function(e) {
-    logger::log_error("Error saving expanded data: {e$message}")
-    stop("Error saving expanded data: ", e$message)
-  })
+  tryCatch(
+    {
+      readr::write_csv(data, file_path)
+      logger::log_info("Saved expanded data to: {file_path}.")
+    },
+    error = function(e) {
+      logger::log_error("Error saving expanded data: {e$message}")
+      stop("Error saving expanded data: ", e$message)
+    }
+  )
 }

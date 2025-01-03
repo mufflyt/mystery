@@ -44,8 +44,7 @@
 #' @export
 results_section_physician_by_household_income <- function(
     year = 2022,
-    physician_information_with_zip = "Phase_2.rds"
-) {
+    physician_information_with_zip = "Phase_2.rds") {
   required_physician_columns <- c("ID", "zip")
 
   # Log inputs
@@ -67,8 +66,10 @@ results_section_physician_by_household_income <- function(
   # Confirm required columns in ACS income data
   required_income_columns <- c("zip_code", "median_income")
   if (!all(required_income_columns %in% colnames(income_by_zip))) {
-    stop("The ACS income data is missing required columns: ",
-         paste(setdiff(required_income_columns, colnames(income_by_zip)), collapse = ", "))
+    stop(
+      "The ACS income data is missing required columns: ",
+      paste(setdiff(required_income_columns, colnames(income_by_zip)), collapse = ", ")
+    )
   }
 
   # Step 2: Load physician details
@@ -76,8 +77,10 @@ results_section_physician_by_household_income <- function(
 
   # Confirm required columns in physician data
   if (!all(required_physician_columns %in% colnames(physician_details))) {
-    stop("The physician data is missing required columns: ",
-         paste(setdiff(required_physician_columns, colnames(physician_details)), collapse = ", "))
+    stop(
+      "The physician data is missing required columns: ",
+      paste(setdiff(required_physician_columns, colnames(physician_details)), collapse = ", ")
+    )
   }
 
   # Step 3: Calculate state-specific income ranges
@@ -90,8 +93,10 @@ results_section_physician_by_household_income <- function(
   # Confirm required columns in income ranges
   required_range_columns <- c("state", "Q1_min", "Q1_max", "Q2_min", "Q2_max", "Q3_min", "Q3_max", "Q4_min", "Q4_max")
   if (!all(required_range_columns %in% colnames(income_ranges_by_state))) {
-    stop("The income ranges data is missing required columns: ",
-         paste(setdiff(required_range_columns, colnames(income_ranges_by_state)), collapse = ", "))
+    stop(
+      "The income ranges data is missing required columns: ",
+      paste(setdiff(required_range_columns, colnames(income_ranges_by_state)), collapse = ", ")
+    )
   }
 
   # Step 4: Assign physicians to income quartiles

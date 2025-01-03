@@ -31,10 +31,10 @@
 #'
 #' @export
 results_section_summarize_common_provider_info <- function(provider_info,
-                                           gender_col,
-                                           specialty_col,
-                                           training_col,
-                                           academic_affiliation_col) {
+                                                           gender_col,
+                                                           specialty_col,
+                                                           training_col,
+                                                           academic_affiliation_col) {
   cat("Starting provider information summary...\n")
 
   # Ungroup data to ensure a fresh start
@@ -51,8 +51,10 @@ results_section_summarize_common_provider_info <- function(provider_info,
   # Log calculated summaries
   for (type in names(summaries)) {
     summary_info <- summaries[[type]]
-    cat(sprintf("Most common %s: %s with proportion: %.1f%%\n",
-                type, summary_info$value, summary_info$proportion))
+    cat(sprintf(
+      "Most common %s: %s with proportion: %.1f%%\n",
+      type, summary_info$value, summary_info$proportion
+    ))
   }
 
   # Construct the final summary sentence

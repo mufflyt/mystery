@@ -138,7 +138,8 @@ combine_trends <- function(direction_summary, significance_summary) {
   logger::log_info("Step 4: Combining directionality and significance trends...")
 
   trend_summary <- dplyr::left_join(
-    direction_summary, significance_summary, by = c("Group1", "Group2")
+    direction_summary, significance_summary,
+    by = c("Group1", "Group2")
   ) %>%
     dplyr::mutate(Significant = ifelse(is.na(Significant), 0, Significant))
 

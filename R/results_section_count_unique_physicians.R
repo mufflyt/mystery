@@ -27,7 +27,7 @@
 #'   insurance_type = "Medicaid",
 #'   reason_for_exclusion = "Able to contact"
 #' )
-#' print(unique_count)  # Expected output: 1
+#' print(unique_count) # Expected output: 1
 #'
 #' # Example 2: Counting unique physicians without specifying a reason for exclusion
 #' df2 <- data.frame(
@@ -40,7 +40,7 @@
 #'   df2,
 #'   insurance_type = "Blue Cross/Blue Shield"
 #' )
-#' print(unique_count2)  # Expected output: 1
+#' print(unique_count2) # Expected output: 1
 #'
 #' # Example 3: Using verbose logging to see detailed steps
 #' df3 <- data.frame(
@@ -56,13 +56,12 @@
 #'   insurance_type = "Medicaid",
 #'   verbose = TRUE
 #' )
-#' print(unique_count3)  # Expected output: 2
+#' print(unique_count3) # Expected output: 2
 #'
 #' @importFrom dplyr filter distinct
 #' @importFrom glue glue
 #' @export
 count_unique_physicians <- function(df, insurance_type, reason_for_exclusion = NULL, verbose = TRUE) {
-
   # Validate inputs
   if (!"insurance" %in% names(df)) {
     stop("The dataframe must contain a column named 'insurance'.")

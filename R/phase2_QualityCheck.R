@@ -14,7 +14,7 @@ save_quality_check_table <- function(df, filepath) {
   # Group by 'npi' and 'name', calculate counts, filter where count > 2, and arrange by count descending
   filtered_data <- df %>%
     dplyr::group_by(npi, name) %>%
-    dplyr::summarise(count = n(), .groups = 'drop') %>%
+    dplyr::summarise(count = n(), .groups = "drop") %>%
     dplyr::filter(count > 2) %>%
     dplyr::arrange(desc(count))
 

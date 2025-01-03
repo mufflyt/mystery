@@ -33,7 +33,6 @@
 #' }
 #' @export
 results_section_analysis_household_income <- function(year = 2022, physician_information_with_zip) {
-
   if (!requireNamespace("zipcodeR", quietly = TRUE)) {
     stop("The 'zipcodeR' package is required for this function. Please install it.")
   }

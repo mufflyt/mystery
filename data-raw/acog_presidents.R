@@ -5,7 +5,7 @@
 #'   \item{President}{Name of the president.}
 #'   \item{Year}{Year they served.}
 #' }
-acog_presidents <- exploratory::scrape_html_table("https://www.acog.org/about/leadership-and-governance/board-of-directors/past-presidents", 1, "TRUE" ,encoding="UTF-8") %>%
+acog_presidents <- exploratory::scrape_html_table("https://www.acog.org/about/leadership-and-governance/board-of-directors/past-presidents", 1, "TRUE", encoding = "UTF-8") %>%
   exploratory::clean_data_frame() %>%
   dplyr::distinct(President, .keep_all = TRUE) %>%
   tidyr::separate(President, into = c("President", "honorrific"), sep = "\\s*\\,\\s*", convert = TRUE) %>%

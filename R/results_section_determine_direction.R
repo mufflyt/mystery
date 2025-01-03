@@ -42,7 +42,6 @@
 #' determine_direction(df3, "accepts_medicare", significant_vars3)
 #' @export
 determine_direction <- function(data, target_var, significant_vars) {
-
   # Log inputs
   cat("Starting the determine_direction function...\n")
   cat("Target Variable:", target_var, "\n")

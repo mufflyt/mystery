@@ -36,8 +36,6 @@
 #'   significance_level = significance_logistic_regression
 #' )
 #' print(significant_vars)
-
-
 logistic_regression <- function(df,
                                 target_variable,
                                 predictor_vars,
@@ -45,9 +43,11 @@ logistic_regression <- function(df,
   # Log the function inputs
   cat("Starting logistic_regression...\n")
   cat("Target Variable:", target_variable, "\n")
-  cat("Predictor Variables:",
-      paste(predictor_vars, collapse = ", "),
-      "\n")
+  cat(
+    "Predictor Variables:",
+    paste(predictor_vars, collapse = ", "),
+    "\n"
+  )
   cat("Significance Level:", significance_level, "\n")
 
   # Initialize an empty data frame to store results
@@ -68,8 +68,9 @@ logistic_regression <- function(df,
 
       # Fit the logistic regression model
       model <- stats::glm(formula,
-                          family = poisson(link = "log"),
-                          data = df)
+        family = poisson(link = "log"),
+        data = df
+      )
 
       # Extract the p-value for the predictor variable
       p_value <- summary(model)$coefficients[2, 4]
@@ -78,16 +79,19 @@ logistic_regression <- function(df,
       # Store the result in the results data frame
       results <- rbind(results, data.frame(Variable = var, P_Value = p_value))
     } else {
-      cat("Skipping predictor",
-          var,
-          "due to insufficient unique values.\n")
+      cat(
+        "Skipping predictor",
+        var,
+        "due to insufficient unique values.\n"
+      )
     }
   }
 
   # Format the p-values
   results <- results %>%
     dplyr::mutate(Formatted_P_Value = ifelse(P_Value < 0.01, "<0.01",
-                                             round(P_Value, 2)))
+      round(P_Value, 2)
+    ))
 
   # Filter results based on the significance level and log the output
   significant_results <- results %>%

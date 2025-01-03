@@ -48,18 +48,17 @@
 #'
 #' @export
 phase0_city_state_sample_specialists <- function(data,
-                                          generalist = "General Dermatology",
-                                          specialist1 = "Pediatric Dermatology",
-                                          general_sample_size = 4,
-                                          specialist1_sample_size = 2,
-                                          specialist2 = NULL,
-                                          specialist2_sample_size = 0,
-                                          specialist3 = NULL,
-                                          specialist3_sample_size = 0,
-                                          same_phone_number = TRUE,
-                                          output_csv_path = NULL,
-                                          seed = 1978) {
-
+                                                 generalist = "General Dermatology",
+                                                 specialist1 = "Pediatric Dermatology",
+                                                 general_sample_size = 4,
+                                                 specialist1_sample_size = 2,
+                                                 specialist2 = NULL,
+                                                 specialist2_sample_size = 0,
+                                                 specialist3 = NULL,
+                                                 specialist3_sample_size = 0,
+                                                 same_phone_number = TRUE,
+                                                 output_csv_path = NULL,
+                                                 seed = 1978) {
   # Set seed for reproducibility
   set.seed(seed)
   logger::log_info("Seed set to {seed}.")
@@ -108,7 +107,7 @@ phase0_city_state_sample_specialists <- function(data,
     dplyr::summarize(
       num_generalists = sum(specialty_primary == generalist, na.rm = TRUE),
       num_specialists1 = sum(specialty_primary == specialist1, na.rm = TRUE),
-      .groups = 'drop'
+      .groups = "drop"
     ) %>%
     dplyr::filter(num_generalists >= general_sample_size & num_specialists1 >= specialist1_sample_size)
 
@@ -118,55 +117,60 @@ phase0_city_state_sample_specialists <- function(data,
   # Proceed if there are valid rows in filtered data
   if (nrow(filtered_data) == 0) {
     logger::log_warn("No city-state combinations meet the required criteria.")
-    return(data.frame())  # Return empty dataframe if no valid combinations
+    return(data.frame()) # Return empty dataframe if no valid combinations
   }
 
   # Step 2: Sample generalists and specialists for each city-state combination
-  tryCatch({
-    sampled_data <- filtered_data %>%
-      dplyr::group_split(city, state_code) %>%
-      purrr::map_dfr(~ {
-        city_state_data <- data %>%
-          dplyr::filter(city == unique(.x$city) & state_code == unique(.x$state_code))
+  tryCatch(
+    {
+      sampled_data <- filtered_data %>%
+        dplyr::group_split(city, state_code) %>%
+        purrr::map_dfr(~ {
+          city_state_data <- data %>%
+            dplyr::filter(city == unique(.x$city) & state_code == unique(.x$state_code))
 
-        if (same_phone_number) {
-          # Filter to ensure generalists and specialists have the same phone number
-          city_state_data <- city_state_data %>%
-            dplyr::group_by(phone_number) %>%
-            dplyr::filter(n() >= general_sample_size + specialist1_sample_size)
-        }
+          if (same_phone_number) {
+            # Filter to ensure generalists and specialists have the same phone number
+            city_state_data <- city_state_data %>%
+              dplyr::group_by(phone_number) %>%
+              dplyr::filter(n() >= general_sample_size + specialist1_sample_size)
+          }
 
-        # Sample generalists
-        generalists <- city_state_data %>%
-          dplyr::filter(specialty_primary == generalist) %>%
-          dplyr::slice_sample(n = min(nrow(.), general_sample_size), replace = FALSE)
+          # Sample generalists
+          generalists <- city_state_data %>%
+            dplyr::filter(specialty_primary == generalist) %>%
+            dplyr::slice_sample(n = min(nrow(.), general_sample_size), replace = FALSE)
 
-        # Sample specialist1
-        specialists1 <- city_state_data %>%
-          dplyr::filter(specialty_primary == specialist1) %>%
-          dplyr::slice_sample(n = min(nrow(.), specialist1_sample_size), replace = FALSE)
+          # Sample specialist1
+          specialists1 <- city_state_data %>%
+            dplyr::filter(specialty_primary == specialist1) %>%
+            dplyr::slice_sample(n = min(nrow(.), specialist1_sample_size), replace = FALSE)
 
-        # Combine the samples
-        dplyr::bind_rows(generalists, specialists1)
-      })
+          # Combine the samples
+          dplyr::bind_rows(generalists, specialists1)
+        })
 
-    logger::log_info("Sampling process complete. Sampled data dimensions: {nrow(sampled_data)} rows.")
-
-  }, error = function(e) {
-    logger::log_error("Error during sampling: {e$message}")
-    stop("Error during sampling: ", e$message)
-  })
+      logger::log_info("Sampling process complete. Sampled data dimensions: {nrow(sampled_data)} rows.")
+    },
+    error = function(e) {
+      logger::log_error("Error during sampling: {e$message}")
+      stop("Error during sampling: ", e$message)
+    }
+  )
 
   # Step 3: Write the output to a CSV if the path is provided
   if (!is.null(output_csv_path)) {
-    tryCatch({
-      logger::log_info("Writing output to CSV at {output_csv_path} using write_output_csv.")
-      write_output_csv(sampled_data, filename = basename(output_csv_path), output_dir = dirname(output_csv_path), verbose = TRUE)
-      logger::log_info("Output successfully written to: {output_csv_path}.")
-    }, error = function(e) {
-      logger::log_error("Error writing the output to CSV using write_output_csv: {e$message}")
-      stop("Error writing the output to CSV: ", e$message)
-    })
+    tryCatch(
+      {
+        logger::log_info("Writing output to CSV at {output_csv_path} using write_output_csv.")
+        write_output_csv(sampled_data, filename = basename(output_csv_path), output_dir = dirname(output_csv_path), verbose = TRUE)
+        logger::log_info("Output successfully written to: {output_csv_path}.")
+      },
+      error = function(e) {
+        logger::log_error("Error writing the output to CSV using write_output_csv: {e$message}")
+        stop("Error writing the output to CSV: ", e$message)
+      }
+    )
   }
 
   # Final log and message

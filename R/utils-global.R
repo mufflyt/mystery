@@ -47,5 +47,6 @@ utils::globalVariables(c(
     "state_code", "str", "subdivision", "summary_sentence", "tableby.control", "taxonomies_desc",
     "temp_id", "total", "total_available", "total_exclusions", "unite_columns_for_redcap",
     "validate_input_data", "validate_split_column", "var_interest", "voicemail", "wait_time_q1",
-    "wait_time_q3", "zip_code", "zipcode"))
+    "wait_time_q3", "zip_code", "zipcode"
+  ))
 ))

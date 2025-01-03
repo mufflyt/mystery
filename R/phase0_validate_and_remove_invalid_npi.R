@@ -18,7 +18,6 @@
 #'
 #' @export
 validate_and_remove_invalid_npi <- function(input_data) {
-
   if (is.data.frame(input_data)) {
     # Input is a dataframe
     df <- input_data

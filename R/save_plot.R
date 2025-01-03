@@ -26,7 +26,8 @@
 #' library(tyler) # Assuming save_plot is part of the 'tyler' package
 #'
 #' # Create a sample ggplot
-#' sample_plot <- ggplot(mtcars, aes(mpg, wt)) + geom_point()
+#' sample_plot <- ggplot(mtcars, aes(mpg, wt)) +
+#'   geom_point()
 #'
 #' # Save the plot with default parameters
 #' save_plot(
@@ -54,7 +55,6 @@
 save_plot <- function(plot, file_name, save_directory, plot_width = 8, plot_height = 6,
                       resolution_dpi = 300, size_units = "in", scale_factor = 1,
                       file_format = NULL, background_color = "white", verbose_output = TRUE) {
-
   # Load required packages
   if (!requireNamespace("logger", quietly = TRUE)) {
     stop("The logger package is required but is not installed. Please install it via install.packages('logger').")
@@ -88,8 +88,7 @@ save_plot <- function(plot, file_name, save_directory, plot_width = 8, plot_heig
     logger::log_info("Determining device format based on file extension: {file_extension}")
 
     # Use a switch statement to determine the file format
-    file_format <- switch(
-      tolower(file_extension),
+    file_format <- switch(tolower(file_extension),
       "tiff" = "tiff",
       "jpg" = "jpeg",
       "jpeg" = "jpeg",
@@ -111,20 +110,25 @@ save_plot <- function(plot, file_name, save_directory, plot_width = 8, plot_heig
   logger::log_info("Saving plot with the following parameters: file path = {full_file_path}, width = {plot_width}, height = {plot_height}, dpi = {resolution_dpi}, units = {size_units}, scale = {scale_factor}, background color = {background_color}")
 
   # Save the plot using ggplot2::ggsave with error handling
-  tryCatch({
-    ggplot2::ggsave(filename = full_file_path, plot = plot, width = plot_width, height = plot_height,
-                    dpi = resolution_dpi, units = size_units, scale = scale_factor,
-                    device = file_format, bg = background_color)
-    logger::log_info("Plot successfully saved at: {full_file_path}")
+  tryCatch(
+    {
+      ggplot2::ggsave(
+        filename = full_file_path, plot = plot, width = plot_width, height = plot_height,
+        dpi = resolution_dpi, units = size_units, scale = scale_factor,
+        device = file_format, bg = background_color
+      )
+      logger::log_info("Plot successfully saved at: {full_file_path}")
 
-    # Print message indicating where the file has been saved, if verbose_output is TRUE
-    if (verbose_output) {
-      message("Plot saved at: ", full_file_path)
+      # Print message indicating where the file has been saved, if verbose_output is TRUE
+      if (verbose_output) {
+        message("Plot saved at: ", full_file_path)
+      }
+    },
+    error = function(e) {
+      logger::log_error("Failed to save plot. Error: {e$message}")
+      stop("Failed to save plot: ", e$message)
     }
-  }, error = function(e) {
-    logger::log_error("Failed to save plot. Error: {e$message}")
-    stop("Failed to save plot: ", e$message)
-  })
+  )
 
   # Log the output of the function
   logger::log_info("save_plot function execution completed. Plot saved at: {full_file_path}")

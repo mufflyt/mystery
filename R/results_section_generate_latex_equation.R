@@ -40,7 +40,6 @@
 #' @import glue
 #' @export
 generate_latex_equation <- function(patient_scenario_label = "Default Patient Scenario", log_file = NULL) {
-
   # Set up logger to log to a file if log_file is provided
   if (!is.null(log_file)) {
     logger::log_appender(logger::appender_file(log_file))

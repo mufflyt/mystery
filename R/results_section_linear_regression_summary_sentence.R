@@ -89,12 +89,15 @@ linear_regression_race_drive_time_generate_summary_sentence <- function(tabulate
   message("Year column converted to numeric.")
 
   # Fit a linear model to analyze the trend over time
-  tryCatch({
-    linear_model <- lm(as.formula(paste(race_column, "~ Year")), data = filtered_data)
-    model_summary <- summary(linear_model)
-  }, error = function(e) {
-    stop("Error in linear regression model: ", e$message)
-  })
+  tryCatch(
+    {
+      linear_model <- lm(as.formula(paste(race_column, "~ Year")), data = filtered_data)
+      model_summary <- summary(linear_model)
+    },
+    error = function(e) {
+      stop("Error in linear regression model: ", e$message)
+    }
+  )
 
   # Extract slope and p-value for Year
   slope <- model_summary$coefficients["Year", "Estimate"]
@@ -115,8 +118,12 @@ linear_regression_race_drive_time_generate_summary_sentence <- function(tabulate
   # Extract the raw proportions for the initial and final years
   initial_year <- min(filtered_data$Year, na.rm = TRUE)
   final_year <- max(filtered_data$Year, na.rm = TRUE)
-  initial_proportion <- filtered_data %>% dplyr::filter(Year == initial_year) %>% dplyr::pull(!!sym(race_column))
-  final_proportion <- filtered_data %>% dplyr::filter(Year == final_year) %>% dplyr::pull(!!sym(race_column))
+  initial_proportion <- filtered_data %>%
+    dplyr::filter(Year == initial_year) %>%
+    dplyr::pull(!!sym(race_column))
+  final_proportion <- filtered_data %>%
+    dplyr::filter(Year == final_year) %>%
+    dplyr::pull(!!sym(race_column))
 
   # Log the raw proportions
   message("Initial proportion (", initial_year, "): ", initial_proportion)

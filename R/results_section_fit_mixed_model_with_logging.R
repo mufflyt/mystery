@@ -24,15 +24,17 @@ results_section_fit_mixed_model_with_logging <- function(
 fit_mixed_model_with_logging <- function(wait_time_data,
                                          outcome_var = "log_business_days_until_appointment",
                                          random_effects = "(1 | NPI)",
-                                         exclude_vars = c(response_var, "last", "business_days_until_appointment",
-                                                          "cleaned_does_the_physician_accept_medicaid", "record_id", "ID",
-                                                          "middle", "physician_information", "address",
-                                                          "offered_a_clinic_appointment_to_be_seen", "reason_for_exclusions",
-                                                          "state", "Grd_yr", "age_category", "notes", "first",
-                                                          "does_the_physician_accept_medicaid", "insurance_type",
-                                                          "zip", "Subspecialty", "NPI", "lng", "lat",
-                                                          "including_this_physician_in_the_study",
-                                                          "told_to_go_to_the_emergency_department"),
+                                         exclude_vars = c(
+                                           response_var, "last", "business_days_until_appointment",
+                                           "cleaned_does_the_physician_accept_medicaid", "record_id", "ID",
+                                           "middle", "physician_information", "address",
+                                           "offered_a_clinic_appointment_to_be_seen", "reason_for_exclusions",
+                                           "state", "Grd_yr", "age_category", "notes", "first",
+                                           "does_the_physician_accept_medicaid", "insurance_type",
+                                           "zip", "Subspecialty", "NPI", "lng", "lat",
+                                           "including_this_physician_in_the_study",
+                                           "told_to_go_to_the_emergency_department"
+                                         ),
                                          model_type = "lmer",
                                          significance_cutoff = 0.2,
                                          save_path = NULL) {
@@ -106,7 +108,7 @@ fit_mixed_model_with_logging <- function(wait_time_data,
 
       # Calculate the t-value and approximate p-value for the predictor variable
       t_value <- coef_value / std_error
-      p_value <- 2 * (1 - stats::pnorm(abs(t_value)))  # Approximate p-value using normal distribution
+      p_value <- 2 * (1 - stats::pnorm(abs(t_value))) # Approximate p-value using normal distribution
       log_info("T-value: {t_value}, P-value: {p_value}")
 
       # Calculate the IRR (Incident Rate Ratio)
@@ -134,7 +136,6 @@ fit_mixed_model_with_logging <- function(wait_time_data,
         Wait_Time_Effect = wait_time_effect
       ))
       log_info("Stored results for predictor: {predictor}")
-
     } else {
       log_info("Skipping predictor '{predictor}' because it has only one unique value.")
     }
@@ -149,10 +150,10 @@ fit_mixed_model_with_logging <- function(wait_time_data,
   # Clean and format the significant predictors table
   significant_predictors_cleaned <- significant_predictors %>%
     dplyr::mutate(
-      P_Value = ifelse(P_Value < 0.01, "<0.01", sprintf("%.3f", P_Value)),  # Round p-values to 3 decimal places or show <0.01
-      IRR = sprintf("%.2f", IRR),  # Round IRR to 2 decimal places
-      CI_Lower = sprintf("%.2f", CI_Lower),  # Round lower CI to 2 decimal places
-      CI_Upper = sprintf("%.2f", CI_Upper)  # Round upper CI to 2 decimal places
+      P_Value = ifelse(P_Value < 0.01, "<0.01", sprintf("%.3f", P_Value)), # Round p-values to 3 decimal places or show <0.01
+      IRR = sprintf("%.2f", IRR), # Round IRR to 2 decimal places
+      CI_Lower = sprintf("%.2f", CI_Lower), # Round lower CI to 2 decimal places
+      CI_Upper = sprintf("%.2f", CI_Upper) # Round upper CI to 2 decimal places
     )
   log_info("Formatted the significant predictors table.")
 

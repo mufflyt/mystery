@@ -33,11 +33,11 @@
 #'
 #' @export
 write_output_csv <- function(df, filename, output_dir = "ortho_sports_med/Figures", verbose = TRUE) {
-
   # Validate inputs
   assertthat::assert_that(is.data.frame(df), msg = "The input 'df' must be a data frame.")
   assertthat::assert_that(assertthat::is.string(filename), grepl("\\.csv$", filename),
-                          msg = "The 'filename' must be a string ending with '.csv'.")
+    msg = "The 'filename' must be a string ending with '.csv'."
+  )
   assertthat::assert_that(assertthat::is.string(output_dir), msg = "The 'output_dir' must be a valid string.")
 
   if (!is.logical(verbose)) {
@@ -59,12 +59,15 @@ write_output_csv <- function(df, filename, output_dir = "ortho_sports_med/Figure
   output_file_path <- file.path(output_dir, filename)
 
   # Attempt to write the CSV file
-  tryCatch({
-    utils::write.csv(df, file = output_file_path, row.names = FALSE)
-    if (verbose) {
-      cat("File successfully saved to:", output_file_path, "\n")
+  tryCatch(
+    {
+      utils::write.csv(df, file = output_file_path, row.names = FALSE)
+      if (verbose) {
+        cat("File successfully saved to:", output_file_path, "\n")
+      }
+    },
+    error = function(e) {
+      stop("Failed to write the CSV file. Error: ", e$message)
     }
-  }, error = function(e) {
-    stop("Failed to write the CSV file. Error: ", e$message)
-  })
+  )
 }

@@ -27,13 +27,12 @@
 #'   group_var = "Subspecialty",
 #'   round_digits = 1
 #' )
-#' results$stat_summary  # Contains statistical data
-#' results$sentence_summary  # Contains summary sentences
+#' results$stat_summary # Contains statistical data
+#' results$sentence_summary # Contains summary sentences
 #'
 #' @export
 results_section_wait_time_median_stats <- function(appointment_data, wait_time_col = "business_days_until_appointment",
                                                    group_var = NULL, round_digits = 1) {
-
   # Log function start and inputs
   logger::log_info("Starting wait time statistics calculation.")
   logger::log_info("Input details - Rows: {nrow(appointment_data)}, Wait Time Column: {wait_time_col}, Group Variable: {group_var}, Rounding Digits: {round_digits}")
@@ -94,7 +93,7 @@ results_section_wait_time_median_stats <- function(appointment_data, wait_time_c
         median_wait_time = median(!!rlang::sym(wait_time_col), na.rm = TRUE),
         wait_time_q1 = round(quantile(!!rlang::sym(wait_time_col), 0.25, na.rm = TRUE), round_digits),
         wait_time_q3 = round(quantile(!!rlang::sym(wait_time_col), 0.75, na.rm = TRUE), round_digits),
-        .groups = 'drop'
+        .groups = "drop"
       ) %>%
       dplyr::mutate(
         Group = !!rlang::sym(group_var),

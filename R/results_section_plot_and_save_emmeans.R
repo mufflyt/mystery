@@ -21,7 +21,6 @@
 #'
 #' @export
 plot_and_save_emmeans <- function(model_object, specs, variable_of_interest, color_by, output_dir = "Ari/Figures", y_min = NULL, y_max = NULL) {
-
   # Logging function inputs
   cat("Logging inputs...\n")
   cat("Model Object: ", class(model_object), "\n")
@@ -65,12 +64,15 @@ plot_and_save_emmeans <- function(model_object, specs, variable_of_interest, col
 
   # Compute estimated marginal means and log the process
   cat("Computing estimated marginal means...\n")
-  edata <- tryCatch({
-    emmeans::emmeans(object = model_object, specs = specs, type = "response") %>%
-      dplyr::as_tibble()
-  }, error = function(e) {
-    stop("Error computing estimated marginal means: ", e$message)
-  })
+  edata <- tryCatch(
+    {
+      emmeans::emmeans(object = model_object, specs = specs, type = "response") %>%
+        dplyr::as_tibble()
+    },
+    error = function(e) {
+      stop("Error computing estimated marginal means: ", e$message)
+    }
+  )
 
   # Log the retrieved data
   cat("Logging estimated marginal means data...\n")
@@ -93,24 +95,27 @@ plot_and_save_emmeans <- function(model_object, specs, variable_of_interest, col
   # Create the plot and log the process
   cat("Creating the plot...\n")
   plot <- ggplot2::ggplot(edata, ggplot2::aes_string(x = variable_of_interest, y = "rate")) +
-    ggplot2::geom_point(ggplot2::aes_string(color = color_by), size = 4, stroke = 2,
-                        position = ggplot2::position_dodge(width = 0.2)) +
+    ggplot2::geom_point(ggplot2::aes_string(color = color_by),
+      size = 4, stroke = 2,
+      position = ggplot2::position_dodge(width = 0.2)
+    ) +
     ggplot2::geom_errorbar(ggplot2::aes_string(ymin = "asymp.LCL", ymax = "asymp.UCL", color = color_by),
-                           width = 0.2, position = ggplot2::position_dodge(width = 0.2), size = 1.2) +
-    ggplot2::scale_color_brewer(palette = "Set1") +  # Change color palette
+      width = 0.2, position = ggplot2::position_dodge(width = 0.2), size = 1.2
+    ) +
+    ggplot2::scale_color_brewer(palette = "Set1") + # Change color palette
     ggplot2::ggtitle(paste("Estimated Marginal Means -", tools::toTitleCase(variable_of_interest))) +
     ggplot2::xlab(tools::toTitleCase(variable_of_interest)) +
-    ggplot2::ylab("Business Days Until Appointment (Mean \u00b1 95% CI)") +  # Clearer y-axis label
+    ggplot2::ylab("Business Days Until Appointment (Mean \u00b1 95% CI)") + # Clearer y-axis label
     ggplot2::theme_minimal() +
     ggplot2::theme(
       axis.text.x = ggplot2::element_text(angle = 0, hjust = 0.5, vjust = 1, size = 10, color = "black"),
-      axis.title.x = ggplot2::element_text(size = 12),  # Increase x-axis title size
-      axis.title.y = ggplot2::element_text(size = 12),  # Increase y-axis title size
-      plot.title = ggplot2::element_text(size = 14, face = "bold"),  # Emphasize title
-      plot.margin = ggplot2::margin(10, 10, 10, 10),  # Increase plot margins
-      legend.position = "none"  # Remove legend as before
+      axis.title.x = ggplot2::element_text(size = 12), # Increase x-axis title size
+      axis.title.y = ggplot2::element_text(size = 12), # Increase y-axis title size
+      plot.title = ggplot2::element_text(size = 14, face = "bold"), # Emphasize title
+      plot.margin = ggplot2::margin(10, 10, 10, 10), # Increase plot margins
+      legend.position = "none" # Remove legend as before
     ) +
-    ggplot2::scale_x_discrete(labels = function(x) stringr::str_wrap(x, width = 15))  # Wrap long labels for better readability
+    ggplot2::scale_x_discrete(labels = function(x) stringr::str_wrap(x, width = 15)) # Wrap long labels for better readability
 
   # Log the creation of the plot
   cat("Plot created successfully.\n")
@@ -121,17 +126,19 @@ plot_and_save_emmeans <- function(model_object, specs, variable_of_interest, col
   cat("Saving plot to: ", file_name, "\n")
 
   # Save the plot to the specified directory
-  tryCatch({
-    ggplot2::ggsave(filename = file_name, plot = plot, width = 10, height = 6, bg = "white")
-    cat("Plot saved successfully to: ", file_name, "\n")
-  }, error = function(e) {
-    stop("Error saving plot: ", e$message)
-  })
+  tryCatch(
+    {
+      ggplot2::ggsave(filename = file_name, plot = plot, width = 10, height = 6, bg = "white")
+      cat("Plot saved successfully to: ", file_name, "\n")
+    },
+    error = function(e) {
+      stop("Error saving plot: ", e$message)
+    }
+  )
 
   # Log the output data and plot
   cat("Returning the estimated data and plot object.\n")
 
   # Return the data and plot in a named list
   return(list(data = edata, plot = plot))
-
 }

@@ -23,8 +23,10 @@
 #' # Example 1: Basic exclusion summary
 #' call_data <- data.frame(
 #'   physician_id = 1:100,
-#'   reason_for_exclusions = sample(c("Able to contact", "Went to voicemail",
-#'                                    "Not accepting new patients"), 100, replace = TRUE)
+#'   reason_for_exclusions = sample(c(
+#'     "Able to contact", "Went to voicemail",
+#'     "Not accepting new patients"
+#'   ), 100, replace = TRUE)
 #' )
 #' summary <- results_section_exclusions(
 #'   call_data = call_data,
@@ -45,7 +47,6 @@ results_section_exclusions <- function(call_data,
                                        exclusion_col = "reason_for_exclusions",
                                        able_to_contact_value = "Able to contact",
                                        group_var = NULL) {
-
   # Log function start and inputs
   logger::log_info("Starting exclusions summary calculation.")
   logger::log_info("Input details - Total rows in call_data: {nrow(call_data)}, exclusion_col: {exclusion_col}, able_to_contact_value: {able_to_contact_value}, group_var: {group_var}")

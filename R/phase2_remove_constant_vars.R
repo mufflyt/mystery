@@ -16,7 +16,6 @@
 #'
 #' @export
 remove_constant_vars <- function(data_frame) {
-
   # Log: Starting the function
   message("Starting the function to remove constant variables.")
 

@@ -78,9 +78,11 @@ fit_poisson_models <- function(data, target_var, predictors) {
     )
 
     if (!is.null(model)) {
-      p_value <- summary(model)$coefficients[2, 4]  # Extract p-value for predictor
-      model_results <- dplyr::bind_rows(model_results,
-                                        dplyr::tibble(Predictor = predictor, P_Value = p_value))
+      p_value <- summary(model)$coefficients[2, 4] # Extract p-value for predictor
+      model_results <- dplyr::bind_rows(
+        model_results,
+        dplyr::tibble(Predictor = predictor, P_Value = p_value)
+      )
       logger::log_info(glue::glue("P-Value for '{predictor}': {p_value}"))
     }
   }

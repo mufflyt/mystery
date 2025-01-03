@@ -66,7 +66,6 @@
 #' @importFrom logger log_info
 #' @export
 plot_region_counts <- function(state_counts, region_df, region_col, save_path = NULL) {
-
   # Log the inputs to the function
   logger::log_info("Function `plot_region_counts` called with inputs:")
   logger::log_info("state_counts dataframe with columns: {paste(colnames(state_counts), collapse = ', ')}")
@@ -127,7 +126,7 @@ plot_region_counts <- function(state_counts, region_df, region_col, save_path = 
   # Create the choropleth map
   region_plot <- ggplot2::ggplot(map_data_with_regions, ggplot2::aes(long, lat, group = group, fill = .data[[region_col]])) +
     ggplot2::geom_polygon(color = "gray30", size = 0.2) +
-    viridis::scale_fill_viridis(discrete = TRUE, option = "C", name = region_col) +  # Corrected viridis usage
+    viridis::scale_fill_viridis(discrete = TRUE, option = "C", name = region_col) + # Corrected viridis usage
     ggplot2::theme_void() +
     ggplot2::labs(
       title = paste("Choropleth Map of Physicians Available by", region_col),
@@ -141,7 +140,7 @@ plot_region_counts <- function(state_counts, region_df, region_col, save_path = 
       ),
       size = 4, fontface = "bold", inherit.aes = FALSE
     ) +
-    ggplot2::scale_color_identity()  # Ensures the color mapping works without legends for text colors
+    ggplot2::scale_color_identity() # Ensures the color mapping works without legends for text colors
 
   logger::log_info("Plot creation complete.")
 

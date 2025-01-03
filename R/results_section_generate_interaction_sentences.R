@@ -28,7 +28,8 @@
 #' @examples
 #' # Example: Generate interaction sentences for a Poisson model
 #' interaction_model <- glm(wait_time ~ insurance_type * scenario,
-#'                          data = poisson_data, family = poisson)
+#'   data = poisson_data, family = poisson
+#' )
 #'
 #' interaction_sentences <- generate_interaction_sentences(
 #'   interaction_model = interaction_model,
@@ -84,20 +85,26 @@ generate_interaction_sentences <- function(interaction_model,
   logger::log_info("Interaction formula: {deparse(interaction_formula)}")
 
   # Compute estimated marginal means for the interaction
-  interaction_estimates <- tryCatch({
-    emmeans::emmeans(interaction_model, interaction_formula, type = "response")
-  }, error = function(e) {
-    logger::log_error("Error computing emmeans: {e$message}")
-    stop("Error computing estimated marginal means.")
-  })
+  interaction_estimates <- tryCatch(
+    {
+      emmeans::emmeans(interaction_model, interaction_formula, type = "response")
+    },
+    error = function(e) {
+      logger::log_error("Error computing emmeans: {e$message}")
+      stop("Error computing estimated marginal means.")
+    }
+  )
 
   # Convert the emmeans result to a data frame
-  interaction_data <- tryCatch({
-    as.data.frame(interaction_estimates)
-  }, error = function(e) {
-    logger::log_error("Error converting emmeans to data frame: {e$message}")
-    stop("Error converting emmeans results.")
-  })
+  interaction_data <- tryCatch(
+    {
+      as.data.frame(interaction_estimates)
+    },
+    error = function(e) {
+      logger::log_error("Error converting emmeans to data frame: {e$message}")
+      stop("Error converting emmeans results.")
+    }
+  )
 
   logger::log_info("Extracted interaction data:\n{interaction_data}")
 

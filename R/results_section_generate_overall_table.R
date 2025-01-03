@@ -24,10 +24,11 @@
 #' generate_overall_table("data/Table1.rds", "output_tables")
 #' generate_overall_table("data/Table1.csv", "output_tables", selected_columns = c("age", "gender"))
 #' label_translations <- list(age = "Age (years)", gender = "Gender")
-#' generate_overall_table("data/Table1.xlsx", "output_tables", title = "Demographic Summary",
-#'                        label_translations = label_translations)
+#' generate_overall_table("data/Table1.xlsx", "output_tables",
+#'   title = "Demographic Summary",
+#'   label_translations = label_translations
+#' )
 #' }
-
 generate_overall_table <- function(input_file_path, output_directory, title = "Overall Table Summary",
                                    selected_columns = NULL, label_translations = NULL) {
   log_info("Starting generate_overall_table function...")
@@ -91,21 +92,23 @@ read_input_data <- function(input_file_path) {
     warning("The 'readxl' package is needed.   Please install it.")
   }
 
-  data_input <- tryCatch({
-    switch(
-      file_extension,
-      "rds" = readr::read_rds(input_file_path),
-      "csv" = readr::read_csv(input_file_path),
-      "xlsx" = readxl::read_excel(input_file_path),
-      {
-        log_error("Unsupported file format: {file_extension}")
-        stop("Unsupported file format: ", file_extension)
-      }
-    )
-  }, error = function(e) {
-    log_error("Error reading data from {input_file_path}: {e$message}")
-    stop("Error reading data.")
-  })
+  data_input <- tryCatch(
+    {
+      switch(file_extension,
+        "rds" = readr::read_rds(input_file_path),
+        "csv" = readr::read_csv(input_file_path),
+        "xlsx" = readxl::read_excel(input_file_path),
+        {
+          log_error("Unsupported file format: {file_extension}")
+          stop("Unsupported file format: ", file_extension)
+        }
+      )
+    },
+    error = function(e) {
+      log_error("Error reading data from {input_file_path}: {e$message}")
+      stop("Error reading data.")
+    }
+  )
 
   if (nrow(data_input) == 0 || ncol(data_input) == 0) {
     log_error("The input data is empty.")
@@ -119,12 +122,15 @@ read_input_data <- function(input_file_path) {
 validate_and_select_columns <- function(data_input, selected_columns) {
   if (!is.null(selected_columns)) {
     log_info("Selecting specific columns: {selected_columns}")
-    selected_data <- tryCatch({
-      dplyr::select(data_input, dplyr::all_of(selected_columns))
-    }, error = function(e) {
-      log_error("Error selecting columns: {e$message}")
-      stop("Error selecting columns.")
-    })
+    selected_data <- tryCatch(
+      {
+        dplyr::select(data_input, dplyr::all_of(selected_columns))
+      },
+      error = function(e) {
+        log_error("Error selecting columns: {e$message}")
+        stop("Error selecting columns.")
+      }
+    )
   } else {
     log_info("Using all columns for the table.")
     selected_data <- data_input
@@ -138,35 +144,38 @@ validate_and_select_columns <- function(data_input, selected_columns) {
 #' @noRd
 generate_table <- function(selected_data) {
   log_info("Generating the overall table with arsenal::tableby")
-  tryCatch({
-    arsenal::tableby(
-      ~ .,
-      data = selected_data,
-      control = tableby.control(
-        test = FALSE,
-        total = FALSE,
-        digits = 0L,
-        digits.p = 2L,
-        digits.count = 0L,
-        numeric.simplify = FALSE,
-        cat.simplify = FALSE,
-        numeric.stats = c("median", "q1q3"),
-        cat.stats = c("countpct"),
-        stats.labels = list(
-          Nmiss = "N Missing",
-          meansd = "Mean (SD)",
-          median = "Median",
-          medianq1q3 = "Median (Q1, Q3)",
-          q1q3 = "Q1, Q3",
-          range = "Range",
-          countpct = "Count (Pct)"
+  tryCatch(
+    {
+      arsenal::tableby(
+        ~.,
+        data = selected_data,
+        control = tableby.control(
+          test = FALSE,
+          total = FALSE,
+          digits = 0L,
+          digits.p = 2L,
+          digits.count = 0L,
+          numeric.simplify = FALSE,
+          cat.simplify = FALSE,
+          numeric.stats = c("median", "q1q3"),
+          cat.stats = c("countpct"),
+          stats.labels = list(
+            Nmiss = "N Missing",
+            meansd = "Mean (SD)",
+            median = "Median",
+            medianq1q3 = "Median (Q1, Q3)",
+            q1q3 = "Q1, Q3",
+            range = "Range",
+            countpct = "Count (Pct)"
+          )
         )
       )
-    )
-  }, error = function(e) {
-    log_error("Error generating table with arsenal::tableby: {e$message}")
-    stop("Error generating overall table.")
-  })
+    },
+    error = function(e) {
+      log_error("Error generating table with arsenal::tableby: {e$message}")
+      stop("Error generating overall table.")
+    }
+  )
 }
 
 #' @noRd

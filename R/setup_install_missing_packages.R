@@ -40,7 +40,7 @@
 #' @export
 install_missing_packages <- function(cran_pkgs) {
   # Retrieve installed packages and their versions
-  pkgs_installed <- installed.packages()[, 'Version']
+  pkgs_installed <- installed.packages()[, "Version"]
 
   for (pkg in cran_pkgs) {
     if (!pkg %in% names(pkgs_installed)) {
@@ -49,7 +49,7 @@ install_missing_packages <- function(cran_pkgs) {
       utils::install.packages(pkg, dependencies = TRUE)
     } else {
       # Package already installed, log version
-      cat("Already installed:", pkg, "- Version:", pkgs_installed[pkg], '\n')
+      cat("Already installed:", pkg, "- Version:", pkgs_installed[pkg], "\n")
     }
   }
 }

@@ -5,7 +5,7 @@ library(readr)
 
 fips <- tigris::fips_codes %>%
   dplyr::distinct(state, .keep_all = TRUE) %>%
-  #dplyr::filter(state_code < 65) %>%
+  # dplyr::filter(state_code < 65) %>%
   dplyr::select(-county_code, -county)
 
 fips <- readr::type_convert(fips)

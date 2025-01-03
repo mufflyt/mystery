@@ -24,7 +24,6 @@
 phase0_search_npi_by_number <- function(npi_dataframe,
                                         records_per_chunk = 10,
                                         save_directory = NULL) {
-
   # Set default save directory if not provided
   save_directory <- ifelse(is.null(save_directory), getwd(), save_directory)
 
@@ -78,20 +77,23 @@ validate_npi_dataframe <- function(npi_dataframe) {
 retrieve_clinician_data <- function(npi_numbers) {
   fetch_clinician_data <- function(npi) {
     logger::log_info(glue::glue("Fetching data for NPI: {npi}"))
-    tryCatch({
-      clinician_info <- npi::npi_search(number = npi)
-      if (!is.null(clinician_info)) {
-        flattened_data <- npi::npi_flatten(clinician_info, cols = c("basic", "taxonomies"))
-        logger::log_info(glue::glue("Successfully retrieved and flattened data for NPI: {npi}"))
-        return(flattened_data)
-      } else {
-        logger::log_info(glue::glue("No data found for NPI: {npi}"))
+    tryCatch(
+      {
+        clinician_info <- npi::npi_search(number = npi)
+        if (!is.null(clinician_info)) {
+          flattened_data <- npi::npi_flatten(clinician_info, cols = c("basic", "taxonomies"))
+          logger::log_info(glue::glue("Successfully retrieved and flattened data for NPI: {npi}"))
+          return(flattened_data)
+        } else {
+          logger::log_info(glue::glue("No data found for NPI: {npi}"))
+          return(NULL)
+        }
+      },
+      error = function(e) {
+        logger::log_error(glue::glue("Error retrieving data for NPI {npi}: {e$message}"))
         return(NULL)
       }
-    }, error = function(e) {
-      logger::log_error(glue::glue("Error retrieving data for NPI {npi}: {e$message}"))
-      return(NULL)
-    })
+    )
   }
 
   clinician_info_list <- purrr::map(npi_numbers, fetch_clinician_data) %>%
