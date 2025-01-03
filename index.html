@@ -4,89 +4,62 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Common Functions for Mystery Caller or Audit Studies Evaluating Patient Access to Care • tyler</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="bootstrap-toc.css">
-<script src="bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script><meta property="og:title" content="Common Functions for Mystery Caller or Audit Studies Evaluating Patient Access to Care">
+<script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
+<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Common Functions for Mystery Caller or Audit Studies Evaluating Patient Access to Care">
+<meta name="description" content="The tyler package provides a collection of functions designed to facilitate mystery caller studies, often used in evaluating patient access to healthcare. It includes tools for searching and processing National Provider Identifier (NPI) numbers based on names and analyzing demographic data associated with these NPIs. The package simplifies the handling of NPI data and the creation of informative tables for analysis and reporting.">
 <meta property="og:description" content="The tyler package provides a collection of functions designed to facilitate mystery caller studies, often used in evaluating patient access to healthcare. It includes tools for searching and processing National Provider Identifier (NPI) numbers based on names and analyzing demographic data associated with these NPIs. The package simplifies the handling of NPI data and the creation of informative tables for analysis and reporting.">
-<!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
-<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
 </head>
-<body data-spy="scroll" data-target="#toc">
+<body>
+    <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
-    <div class="container template-home">
-      <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
-  <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <span class="navbar-brand">
-        <a class="navbar-link" href="index.html">tyler</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2.0</span>
-      </span>
-    </div>
+    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
 
-    <div id="navbar" class="navbar-collapse collapse">
-      <ul class="nav navbar-nav">
-<li>
-  <a href="reference/index.html">Reference</a>
-</li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-    Articles
+    <a class="navbar-brand me-2" href="index.html">tyler</a>
 
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-<li>
-      <a href="articles/create_isochrones.html">Gathering Drive Time Isochrones</a>
-    </li>
-    <li>
-      <a href="articles/geocode.html">Geocoding</a>
-    </li>
-    <li>
-      <a href="articles/get_census_data.html">Getting Data from the US Census Bureau for Isochrones</a>
-    </li>
-    <li>
-      <a href="articles/my-vignette.html">Searching the NPI Database Starting with Taxonomy Codes</a>
-    </li>
-    <li>
-      <a href="articles/search_and_process_npi.html">Search and Process NPI Numbers</a>
-    </li>
-    <li>
-      <a href="articles/validate_and_remove_invalid_npi.html">Gather Physician Data Starting With NPI Numbers</a>
-    </li>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
+
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div id="navbar" class="collapse navbar-collapse ms-3">
+      <ul class="navbar-nav me-auto">
+<li class="nav-item"><a class="nav-link" href="reference/index.html">Reference</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
+<li><a class="dropdown-item" href="articles/Assign_Insurance_Assign_Scenarios.html">Sampling Spine Surgeons and Assigning Cases</a></li>
+    <li><a class="dropdown-item" href="articles/create_isochrones.html">Gathering Drive Time Isochrones</a></li>
+    <li><a class="dropdown-item" href="articles/geocode.html">Geocoding</a></li>
+    <li><a class="dropdown-item" href="articles/get_census_data.html">Getting Data from the US Census Bureau for Isochrones</a></li>
+    <li><a class="dropdown-item" href="articles/my-vignette.html">Searching the NPI Database Starting with Taxonomy Codes</a></li>
+    <li><a class="dropdown-item" href="articles/Poisson_Regression_and_Effects.html">Analyzing Wait Times for Appointments: Poisson Regression and Interaction Effects</a></li>
+    <li><a class="dropdown-item" href="articles/search_and_process_npi.html">Search and Process NPI Numbers</a></li>
+    <li><a class="dropdown-item" href="articles/validate_and_remove_invalid_npi.html">Gather Physician Data Starting With NPI Numbers</a></li>
   </ul>
 </li>
-<li>
-  <a href="news/index.html">Changelog</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
       </ul>
-<ul class="nav navbar-nav navbar-right"></ul>
+<ul class="navbar-nav">
+<li class="nav-item"><form class="form-inline" role="search">
+ <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="search.json">
+</form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/mufflyt/tyler/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
+      </ul>
 </div>
-<!--/.nav-collapse -->
+
+
   </div>
-<!--/.container -->
-</div>
-<!--/.navbar -->
-
-
-
-      </header><div class="row">
-  <div class="contents col-md-9">
-
-<div class="section level1">
+</nav><div class="container template-home">
+<div class="row">
+  <main id="main" class="col-md-9"><div class="section level1">
 <div class="page-header"><h1 id="warning-this-project-is-under-active-development-contributions-are-welcome">Warning: This project is under active development. Contributions are welcome!<a class="anchor" aria-label="anchor" href="#warning-this-project-is-under-active-development-contributions-are-welcome"></a>
 </h1></div>
 </div>
@@ -249,13 +222,13 @@
 <span>                                   <span class="va">filter_credentials</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"MD"</span>, <span class="st">"DO"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">input_file</span> <span class="op">&lt;-</span> <span class="st">"/Users/tylermuffly/Dropbox (Personal)/Nomogram/nomogram/data/nppes_search/Lo_R_Author.csv"</span></span>
-<span><span class="va">output_result</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/search_and_process_npi.html">search_and_process_npi</a></span><span class="op">(</span><span class="va">input_file</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">output_result</span> <span class="op">&lt;-</span> <span class="fu">search_and_process_npi</span><span class="op">(</span><span class="va">input_file</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="searching-for-data-tylervalidate_and_remove_invalid_npi">SEARCHING FOR DATA: <code>tyler::validate_and_remove_invalid_npi</code>
 <a class="anchor" aria-label="anchor" href="#searching-for-data-tylervalidate_and_remove_invalid_npi"></a>
 </h2>
-<p>This cleans the NPI numbers before it goes into <code><a href="reference/retrieve_clinician_data.html">tyler::retrieve_clinician_data</a></code> because if one incorrect NPI number is inserted then it screws up the entire search. Saves each find as csv file.</p>
+<p>This cleans the NPI numbers before it goes into <code>tyler::retrieve_clinician_data</code> because if one incorrect NPI number is inserted then it screws up the entire search. Saves each find as csv file.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">input_csv_path</span> <span class="op">&lt;-</span> <span class="st">"~/Dropbox (Personal)/workforce/subspecialists_only.csv"</span>  <span class="co"># Replace with the path to your CSV file</span></span>
 <span><span class="va">valid_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/validate_and_remove_invalid_npi.html">validate_and_remove_invalid_npi</a></span><span class="op">(</span><span class="va">input_csv_path</span><span class="op">)</span></span></code></pre></div>
@@ -272,7 +245,7 @@
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Call the retrieve_clinician_data function with an NPI value</span></span>
 <span><span class="va">input_csv_path</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="st">"~/Dropbox (Personal)/workforce/subspecialists_only.csv"</span><span class="op">)</span></span>
-<span><span class="va">clinician_data</span> <span class="op">&lt;-</span> <span class="fu">tyler</span><span class="fu">::</span><span class="fu"><a href="reference/retrieve_clinician_data.html">retrieve_clinician_data</a></span><span class="op">(</span><span class="va">input_csv_path</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">clinician_data</span> <span class="op">&lt;-</span> <span class="fu">tyler</span><span class="fu">::</span><span class="fu">retrieve_clinician_data</span><span class="op">(</span><span class="va">input_csv_path</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>✖ No results <span class="cf">for</span> npi <span class="ot">=</span> <span class="dv">1093151441</span></span>
 <span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a><span class="cn">NULL</span></span>
 <span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a><span class="co"># A tibble: 3 × 17</span></span>
@@ -534,9 +507,6 @@
 <code class="sourceCode R"><span><span class="co"># Example: Creating a forest plot for significant predictors</span></span>
 <span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>predictor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"age"</span>, <span class="st">"gender"</span>, <span class="st">"income"</span><span class="op">)</span>, estimate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="op">-</span><span class="fl">0.5</span>, <span class="fl">0.3</span><span class="op">)</span>, lower <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="op">-</span><span class="fl">0.7</span>, <span class="fl">0.2</span><span class="op">)</span>, upper <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="op">-</span><span class="fl">0.3</span>, <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/create_forest_plot.html">create_forest_plot</a></span><span class="op">(</span><span class="va">df</span>, <span class="st">"target_variable"</span>, significant_vars <span class="op">=</span> <span class="va">df</span><span class="op">)</span></span></code></pre></div>
-<div class="float">
-<img src="forest_plot.png" alt="Forest Plot Example"><div class="figcaption">Forest Plot Example</div>
-</div>
 </div>
 </div>
 <div class="section level1">
@@ -554,9 +524,6 @@
 <span></span>
 <span><span class="co"># Example with customized plot settings</span></span>
 <span><span class="fu"><a href="reference/create_and_plot_interaction.html">create_and_plot_interaction</a></span><span class="op">(</span><span class="va">data</span>, var1 <span class="op">=</span> <span class="st">"var1"</span>, var2 <span class="op">=</span> <span class="st">"var2"</span>, plot_title <span class="op">=</span> <span class="st">"Interaction Plot"</span><span class="op">)</span></span></code></pre></div>
-<div class="float">
-<img src="create_insurance_by_insurance_scatter_plot.png" alt="Scatter Plot Example"><div class="figcaption">Scatter Plot Example</div>
-</div>
 </div>
 </div>
 <div class="section level1">
@@ -570,9 +537,6 @@
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Example: Creating a line plot</span></span>
 <span><span class="fu"><a href="reference/create_line_plot.html">create_line_plot</a></span><span class="op">(</span><span class="va">df</span>, x <span class="op">=</span> <span class="st">"year"</span>, y <span class="op">=</span> <span class="st">"appointments"</span>, group <span class="op">=</span> <span class="st">"insurance"</span><span class="op">)</span></span></code></pre></div>
-<div class="float">
-<img src="line_plot.png" alt="Line Plot Example"><div class="figcaption">Line Plot Example</div>
-</div>
 </div>
 </div>
 <div class="section level1">
@@ -826,10 +790,15 @@ print(physician_ages)</code></pre>
 <p>Please note that this project is released with a Contributor Code of Conduct. By participating in this project you agree to abide by its terms.</p>
 </div>
 
-  </div>
+  </main><aside class="col-md-3"><div class="links">
+<h2 data-toc-skip>Links</h2>
+<ul class="list-unstyled">
+<li><a href="https://github.com/mufflyt/tyler/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/mufflyt/tyler/issues" class="external-link">Report a bug</a></li>
+</ul>
+</div>
 
-  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
-    <div class="license">
+<div class="license">
 <h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li><a href="LICENSE.html">Full license</a></li>
@@ -854,23 +823,20 @@ print(physician_ages)</code></pre>
 
 
 
-  </div>
+  </aside>
 </div>
 
 
-      <footer><div class="copyright">
-  <p></p>
-<p>Developed by Tyler Muffly.</p>
+    <footer><div class="pkgdown-footer-left">
+  <p>Developed by Tyler Muffly.</p>
 </div>
 
-<div class="pkgdown">
-  <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+<div class="pkgdown-footer-right">
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
-      </footer>
+    </footer>
 </div>
-
 
 
 
