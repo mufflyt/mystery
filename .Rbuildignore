@@ -1,3 +1,4 @@
+# Ignore project files and directories
 ^tyler\.Rproj$
 ^\.Rproj\.user$
 ^LICENSE\.md$
@@ -11,3 +12,24 @@
 ^Meta$
 ^codecov\.yml$
 ^codemeta\.json$
+^\.DS_Store$
+^\.vscode$
+^\.idea$
+
+# Ignore temporary, log, and backup files
+^.*\.log$
+^.*\.tmp$
+^.*\.bak$
+^\.cache$
+
+# Exclude specific files and directories
+^bfg-1.14.0\.jar$
+^Dropbox \(Personal\)$
+^data/search_taxonomy_2024-10-01_15-12-49_.rds$
+
+# Redundant entries removed:
+# - Duplicate entries for `^\.Rproj\.user$`
+# - Repeated patterns for `.Rbuildignore` or other files
+^tyler/\.git$
+^tyler/\.gitignore$
+^tyler/\.bfg-report$
