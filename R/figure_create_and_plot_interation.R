@@ -33,19 +33,26 @@
 create_and_plot_interaction <- function(data_path, response_variable, variable_of_interest, interaction_variable, random_intercept, output_path, resolution = 100) {
   # Validate inputs using assertthat
   assertthat::assert_that(assertthat::is.string(data_path) && file.exists(data_path),
-                          msg = "`data_path` must be a valid file path.")
+    msg = "`data_path` must be a valid file path."
+  )
   assertthat::assert_that(assertthat::is.string(response_variable),
-                          msg = "`response_variable` must be a non-empty character string.")
+    msg = "`response_variable` must be a non-empty character string."
+  )
   assertthat::assert_that(assertthat::is.string(variable_of_interest),
-                          msg = "`variable_of_interest` must be a non-empty character string.")
+    msg = "`variable_of_interest` must be a non-empty character string."
+  )
   assertthat::assert_that(assertthat::is.string(interaction_variable),
-                          msg = "`interaction_variable` must be a non-empty character string.")
+    msg = "`interaction_variable` must be a non-empty character string."
+  )
   assertthat::assert_that(assertthat::is.string(random_intercept),
-                          msg = "`random_intercept` must be a non-empty character string.")
+    msg = "`random_intercept` must be a non-empty character string."
+  )
   assertthat::assert_that(assertthat::is.dir(output_path),
-                          msg = "`output_path` must be a valid directory.")
+    msg = "`output_path` must be a valid directory."
+  )
   assertthat::assert_that(assertthat::is.number(resolution) && resolution > 0,
-                          msg = "`resolution` must be a positive number.")
+    msg = "`resolution` must be a positive number."
+  )
 
   # Read the data
   data <- readRDS(data_path)
@@ -55,7 +62,8 @@ create_and_plot_interaction <- function(data_path, response_variable, variable_o
   required_columns <- c(response_variable, variable_of_interest, interaction_variable, random_intercept)
   missing_columns <- setdiff(required_columns, colnames(data))
   assertthat::assert_that(length(missing_columns) == 0,
-                          msg = paste("The following required columns are missing in the dataset:", paste(missing_columns, collapse = ", ")))
+    msg = paste("The following required columns are missing in the dataset:", paste(missing_columns, collapse = ", "))
+  )
 
   # Rename and transform columns
   data <- data %>%

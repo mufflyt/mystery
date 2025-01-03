@@ -34,9 +34,8 @@ phase0_national_downloadable_file <- function(
     url = "https://data.cms.gov/provider-data/api/1/datastore/query/mj5m-pzi6/0",
     limit = 100,
     sys_sleep = 1,
-    output_csv_path = NULL
-) {
-  all_property_results <- list()  # Initialize an empty list to store all results across properties
+    output_csv_path = NULL) {
+  all_property_results <- list() # Initialize an empty list to store all results across properties
 
   # Loop through each property in property_variable
   for (property in property_variable) {
@@ -44,7 +43,7 @@ phase0_national_downloadable_file <- function(
 
     offset <- 0
     keep_querying <- TRUE
-    property_results <- list()  # To store results for the current property
+    property_results <- list() # To store results for the current property
 
     # Paginate through results for each property
     while (keep_querying) {
@@ -62,7 +61,7 @@ phase0_national_downloadable_file <- function(
         results = TRUE
       )
 
-      json_body <- toJSON(body, auto_unbox = TRUE)  # Convert to JSON
+      json_body <- toJSON(body, auto_unbox = TRUE) # Convert to JSON
       response <- POST(url, body = json_body, encode = "json", accept("application/json"))
 
       # Check response and parse

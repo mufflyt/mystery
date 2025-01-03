@@ -46,9 +46,11 @@ create_histogram_plot <- function(df, x_var, facet_var, binwidth = 1,
   assertthat::assert_that(assertthat::is.string(x_var), msg = "`x_var` must be a string.")
   assertthat::assert_that(assertthat::is.string(facet_var), msg = "`facet_var` must be a string.")
   assertthat::assert_that(assertthat::has_name(df, x_var),
-                          msg = glue::glue("The variable '{x_var}' is not found in the data frame."))
+    msg = glue::glue("The variable '{x_var}' is not found in the data frame.")
+  )
   assertthat::assert_that(assertthat::has_name(df, facet_var),
-                          msg = glue::glue("The variable '{facet_var}' is not found in the data frame."))
+    msg = glue::glue("The variable '{facet_var}' is not found in the data frame.")
+  )
 
   # Log data transformation
   total_n <- nrow(df)

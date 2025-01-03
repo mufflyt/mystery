@@ -23,16 +23,16 @@
 #' @examples
 #' # Example 1: Basic density plot with log transformation
 #' create_density_plot(
-#'     data = df3,
-#'     x_var = "business_days_until_appointment",
-#'     fill_var = "insurance",
-#'     x_transform = "log",
-#'     dpi = 100,
-#'     output_dir = "figures",
-#'     file_prefix = "waiting_time_density",
-#'     x_label = "Log (Waiting Times in Days)",
-#'     y_label = "Density",
-#'     plot_title = "Density Plot of Waiting Times by Insurance"
+#'   data = df3,
+#'   x_var = "business_days_until_appointment",
+#'   fill_var = "insurance",
+#'   x_transform = "log",
+#'   dpi = 100,
+#'   output_dir = "figures",
+#'   file_prefix = "waiting_time_density",
+#'   x_label = "Log (Waiting Times in Days)",
+#'   y_label = "Density",
+#'   plot_title = "Density Plot of Waiting Times by Insurance"
 #' )
 #' @export
 create_density_plot <- function(data,
@@ -46,7 +46,6 @@ create_density_plot <- function(data,
                                 y_label = "Density",
                                 plot_title = NULL,
                                 verbose = TRUE) {
-
   # Validate inputs using assertthat
   assertthat::assert_that(is.data.frame(data), msg = "`data` must be a dataframe.")
   assertthat::assert_that(assertthat::is.string(x_var), msg = "`x_var` must be a string.")
@@ -82,7 +81,7 @@ create_density_plot <- function(data,
       y = y_label,
       title = plot_title
     ) +
-    ggplot2::scale_fill_viridis_d(option = "D") +  # Use viridis for color palette
+    ggplot2::scale_fill_viridis_d(option = "D") + # Use viridis for color palette
     ggplot2::theme_light() +
     ggplot2::theme(
       legend.position = "bottom"

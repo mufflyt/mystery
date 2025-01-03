@@ -41,7 +41,6 @@
 #'
 #' @export
 phase0_search_batch_npi <- function(name_data, max_results = 5, csv_path = NULL) {
-
   # Log function start
   logger::log_info("Starting phase0_search_batch_npi function...")
   logger::log_info("Input dataframe has {nrow(name_data)} rows and {ncol(name_data)} columns.")
@@ -90,18 +89,21 @@ perform_npi_batch_query <- function(name_data, max_results) {
     last_name <- name_data$last[i]
     logger::log_info("Querying NPI for: {first_name} {last_name}")
 
-    try({
-      npi_query <- npi::npi_search(first_name = first_name, last_name = last_name, limit = max_results)
+    try(
+      {
+        npi_query <- npi::npi_search(first_name = first_name, last_name = last_name, limit = max_results)
 
-      if (!is.null(npi_query)) {
-        npi_query$queried_first_name <- first_name
-        npi_query$queried_last_name <- last_name
-        query_list[[i]] <- npi_query
-        logger::log_info("Results found for: {first_name} {last_name}")
-      } else {
-        logger::log_info("No results found for: {first_name} {last_name}")
-      }
-    }, silent = TRUE)
+        if (!is.null(npi_query)) {
+          npi_query$queried_first_name <- first_name
+          npi_query$queried_last_name <- last_name
+          query_list[[i]] <- npi_query
+          logger::log_info("Results found for: {first_name} {last_name}")
+        } else {
+          logger::log_info("No results found for: {first_name} {last_name}")
+        }
+      },
+      silent = TRUE
+    )
   }
   query_list
 }
@@ -128,12 +130,14 @@ flatten_and_combine_query_data <- function(combined_query_data) {
 
 #' @noRd
 save_query_results <- function(final_data, csv_path) {
-  tryCatch({
-    readr::write_csv(final_data, csv_path)
-    logger::log_info("Data saved to file: {csv_path}")
-  }, error = function(e) {
-    logger::log_error("Error saving file to {csv_path}: {e$message}")
-    stop("Failed to save the output CSV.")
-  })
+  tryCatch(
+    {
+      readr::write_csv(final_data, csv_path)
+      logger::log_info("Data saved to file: {csv_path}")
+    },
+    error = function(e) {
+      logger::log_error("Error saving file to {csv_path}: {e$message}")
+      stop("Failed to save the output CSV.")
+    }
+  )
 }
-

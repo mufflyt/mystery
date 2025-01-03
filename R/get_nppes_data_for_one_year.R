@@ -67,15 +67,18 @@ nppes_get_data_for_one_year <- function(
     npi_file_path,
     output_csv_path,
     duckdb_file_path = "/Volumes/Video Projects Muffly 1/nppes_historical_downloads/my_duckdb.duckdb",
-    taxonomy_codes_1 = c("207V00000X", "207VB0002X", "207VC0300X", "207VC0200X", "207VX0201X",
-                         "207VG0400X", "207VH0002X", "207VM0101X", "207VX0000X", "207VE0102X",
-                         "207VF0040X"),
-    taxonomy_codes_2 = c("207V00000X", "207VB0002X", "207VC0300X", "207VC0200X", "207VX0201X",
-                         "207VG0400X", "207VH0002X", "207VM0101X", "207VX0000X", "207VE0102X",
-                         "207VF0040X"),
+    taxonomy_codes_1 = c(
+      "207V00000X", "207VB0002X", "207VC0300X", "207VC0200X", "207VX0201X",
+      "207VG0400X", "207VH0002X", "207VM0101X", "207VX0000X", "207VE0102X",
+      "207VF0040X"
+    ),
+    taxonomy_codes_2 = c(
+      "207V00000X", "207VB0002X", "207VC0300X", "207VC0200X", "207VX0201X",
+      "207VG0400X", "207VH0002X", "207VM0101X", "207VX0000X", "207VE0102X",
+      "207VF0040X"
+    ),
     save_column_in_each_nppes_year = FALSE,
-    excel_file_path = NULL
-) {
+    excel_file_path = NULL) {
   # Validate inputs using assertthat
   assertthat::assert_that(file.exists(npi_file_path), msg = "`npi_file_path` must be a valid file path.")
   assertthat::assert_that(assertthat::is.string(output_csv_path), msg = "`output_csv_path` must be a string.")

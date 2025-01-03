@@ -36,16 +36,19 @@
 map_physicians_by_group <- function(state_counts,
                                     output_file_prefix = "choropleth_map",
                                     group_by = "state") {
-
   # Validate inputs
   assertthat::assert_that(is.data.frame(state_counts),
-                          msg = "`state_counts` must be a tibble or dataframe.")
+    msg = "`state_counts` must be a tibble or dataframe."
+  )
   assertthat::assert_that("region" %in% names(state_counts) && "count" %in% names(state_counts),
-                          msg = "`state_counts` must include columns `region` and `count`.")
+    msg = "`state_counts` must include columns `region` and `count`."
+  )
   assertthat::assert_that(assertthat::is.string(output_file_prefix),
-                          msg = "`output_file_prefix` must be a character string.")
+    msg = "`output_file_prefix` must be a character string."
+  )
   assertthat::assert_that(group_by %in% c("state", "subdivision"),
-                          msg = "`group_by` must be either 'state' or 'subdivision'.")
+    msg = "`group_by` must be either 'state' or 'subdivision'."
+  )
 
   # Log the inputs to the function
   logger::log_info(glue::glue("Mapping physicians grouped by {group_by}"))

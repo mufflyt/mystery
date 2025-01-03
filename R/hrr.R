@@ -70,11 +70,11 @@ hrr_generate_maps <- function(physician_sf, trait_map = "all", honey_map = "all"
     sf::st_intersection(sf::st_transform(usa, 4326))
 
   intersections <- sf::st_intersection(honeycomb_grid_sf, sf::st_transform(physician_sf, 4326)) %>%
-    dplyr::filter(grid_id > 9546L)  # Filter out Palmyra Atoll
+    dplyr::filter(grid_id > 9546L) # Filter out Palmyra Atoll
 
   physician_count_per_honey <- intersections %>%
     dplyr::group_by(grid_id) %>%
-    dplyr::summarize(physician_count = n(), .groups = 'drop') %>%
+    dplyr::summarize(physician_count = n(), .groups = "drop") %>%
     dplyr::filter(physician_count > 1)
 
   # Join honeycomb grid with physician count
@@ -98,7 +98,8 @@ hrr_generate_maps <- function(physician_sf, trait_map = "all", honey_map = "all"
         barheight = 1,
         alpha = 0.7,
         label.theme = ggplot2::element_text(size = 8, color = "black", hjust = 0.5)
-      )) +
+      )
+    ) +
     ggplot2::theme_minimal(base_size = 10) +
     ggplot2::theme(
       panel.background = ggplot2::element_rect(

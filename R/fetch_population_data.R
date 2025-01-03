@@ -27,8 +27,10 @@
 #'
 #' # Example 2: Fetch data for multiple states and years
 #' race_vars <- c("White" = "B02001_002E", "Black" = "B02001_003E")
-#' multi_state_population <- fetch_population_data(state = c("CO", "CA"), years = 2015:2020,
-#'                                                 race_vars = race_vars)
+#' multi_state_population <- fetch_population_data(
+#'   state = c("CO", "CA"), years = 2015:2020,
+#'   race_vars = race_vars
+#' )
 #' print(multi_state_population)
 #'
 #' # Example 3: Use a custom set of race variables
@@ -107,10 +109,10 @@ fetch_data_for_year <- function(state, year, race_vars) {
     geometry = TRUE
   ) %>%
     dplyr::mutate(
-      race_ethnicity = dplyr::recode(variable, !!!race_vars),  # Map variable codes to race/ethnicity
-      id = GEOID,                                              # Use GEOID as a unique identifier
-      population = estimate,                                   # Use the estimate column for population
-      year = year                                              # Add the year column
+      race_ethnicity = dplyr::recode(variable, !!!race_vars), # Map variable codes to race/ethnicity
+      id = GEOID, # Use GEOID as a unique identifier
+      population = estimate, # Use the estimate column for population
+      year = year # Add the year column
     ) %>%
     dplyr::select(id, population, race_ethnicity, geometry, year) %>%
     {

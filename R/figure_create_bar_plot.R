@@ -30,10 +30,10 @@
 #' )
 #' @export
 create_bar_plot <- function(input_data,
-                            category_var,          # Variable for the x-axis (categorical)
-                            grouping_var,          # Variable for facet wrap (grouping)
-                            title = NULL,          # Title for the plot
-                            x_axis_label = NULL,   # Label for x-axis
+                            category_var, # Variable for the x-axis (categorical)
+                            grouping_var, # Variable for facet wrap (grouping)
+                            title = NULL, # Title for the plot
+                            x_axis_label = NULL, # Label for x-axis
                             y_axis_label = "Count", # Label for y-axis (default to 'Count')
                             output_directory = "output", # Where to save the plot
                             filename_prefix = "bar_plot", # Prefix for the saved file
@@ -43,12 +43,15 @@ create_bar_plot <- function(input_data,
   assertthat::assert_that(assertthat::is.string(category_var), msg = "`category_var` must be a string.")
   assertthat::assert_that(assertthat::is.string(grouping_var), msg = "`grouping_var` must be a string.")
   assertthat::assert_that(assertthat::has_name(input_data, category_var),
-                          msg = paste0("The column `", category_var, "` is not found in the input data."))
+    msg = paste0("The column `", category_var, "` is not found in the input data.")
+  )
   assertthat::assert_that(assertthat::has_name(input_data, grouping_var),
-                          msg = paste0("The column `", grouping_var, "` is not found in the input data."))
+    msg = paste0("The column `", grouping_var, "` is not found in the input data.")
+  )
   assertthat::assert_that(assertthat::is.string(output_directory), msg = "`output_directory` must be a string.")
   assertthat::assert_that(assertthat::is.dir(output_directory),
-                          msg = paste0("The directory `", output_directory, "` does not exist."))
+    msg = paste0("The directory `", output_directory, "` does not exist.")
+  )
   assertthat::assert_that(assertthat::is.string(filename_prefix), msg = "`filename_prefix` must be a string.")
   assertthat::assert_that(assertthat::is.flag(verbose), msg = "`verbose` must be a logical (TRUE/FALSE).")
 
@@ -73,13 +76,13 @@ create_bar_plot <- function(input_data,
 
   # Create the bar plot
   bar_plot <- ggplot2::ggplot(input_data, ggplot2::aes(x = !!rlang::sym(category_var))) +
-    ggplot2::geom_bar(fill = "gray80", color = "black") +  # Bar plot with gray fill and black outline
-    ggplot2::geom_text(stat = 'count', ggplot2::aes(label = ggplot2::after_stat(count)), vjust = 1) +  # Display count labels
-    ggplot2::facet_wrap(as.formula(paste("~", grouping_var))) +  # Facet by the specified variable
-    ggplot2::ggtitle(paste(title, "(N =", format(total_sample_size, big.mark = ","), ")")) +  # Title with total sample size
+    ggplot2::geom_bar(fill = "gray80", color = "black") + # Bar plot with gray fill and black outline
+    ggplot2::geom_text(stat = "count", ggplot2::aes(label = ggplot2::after_stat(count)), vjust = 1) + # Display count labels
+    ggplot2::facet_wrap(as.formula(paste("~", grouping_var))) + # Facet by the specified variable
+    ggplot2::ggtitle(paste(title, "(N =", format(total_sample_size, big.mark = ","), ")")) + # Title with total sample size
     ggplot2::xlab(x_axis_label) +
     ggplot2::ylab(y_axis_label) +
-    ggplot2::theme_light() +  # Use light theme
+    ggplot2::theme_light() + # Use light theme
     ggplot2::theme(
       plot.title = ggplot2::element_text(hjust = 0.5, size = 14),
       axis.title = ggplot2::element_text(size = 12),

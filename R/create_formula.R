@@ -52,8 +52,7 @@ create_formula <- function(
       "notes_if_the_phone_number_is_incorrect_please_google_the_correct_phone_number_and_put_the_correct_phone_number_here_call_or_text_lizzy_309_989_0432_dr_muffly_cell_phone_720_810_9863_we_are_happy_to_answer_questions",
       "contacted_>_0_business_days_to_appt", "contacted", "Medical_school", "residency_training",
       "Teledermatology"
-    )
-) {
+    )) {
   # Validate inputs using assertthat
   assertthat::assert_that(
     is.data.frame(dataset),

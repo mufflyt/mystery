@@ -99,18 +99,21 @@ perform_npi_search <- function(df, limit) {
     last_name <- df$last[i]
     logger::log_info("Querying NPI for: {first_name} {last_name}")
 
-    try({
-      results <- npi::npi_search(first_name = first_name, last_name = last_name, limit = limit)
+    try(
+      {
+        results <- npi::npi_search(first_name = first_name, last_name = last_name, limit = limit)
 
-      if (!is.null(results)) {
-        results$first_name_searched <- first_name
-        results$last_name_searched <- last_name
-        results_list[[i]] <- results
-        logger::log_info("Results found for: {first_name} {last_name}")
-      } else {
-        logger::log_info("No results found for: {first_name} {last_name}")
-      }
-    }, silent = TRUE)
+        if (!is.null(results)) {
+          results$first_name_searched <- first_name
+          results$last_name_searched <- last_name
+          results_list[[i]] <- results
+          logger::log_info("Results found for: {first_name} {last_name}")
+        } else {
+          logger::log_info("No results found for: {first_name} {last_name}")
+        }
+      },
+      silent = TRUE
+    )
   }
   results_list
 }
@@ -137,11 +140,14 @@ process_and_flatten_results <- function(combined_results) {
 
 #' @noRd
 save_results <- function(final_results, write_csv_path) {
-  tryCatch({
-    readr::write_csv(final_results, write_csv_path)
-    logger::log_info("Data saved to file: {write_csv_path}")
-  }, error = function(e) {
-    logger::log_error("Error saving file to {write_csv_path}: {e$message}")
-    stop("Failed to save the output CSV.")
-  })
+  tryCatch(
+    {
+      readr::write_csv(final_results, write_csv_path)
+      logger::log_info("Data saved to file: {write_csv_path}")
+    },
+    error = function(e) {
+      logger::log_error("Error saving file to {write_csv_path}: {e$message}")
+      stop("Failed to save the output CSV.")
+    }
+  )
 }

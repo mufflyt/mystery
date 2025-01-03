@@ -66,7 +66,6 @@
 #'
 #' @export
 phase0_geocode <- function(file_path, google_maps_api_key, save_to_file_path = NULL) {
-
   # Log function start and inputs
   logger::log_info("Starting phase0_geocode function")
   logger::log_info("Input file path: {file_path}")
@@ -140,4 +139,3 @@ save_geocoded_data <- function(geocoded_dataset, save_to_file_path) {
   readr::write_csv(geocoded_dataset, save_to_file_path)
   logger::log_info("File saved successfully to {save_to_file_path}")
 }
-

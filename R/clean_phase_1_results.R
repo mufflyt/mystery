@@ -17,8 +17,7 @@ nppes_get_data_for_one_year <- function(
     taxonomy_codes_1 = c("207V00000X", "207VB0002X", "207VC0300X", "207VC0200X", "207VX0201X", "207VG0400X", "207VH0002X", "207VM0101X", "207VX0000X", "207VE0102X", "207VF0040X"),
     taxonomy_codes_2 = c("207V00000X", "207VB0002X", "207VC0300X", "207VC0200X", "207VX0201X", "207VG0400X", "207VH0002X", "207VM0101X", "207VX0000X", "207VE0102X", "207VF0040X"),
     save_column_in_each_nppes_year = FALSE,
-    excel_file_path = NULL
-) {
+    excel_file_path = NULL) {
   # Helper function to log messages with timestamps
   log_message <- function(message) {
     cat(sprintf("[%s] %s\n", Sys.time(), message))
@@ -83,8 +82,8 @@ nppes_get_data_for_one_year <- function(
   }
 
   # Process the table in chunks
-  chunk_size <- 100000  # Define chunk size
-  total_rows <- nppes_get_total_row_count(con)  # Get total row count from table
+  chunk_size <- 100000 # Define chunk size
+  total_rows <- nppes_get_total_row_count(con) # Get total row count from table
   num_chunks <- ceiling(total_rows / chunk_size)
 
   for (i in seq_len(num_chunks)) {
@@ -102,7 +101,7 @@ nppes_get_data_for_one_year <- function(
 
     # Clear memory
     rm(processed_data, cleaned_data, chunk_data)
-    invisible(gc())  # Garbage collection after processing each chunk
+    invisible(gc()) # Garbage collection after processing each chunk
   }
 
   # Final log message

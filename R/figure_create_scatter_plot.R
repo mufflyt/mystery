@@ -32,47 +32,47 @@
 #' @examples
 #' # Example 1: Basic scatter plot with log transformation
 #' create_scatter_plot(
-#'     data = df3,
-#'     x_var = "insurance",
-#'     y_var = "business_days_until_appointment",
-#'     y_transform = "log",  # Log transformation
-#'     dpi = 100,
-#'     output_dir = "ortho_sports_med/Figures",
-#'     file_prefix = "ortho_sports_vs_insurance",
-#'     x_label = "Insurance",
-#'     y_label = "Log (Waiting Times in Days)",
-#'     plot_title = "Scatter Plot of Waiting Times by Insurance"
+#'   data = df3,
+#'   x_var = "insurance",
+#'   y_var = "business_days_until_appointment",
+#'   y_transform = "log", # Log transformation
+#'   dpi = 100,
+#'   output_dir = "ortho_sports_med/Figures",
+#'   file_prefix = "ortho_sports_vs_insurance",
+#'   x_label = "Insurance",
+#'   y_label = "Log (Waiting Times in Days)",
+#'   plot_title = "Scatter Plot of Waiting Times by Insurance"
 #' )
 #'
 #' # Example 2: Scatter plot with square root transformation and custom jitter
 #' create_scatter_plot(
-#'     data = df3,
-#'     x_var = "insurance",
-#'     y_var = "business_days_until_appointment",
-#'     y_transform = "sqrt",  # Square root transformation
-#'     dpi = 150,
-#'     output_dir = "ortho_sports_med/Figures",
-#'     file_prefix = "ortho_sports_vs_insurance_sqrt",
-#'     jitter_width = 0.3,
-#'     jitter_height = 0.1,
-#'     x_label = "Insurance",
-#'     y_label = "Square Root (Waiting Times in Days)",
-#'     plot_title = "Square Root Transformed Scatter Plot"
+#'   data = df3,
+#'   x_var = "insurance",
+#'   y_var = "business_days_until_appointment",
+#'   y_transform = "sqrt", # Square root transformation
+#'   dpi = 150,
+#'   output_dir = "ortho_sports_med/Figures",
+#'   file_prefix = "ortho_sports_vs_insurance_sqrt",
+#'   jitter_width = 0.3,
+#'   jitter_height = 0.1,
+#'   x_label = "Insurance",
+#'   y_label = "Square Root (Waiting Times in Days)",
+#'   plot_title = "Square Root Transformed Scatter Plot"
 #' )
 #'
 #' # Example 3: Scatter plot without any transformation and increased transparency
 #' create_scatter_plot(
-#'     data = df3,
-#'     x_var = "insurance",
-#'     y_var = "business_days_until_appointment",
-#'     y_transform = "none",  # No transformation
-#'     dpi = 200,
-#'     output_dir = "ortho_sports_med/Figures",
-#'     file_prefix = "ortho_sports_vs_insurance_none",
-#'     point_alpha = 0.8,
-#'     x_label = "Insurance",
-#'     y_label = "Waiting Times in Days",
-#'     plot_title = "Scatter Plot Without Transformation"
+#'   data = df3,
+#'   x_var = "insurance",
+#'   y_var = "business_days_until_appointment",
+#'   y_transform = "none", # No transformation
+#'   dpi = 200,
+#'   output_dir = "ortho_sports_med/Figures",
+#'   file_prefix = "ortho_sports_vs_insurance_none",
+#'   point_alpha = 0.8,
+#'   x_label = "Insurance",
+#'   y_label = "Waiting Times in Days",
+#'   plot_title = "Scatter Plot Without Transformation"
 #' )
 create_scatter_plot <- function(data,
                                 x_var,
@@ -88,7 +88,6 @@ create_scatter_plot <- function(data,
                                 y_label = NULL,
                                 plot_title = NULL,
                                 verbose = TRUE) {
-
   # Validate inputs using assertthat
   assertthat::assert_that(is.data.frame(data), msg = "`data` must be a data frame.")
   assertthat::assert_that(assertthat::is.string(x_var), msg = "`x_var` must be a string.")

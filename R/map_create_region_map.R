@@ -74,7 +74,8 @@ create_region_map <- function(remove_ak_hi = TRUE,
     msg = "`districts_per_group` must be one of 'acog_districts', 'ENT_Board_of_Governors_Regions', or 'US_Census_Subdivisions'."
   )
   assertthat::assert_that(is.numeric(alpha_level) && alpha_level >= 0 && alpha_level <= 1,
-                          msg = "`alpha_level` must be a numeric value between 0 and 1.")
+    msg = "`alpha_level` must be a numeric value between 0 and 1."
+  )
   if (!is.null(save_path)) {
     assertthat::assert_that(assertthat::is.string(save_path), msg = "`save_path` must be a character string.")
   }

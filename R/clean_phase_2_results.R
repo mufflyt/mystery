@@ -23,7 +23,7 @@
 #' required_strings <- c("doc_info", "contact_data")
 #' standard_names <- c("doctor_info", "patient_contact_info")
 #' cleaned_df <- clean_phase_2_data(df, required_strings, standard_names)
-#' print(cleaned_df)  # Should show updated column names
+#' print(cleaned_df) # Should show updated column names
 #'
 #' @export
 clean_phase_2_data <- function(data_or_path, required_strings, standard_names, output_csv_path = NULL) {

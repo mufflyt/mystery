@@ -13,12 +13,14 @@
 #'
 #' # Example 2: Custom output path
 #' sampled_data <- phase0_create_sampled_by_region(taxonomy_and_aaos_tbl, census_bureau_tbl,
-#'                                                 output_csv_path = "custom_path/sample.csv")
+#'   output_csv_path = "custom_path/sample.csv"
+#' )
 #'
 #' # Example 3: Using a subset of census_bureau_tbl for faster testing
 #' sampled_data <- phase0_create_sampled_by_region(taxonomy_and_aaos_tbl,
-#'                                                 dplyr::filter(census_bureau_tbl, Region == "West"),
-#'                                                 output_csv_path = "test/sample.csv")
+#'   dplyr::filter(census_bureau_tbl, Region == "West"),
+#'   output_csv_path = "test/sample.csv"
+#' )
 #' @export
 #' @importFrom dplyr mutate filter group_by left_join select arrange row_number bind_rows sample_n
 #' @importFrom readr write_csv

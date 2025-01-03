@@ -39,8 +39,7 @@ diagnose_mixed_effects_model <- function(
     grouping_column,
     dependent_column,
     significance_threshold = 0.2,
-    verbose = TRUE
-) {
+    verbose = TRUE) {
   # Validate inputs using assertthat
   assertthat::assert_that(
     assertthat::is.data.frame(model_dataframe),
@@ -166,9 +165,9 @@ compute_summary_statistics <- function(model_dataframe, verbose = TRUE) {
       dplyr::across(
         dplyr::everything(),
         list(
-          mean = ~mean(.x, na.rm = TRUE),
-          median = ~median(.x, na.rm = TRUE),
-          sd = ~sd(.x, na.rm = TRUE)
+          mean = ~ mean(.x, na.rm = TRUE),
+          median = ~ median(.x, na.rm = TRUE),
+          sd = ~ sd(.x, na.rm = TRUE)
         )
       )
     )

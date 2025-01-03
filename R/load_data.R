@@ -28,11 +28,14 @@
 #'
 #' # Example 3: Handle missing file error
 #' \dontrun{
-#' tryCatch({
-#'   df <- load_data(data_dir = "invalid_path", file_name = "missing_file.rds", verbose = TRUE)
-#' }, error = function(e) {
-#'   cat("Error encountered:", e$message, "\n")
-#' })
+#' tryCatch(
+#'   {
+#'     df <- load_data(data_dir = "invalid_path", file_name = "missing_file.rds", verbose = TRUE)
+#'   },
+#'   error = function(e) {
+#'     cat("Error encountered:", e$message, "\n")
+#'   }
+#' )
 #' }
 #'
 #' @importFrom dplyr rename
@@ -40,7 +43,6 @@
 #' @import assertthat
 #' @export
 load_data <- function(data_dir, file_name, verbose = TRUE) {
-
   # Validate inputs using assertthat
   assertthat::assert_that(assertthat::is.string(data_dir), msg = "`data_dir` must be a string.")
   assertthat::assert_that(assertthat::is.string(file_name), msg = "`file_name` must be a string.")
@@ -64,35 +66,37 @@ load_data <- function(data_dir, file_name, verbose = TRUE) {
   }
 
   # Attempt to load the data and rename the column
-  tryCatch({
-    if (verbose) {
-      cat("  Attempting to load data from:", file_path, "\n")
-    }
-
-    loaded_data <- readRDS(file_path)
-    if (verbose) {
-      cat("  Data successfully loaded. Number of rows:", nrow(loaded_data), "\n")
-    }
-
-    # Rename the 'ID' column to 'id_number' if it exists
-    if ("ID" %in% colnames(loaded_data)) {
-      loaded_data <- dplyr::rename(loaded_data, id_number = ID)
+  tryCatch(
+    {
       if (verbose) {
-        cat("  Column 'ID' renamed to 'id_number'.\n")
+        cat("  Attempting to load data from:", file_path, "\n")
       }
-    } else if (verbose) {
-      cat("  Column 'ID' not found. No renaming performed.\n")
+
+      loaded_data <- readRDS(file_path)
+      if (verbose) {
+        cat("  Data successfully loaded. Number of rows:", nrow(loaded_data), "\n")
+      }
+
+      # Rename the 'ID' column to 'id_number' if it exists
+      if ("ID" %in% colnames(loaded_data)) {
+        loaded_data <- dplyr::rename(loaded_data, id_number = ID)
+        if (verbose) {
+          cat("  Column 'ID' renamed to 'id_number'.\n")
+        }
+      } else if (verbose) {
+        cat("  Column 'ID' not found. No renaming performed.\n")
+      }
+
+      # Log the structure of the final data
+      if (verbose) {
+        cat("  Final data structure:\n")
+        print(str(loaded_data))
+      }
+
+      return(loaded_data)
+    },
+    error = function(e) {
+      stop("Failed to load and process the data. Error: ", e$message)
     }
-
-    # Log the structure of the final data
-    if (verbose) {
-      cat("  Final data structure:\n")
-      print(str(loaded_data))
-    }
-
-    return(loaded_data)
-
-  }, error = function(e) {
-    stop("Failed to load and process the data. Error: ", e$message)
-  })
+  )
 }

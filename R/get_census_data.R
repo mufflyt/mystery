@@ -43,11 +43,14 @@
 get_census_data <- function(state_fips_codes, vintage_year = 2022) {
   # Validate inputs
   assertthat::assert_that(is.character(state_fips_codes),
-                          msg = "`state_fips_codes` must be a character vector of FIPS codes.")
+    msg = "`state_fips_codes` must be a character vector of FIPS codes."
+  )
   assertthat::assert_that(all(nchar(state_fips_codes) == 2),
-                          msg = "Each FIPS code must be exactly two characters.")
+    msg = "Each FIPS code must be exactly two characters."
+  )
   assertthat::assert_that(is.numeric(vintage_year) && vintage_year > 2000,
-                          msg = "`vintage_year` must be a valid year greater than 2000.")
+    msg = "`vintage_year` must be a valid year greater than 2000."
+  )
 
   # Check if required packages are installed
   if (!requireNamespace("censusapi", quietly = TRUE)) {

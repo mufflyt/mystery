@@ -23,13 +23,12 @@
 #'
 #' @export
 phase0_city_state_check_specialty_generalist_counts <- function(data,
-                                                         min_generalists,
-                                                         min_specialists,
-                                                         generalist_name = "General Dermatology",
-                                                         specialist_name = "Pediatric Dermatology",
-                                                         failing_csv_path = NULL,
-                                                         successful_csv_path = NULL) {
-
+                                                                min_generalists,
+                                                                min_specialists,
+                                                                generalist_name = "General Dermatology",
+                                                                specialist_name = "Pediatric Dermatology",
+                                                                failing_csv_path = NULL,
+                                                                successful_csv_path = NULL) {
   # Set logging threshold to INFO
   logger::log_threshold(logger::INFO)
 
@@ -53,7 +52,7 @@ phase0_city_state_check_specialty_generalist_counts <- function(data,
   logger::log_info("Grouping data by city, state_code, and specialty_primary, and counting professionals...")
   specialty_counts <- data %>%
     dplyr::group_by(city, state_code, specialty_primary) %>%
-    dplyr::summarise(count = dplyr::n(), .groups = 'drop')
+    dplyr::summarise(count = dplyr::n(), .groups = "drop")
 
   logger::log_info("Transformation complete. Sample of grouped data:")
   logger::log_debug(utils::capture.output(print(head(specialty_counts))))
