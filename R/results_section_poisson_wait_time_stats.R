@@ -27,13 +27,12 @@
 #'   group_var = "Subspecialty",
 #'   round_digits = 1
 #' )
-#' results$stat_summary  # Contains statistical data
-#' results$sentence_summary  # Contains summary sentences
+#' results$stat_summary # Contains statistical data
+#' results$sentence_summary # Contains summary sentences
 #'
 #' @export
 results_section_wait_time_poisson_estimates <- function(appointment_data, wait_time_col = "business_days_until_appointment",
                                                         group_var = NULL, round_digits = 1) {
-
   # Adjust console display options to widen the view for better readability
   options(tibble.width = Inf)
 

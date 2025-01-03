@@ -103,7 +103,7 @@ zip_to_ruca <- zip_to_ruca %>%
 # To keep only distinct zip variables while retaining the mode of primary_ruca_desc
 get_mode_row <- function(data, column) {
   mode_value <- get_mode(data[[column]])
-  mode_row <- data[data[[column]] == mode_value, ][1, ]  # Select the first row with the mode
+  mode_row <- data[data[[column]] == mode_value, ][1, ] # Select the first row with the mode
   return(mode_row)
 }
 

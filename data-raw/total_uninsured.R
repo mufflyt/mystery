@@ -1,34 +1,34 @@
 # Load necessary libraries
-library(ggplot2)    # For data visualization
-library(dplyr)      # For data manipulation
+library(ggplot2) # For data visualization
+library(dplyr) # For data manipulation
 library(tidycensus) # To access Census data
-library(tidyr)      # For data tidying
-library(logger)     # For logging information
+library(tidyr) # For data tidying
+library(logger) # For logging information
 
 # Define variables for uninsured male populations by age group
 uninsured_male_vars <- c(
-  "B27001_005",  # Male: Under 6 years
-  "B27001_008",  # Male: 6 to 18 years
-  "B27001_011",  # Male: 19 to 25 years
-  "B27001_014",  # Male: 26 to 34 years
-  "B27001_017",  # Male: 35 to 44 years
-  "B27001_020",  # Male: 45 to 54 years
-  "B27001_023",  # Male: 55 to 64 years
-  "B27001_026",  # Male: 65 to 74 years
-  "B27001_029"   # Male: 75 years and over
+  "B27001_005", # Male: Under 6 years
+  "B27001_008", # Male: 6 to 18 years
+  "B27001_011", # Male: 19 to 25 years
+  "B27001_014", # Male: 26 to 34 years
+  "B27001_017", # Male: 35 to 44 years
+  "B27001_020", # Male: 45 to 54 years
+  "B27001_023", # Male: 55 to 64 years
+  "B27001_026", # Male: 65 to 74 years
+  "B27001_029" # Male: 75 years and over
 )
 
 # Define variables for uninsured female populations by age group
 uninsured_female_vars <- c(
-  "B27001_033",  # Female: Under 6 years
-  "B27001_036",  # Female: 6 to 18 years
-  "B27001_039",  # Female: 19 to 25 years
-  "B27001_042",  # Female: 26 to 34 years
-  "B27001_045",  # Female: 35 to 44 years
-  "B27001_048",  # Female: 45 to 54 years
-  "B27001_051",  # Female: 55 to 64 years
-  "B27001_054",  # Female: 65 to 74 years
-  "B27001_057"   # Female: 75 years and over
+  "B27001_033", # Female: Under 6 years
+  "B27001_036", # Female: 6 to 18 years
+  "B27001_039", # Female: 19 to 25 years
+  "B27001_042", # Female: 26 to 34 years
+  "B27001_045", # Female: 35 to 44 years
+  "B27001_048", # Female: 45 to 54 years
+  "B27001_051", # Female: 55 to 64 years
+  "B27001_054", # Female: 65 to 74 years
+  "B27001_057" # Female: 75 years and over
 )
 
 year <- 2022
@@ -41,23 +41,25 @@ fetch_uninsured_data <- function(year) {
 
   # Retrieve uninsured data for males
   uninsured_male_data <- tidycensus::get_acs(
-    geography = geography,        # State-level data
+    geography = geography, # State-level data
     variables = uninsured_male_vars, # Variables for uninsured males
-    year = year,                # Specify the year
-    survey = survey           # Use 5-year ACS estimates
+    year = year, # Specify the year
+    survey = survey # Use 5-year ACS estimates
   ) %>%
-    dplyr::mutate(sex = "Male",
-                  year = year,
-                  survey = survey,
-                  date_time_created = Sys.time()) %>%
-    dplyr::left_join(uninsured_male_vars, by = c("variable" = "variable"))  # Add variable descriptions
+    dplyr::mutate(
+      sex = "Male",
+      year = year,
+      survey = survey,
+      date_time_created = Sys.time()
+    ) %>%
+    dplyr::left_join(uninsured_male_vars, by = c("variable" = "variable")) # Add variable descriptions
 
   # Retrieve uninsured data for females
   uninsured_female_data <- tidycensus::get_acs(
-    geography = "state",          # State-level data
+    geography = "state", # State-level data
     variables = uninsured_female_vars, # Variables for uninsured females
-    year = year,                  # Specify the year
-    survey = "acs5"               # Use 5-year ACS estimates
+    year = year, # Specify the year
+    survey = "acs5" # Use 5-year ACS estimates
   ) %>%
     dplyr::mutate(sex = "Female") # Add a column to indicate female sex
 
@@ -73,26 +75,26 @@ uninsured_data <- fetch_uninsured_data(year) # Call the function to get data
 
 # Summarize uninsured data by state and sex
 uninsured_summary <- uninsured_data %>%
-  dplyr::group_by(NAME, sex) %>%            # Group data by state and sex
+  dplyr::group_by(NAME, sex) %>% # Group data by state and sex
   dplyr::summarize(
-    uninsured_total = sum(estimate),        # Sum estimates to get total uninsured
-    .groups = "drop"                        # Drop grouping after summarizing
+    uninsured_total = sum(estimate), # Sum estimates to get total uninsured
+    .groups = "drop" # Drop grouping after summarizing
   )
 
 # Retrieve total population data by state and sex
 total_population_data <- tidycensus::get_acs(
-  geography = "state",                      # State-level data
+  geography = "state", # State-level data
   variables = c(
-    male_total = "B01001_002",              # Total male population
-    female_total = "B01001_026"             # Total female population
+    male_total = "B01001_002", # Total male population
+    female_total = "B01001_026" # Total female population
   ),
-  year = year,                              # Specify the year
-  survey = "acs5"                           # Use 5-year ACS estimates
+  year = year, # Specify the year
+  survey = "acs5" # Use 5-year ACS estimates
 ) %>%
   dplyr::mutate(
     sex = ifelse(variable == "male_total", "Male", "Female") # Assign sex based on variable
   ) %>%
-  dplyr::select(NAME, sex, total_population = estimate)     # Select relevant columns
+  dplyr::select(NAME, sex, total_population = estimate) # Select relevant columns
 
 # Combine uninsured and total population data
 uninsured_rate_data <- uninsured_summary %>%
@@ -101,11 +103,11 @@ uninsured_rate_data <- uninsured_summary %>%
     uninsured_rate = uninsured_total / total_population # Calculate uninsured rate
   ) %>%
   dplyr::select(
-    State = NAME,             # Rename NAME to State
-    Sex = sex,                # Keep sex as Sex
-    Uninsured = uninsured_total,       # Total uninsured
+    State = NAME, # Rename NAME to State
+    Sex = sex, # Keep sex as Sex
+    Uninsured = uninsured_total, # Total uninsured
     Total_Population = total_population, # Total population
-    Uninsured_Rate = uninsured_rate     # Uninsured rate
+    Uninsured_Rate = uninsured_rate # Uninsured rate
   )
 
 # Pivot data to wide format for easier comparison between sexes
@@ -116,7 +118,7 @@ uninsured_rate_summary <- uninsured_rate_data %>%
     names_glue = "{Sex}_{.value}" # Naming convention for new columns
   ) %>%
   dplyr::mutate(
-    Uninsured_Male_Rate = scales::percent(Male_Uninsured_Rate, accuracy = 0.1),   # Format male uninsured rate as percentage
+    Uninsured_Male_Rate = scales::percent(Male_Uninsured_Rate, accuracy = 0.1), # Format male uninsured rate as percentage
     Uninsured_Female_Rate = scales::percent(Female_Uninsured_Rate, accuracy = 0.1) # Format female uninsured rate as percentage
   )
 
@@ -135,15 +137,15 @@ library(logger)
 # Define variables for uninsured male populations by age group
 uninsured_male_vars <- tibble::tibble(
   variable = c(
-    "B27001_005",  # Male: Under 6 years
-    "B27001_008",  # Male: 6 to 18 years
-    "B27001_011",  # Male: 19 to 25 years
-    "B27001_014",  # Male: 26 to 34 years
-    "B27001_017",  # Male: 35 to 44 years
-    "B27001_020",  # Male: 45 to 54 years
-    "B27001_023",  # Male: 55 to 64 years
-    "B27001_026",  # Male: 65 to 74 years
-    "B27001_029"   # Male: 75 years and over
+    "B27001_005", # Male: Under 6 years
+    "B27001_008", # Male: 6 to 18 years
+    "B27001_011", # Male: 19 to 25 years
+    "B27001_014", # Male: 26 to 34 years
+    "B27001_017", # Male: 35 to 44 years
+    "B27001_020", # Male: 45 to 54 years
+    "B27001_023", # Male: 55 to 64 years
+    "B27001_026", # Male: 65 to 74 years
+    "B27001_029" # Male: 75 years and over
   ),
   variable_description = c(
     "Male: Under 6 years",
@@ -161,15 +163,15 @@ uninsured_male_vars <- tibble::tibble(
 # Define variables for uninsured female populations by age group
 uninsured_female_vars <- tibble::tibble(
   variable = c(
-    "B27001_033",  # Female: Under 6 years
-    "B27001_036",  # Female: 6 to 18 years
-    "B27001_039",  # Female: 19 to 25 years
-    "B27001_042",  # Female: 26 to 34 years
-    "B27001_045",  # Female: 35 to 44 years
-    "B27001_048",  # Female: 45 to 54 years
-    "B27001_051",  # Female: 55 to 64 years
-    "B27001_054",  # Female: 65 to 74 years
-    "B27001_057"   # Female: 75 years and over
+    "B27001_033", # Female: Under 6 years
+    "B27001_036", # Female: 6 to 18 years
+    "B27001_039", # Female: 19 to 25 years
+    "B27001_042", # Female: 26 to 34 years
+    "B27001_045", # Female: 35 to 44 years
+    "B27001_048", # Female: 45 to 54 years
+    "B27001_051", # Female: 55 to 64 years
+    "B27001_054", # Female: 65 to 74 years
+    "B27001_057" # Female: 75 years and over
   ),
   variable_description = c(
     "Female: Under 6 years",
@@ -287,7 +289,7 @@ total_population_data <- tidycensus::get_acs(
 # Combine uninsured and total population data with metadata
 uninsured_rate_data <- uninsured_summary %>%
   dplyr::left_join(total_population_data, by = c("NAME", "sex")) %>% # Join datasets by state and sex
-  dplyr::distinct(NAME, sex, uninsured_total, total_population) %>%  # Ensure no duplicates
+  dplyr::distinct(NAME, sex, uninsured_total, total_population) %>% # Ensure no duplicates
   dplyr::mutate(
     uninsured_rate = uninsured_total / total_population # Calculate uninsured rate
   )

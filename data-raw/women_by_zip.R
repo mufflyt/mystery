@@ -10,7 +10,7 @@ library(dplyr)
 women_by_zip <- get_acs(
   geography = "zip code tabulation area",
   variables = "B01001_026E",
-  year = 2022,  # Replace with your desired year
+  year = 2022, # Replace with your desired year
   survey = "acs5"
 ) %>%
   dplyr::select(-moe)

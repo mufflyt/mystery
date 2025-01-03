@@ -16,17 +16,19 @@
 #' @examples
 #' # Example with provided all_states
 #' filtered_data <- data.frame(state = c("California", "New York", "Texas"))
-#' all_states <- c("Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado",
-#'                  "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho",
-#'                  "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana",
-#'                  "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota",
-#'                  "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada",
-#'                  "New Hampshire", "New Jersey", "New Mexico", "New York",
-#'                  "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon",
-#'                  "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota",
-#'                  "Tennessee", "Texas", "Utah", "Vermont", "Virginia",
-#'                  "Washington", "West Virginia", "Wisconsin", "Wyoming",
-#'                  "District of Columbia")
+#' all_states <- c(
+#'   "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado",
+#'   "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho",
+#'   "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana",
+#'   "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota",
+#'   "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada",
+#'   "New Hampshire", "New Jersey", "New Mexico", "New York",
+#'   "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon",
+#'   "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota",
+#'   "Tennessee", "Texas", "Utah", "Vermont", "Virginia",
+#'   "Washington", "West Virginia", "Wisconsin", "Wyoming",
+#'   "District of Columbia"
+#' )
 #' states_where_physicians_were_NOT_contacted(filtered_data, all_states)
 #'
 #' # Example with default all_states
@@ -34,7 +36,6 @@
 #' states_where_physicians_were_NOT_contacted(filtered_data)
 #'
 states_where_physicians_were_NOT_contacted <- function(filtered_data, all_states = NULL) {
-
   # Default list of all states including Washington, DC
   default_all_states <- c(
     "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia",
