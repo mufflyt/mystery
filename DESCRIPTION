@@ -53,7 +53,10 @@ Imports:
     censusapi,
     duckdb,
     readxl,
-    testthat
+    testthat,
+    VennDiagram,
+    mockery,
+    humaniformat
 Suggests:
     knitr,
     rmarkdown,

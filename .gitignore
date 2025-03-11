@@ -42,3 +42,4 @@ docs
 /Meta/
 /..Rcheck/
 codemeta.json
+inst/doc
