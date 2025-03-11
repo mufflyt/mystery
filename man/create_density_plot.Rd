@@ -50,15 +50,15 @@ This function generates a density plot designed for mystery caller studies, allo
 \examples{
 # Example 1: Basic density plot with log transformation
 create_density_plot(
-    data = df3,
-    x_var = "business_days_until_appointment",
-    fill_var = "insurance",
-    x_transform = "log",
-    dpi = 100,
-    output_dir = "figures",
-    file_prefix = "waiting_time_density",
-    x_label = "Log (Waiting Times in Days)",
-    y_label = "Density",
-    plot_title = "Density Plot of Waiting Times by Insurance"
+  data = df3,
+  x_var = "business_days_until_appointment",
+  fill_var = "insurance",
+  x_transform = "log",
+  dpi = 100,
+  output_dir = "figures",
+  file_prefix = "waiting_time_density",
+  x_label = "Log (Waiting Times in Days)",
+  y_label = "Density",
+  plot_title = "Density Plot of Waiting Times by Insurance"
 )
 }

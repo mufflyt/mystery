@@ -44,7 +44,7 @@ unique_count <- count_unique_physicians(
   insurance_type = "Medicaid",
   reason_for_exclusion = "Able to contact"
 )
-print(unique_count)  # Expected output: 1
+print(unique_count) # Expected output: 1
 
 # Example 2: Counting unique physicians without specifying a reason for exclusion
 df2 <- data.frame(
@@ -57,7 +57,7 @@ unique_count2 <- count_unique_physicians(
   df2,
   insurance_type = "Blue Cross/Blue Shield"
 )
-print(unique_count2)  # Expected output: 1
+print(unique_count2) # Expected output: 1
 
 # Example 3: Using verbose logging to see detailed steps
 df3 <- data.frame(
@@ -73,6 +73,6 @@ unique_count3 <- count_unique_physicians(
   insurance_type = "Medicaid",
   verbose = TRUE
 )
-print(unique_count3)  # Expected output: 2
+print(unique_count3) # Expected output: 2
 
 }

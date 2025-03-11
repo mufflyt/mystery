@@ -53,16 +53,16 @@ It includes error handling, meaningful variable names, and default behaviors for
 }
 \examples{
 create_dot_plot(
-    dataset = df_plot,
-    category_var = "insurance",
-    value_var = "median_days",
-    lower_bound_var = "q1",
-    upper_bound_var = "q3",
-    dpi = 100,
-    output_directory = "output/plots",
-    filename_prefix = "insurance_vs_days",
-    x_label = "Insurance",
-    y_label = "Median Business Days",
-    plot_title = "Comparison of Business Days by Insurance"
+  dataset = df_plot,
+  category_var = "insurance",
+  value_var = "median_days",
+  lower_bound_var = "q1",
+  upper_bound_var = "q3",
+  dpi = 100,
+  output_directory = "output/plots",
+  filename_prefix = "insurance_vs_days",
+  x_label = "Insurance",
+  y_label = "Median Business Days",
+  plot_title = "Comparison of Business Days by Insurance"
 )
 }

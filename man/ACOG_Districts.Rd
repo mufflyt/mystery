@@ -8,9 +8,9 @@
 A tibble with 52 rows and 4 variables:
 \describe{
 \item{State}{The name of the U.S. state (e.g., "Alabama", "California").}
-\item{ACOG_District}{The district designation assigned by ACOG (e.g., "District VII").}
-\item{Subregion}{The subregion of the state within the district (e.g., "District VII").}
-\item{State_Abbreviations}{The two-letter postal abbreviation for the state (e.g., "AL", "CA").}
+\item{ACOG_District}{The district designation assigned by ACOG (e.g.,"District VII").}
+\item{Subregion}{The subregion of the state within the district(e.g.,"District VII").}
+\item{State_Abbreviations}{The two-letter postal abbreviation for the state(e.g., "AL", "CA").}
 }
 }
 \source{

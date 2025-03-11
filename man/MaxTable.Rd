@@ -9,17 +9,35 @@ MaxTable(InVec, mult = FALSE)
 \arguments{
 \item{InVec}{Input vector, expected to be a factor variable or convertible to a factor.}
 
-\item{mult}{Logical value indicating whether to return multiple maximum values or just the first one. Default is FALSE.}
+\item{mult}{Logical value indicating whether to return multiple maximum levels or just the first one. Default is FALSE.}
 }
 \value{
-If \code{mult} is FALSE, returns the level corresponding to the maximum value of the factor variable.
-If \code{mult} is TRUE, returns a character vector containing all the levels with the maximum value.
+A character vector. If \code{mult} is FALSE, it returns the level with the highest frequency.
+If \code{mult} is TRUE, it returns all levels with the maximum frequency.
 }
 \description{
-This function returns the level(s) corresponding to the maximum value(s) of a factor variable.
+This function calculates the maximum frequency of a factor variable and returns the level(s)
+corresponding to the maximum value(s). It can return either a single maximum or all levels with the maximum frequency.
+}
+\details{
+This function handles both factor variables and those that can be converted to factors.
+It uses frequency counts to determine the level(s) with the maximum frequency.
 }
 \examples{
+# Example 1: Single maximum level
 vec <- factor(c("A", "B", "A", "C", "B", "B"))
-MaxTable(vec) # Returns "A"
+MaxTable(vec) # Returns "B"
+
+# Example 2: Multiple maximum levels
+vec <- factor(c("A", "B", "A", "C", "B", "B"))
 MaxTable(vec, mult = TRUE) # Returns c("A", "B")
+
+# Example 3: Handling a non-factor input
+vec <- c("A", "B", "A", "C", "B", "B")
+MaxTable(vec) # Returns "B"
+
+# Example 4: Empty input vector
+vec <- factor(character(0))
+MaxTable(vec) # Returns character(0)
+
 }
