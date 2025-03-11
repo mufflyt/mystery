@@ -24,7 +24,6 @@
 <url><loc>https://mufflyt.github.io/tyler/mysteryshopper/reference/calculate_distribution.html</loc></url>
 <url><loc>https://mufflyt.github.io/tyler/mysteryshopper/reference/calculate_proportion.html</loc></url>
 <url><loc>https://mufflyt.github.io/tyler/mysteryshopper/reference/check_normality.html</loc></url>
-<url><loc>https://mufflyt.github.io/tyler/mysteryshopper/reference/clean_npi_entries.html</loc></url>
 <url><loc>https://mufflyt.github.io/tyler/mysteryshopper/reference/clean_phase_2_data.html</loc></url>
 <url><loc>https://mufflyt.github.io/tyler/mysteryshopper/reference/convert_list_to_df_expanded.html</loc></url>
 <url><loc>https://mufflyt.github.io/tyler/mysteryshopper/reference/count_physicians_by_group.html</loc></url>
@@ -64,7 +63,6 @@
 <url><loc>https://mufflyt.github.io/tyler/mysteryshopper/reference/plot_and_save_emmeans.html</loc></url>
 <url><loc>https://mufflyt.github.io/tyler/mysteryshopper/reference/plot_region_counts.html</loc></url>
 <url><loc>https://mufflyt.github.io/tyler/mysteryshopper/reference/prepare_dataset.html</loc></url>
-<url><loc>https://mufflyt.github.io/tyler/mysteryshopper/reference/process_and_save_isochrones.html</loc></url>
 <url><loc>https://mufflyt.github.io/tyler/mysteryshopper/reference/remove_constant_vars.html</loc></url>
 <url><loc>https://mufflyt.github.io/tyler/mysteryshopper/reference/remove_near_zero_var.html</loc></url>
 <url><loc>https://mufflyt.github.io/tyler/mysteryshopper/reference/results_section_medicaid_summary.html</loc></url>
@@ -74,10 +72,8 @@
 <url><loc>https://mufflyt.github.io/tyler/mysteryshopper/reference/search_npi.html</loc></url>
 <url><loc>https://mufflyt.github.io/tyler/mysteryshopper/reference/states_where_physicians_were_NOT_contacted.html</loc></url>
 <url><loc>https://mufflyt.github.io/tyler/mysteryshopper/reference/taxonomy.html</loc></url>
-<url><loc>https://mufflyt.github.io/tyler/mysteryshopper/reference/test_and_process_isochrones.html</loc></url>
 <url><loc>https://mufflyt.github.io/tyler/mysteryshopper/reference/tm_write2pdf.html</loc></url>
 <url><loc>https://mufflyt.github.io/tyler/mysteryshopper/reference/tyler-package.html</loc></url>
-<url><loc>https://mufflyt.github.io/tyler/mysteryshopper/reference/validate_and_remove_invalid_npi.html</loc></url>
 <url><loc>https://mufflyt.github.io/tyler/mysteryshopper/reference/write_output_csv.html</loc></url>
 </urlset>
 

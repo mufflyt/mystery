@@ -147,49 +147,49 @@ palette. The plot is automatically displayed and saved with a specified resoluti
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Example 1: Basic scatter plot with log transformation</span></span></span>
 <span class="r-in"><span><span class="fu">create_scatter_plot</span><span class="op">(</span></span></span>
-<span class="r-in"><span>    data <span class="op">=</span> <span class="va">df3</span>,</span></span>
-<span class="r-in"><span>    x_var <span class="op">=</span> <span class="st">"insurance"</span>,</span></span>
-<span class="r-in"><span>    y_var <span class="op">=</span> <span class="st">"business_days_until_appointment"</span>,</span></span>
-<span class="r-in"><span>    y_transform <span class="op">=</span> <span class="st">"log"</span>,  <span class="co"># Log transformation</span></span></span>
-<span class="r-in"><span>    dpi <span class="op">=</span> <span class="fl">100</span>,</span></span>
-<span class="r-in"><span>    output_dir <span class="op">=</span> <span class="st">"ortho_sports_med/Figures"</span>,</span></span>
-<span class="r-in"><span>    file_prefix <span class="op">=</span> <span class="st">"ortho_sports_vs_insurance"</span>,</span></span>
-<span class="r-in"><span>    x_label <span class="op">=</span> <span class="st">"Insurance"</span>,</span></span>
-<span class="r-in"><span>    y_label <span class="op">=</span> <span class="st">"Log (Waiting Times in Days)"</span>,</span></span>
-<span class="r-in"><span>    plot_title <span class="op">=</span> <span class="st">"Scatter Plot of Waiting Times by Insurance"</span></span></span>
+<span class="r-in"><span>  data <span class="op">=</span> <span class="va">df3</span>,</span></span>
+<span class="r-in"><span>  x_var <span class="op">=</span> <span class="st">"insurance"</span>,</span></span>
+<span class="r-in"><span>  y_var <span class="op">=</span> <span class="st">"business_days_until_appointment"</span>,</span></span>
+<span class="r-in"><span>  y_transform <span class="op">=</span> <span class="st">"log"</span>, <span class="co"># Log transformation</span></span></span>
+<span class="r-in"><span>  dpi <span class="op">=</span> <span class="fl">100</span>,</span></span>
+<span class="r-in"><span>  output_dir <span class="op">=</span> <span class="st">"ortho_sports_med/Figures"</span>,</span></span>
+<span class="r-in"><span>  file_prefix <span class="op">=</span> <span class="st">"ortho_sports_vs_insurance"</span>,</span></span>
+<span class="r-in"><span>  x_label <span class="op">=</span> <span class="st">"Insurance"</span>,</span></span>
+<span class="r-in"><span>  y_label <span class="op">=</span> <span class="st">"Log (Waiting Times in Days)"</span>,</span></span>
+<span class="r-in"><span>  plot_title <span class="op">=</span> <span class="st">"Scatter Plot of Waiting Times by Insurance"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'df3' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Example 2: Scatter plot with square root transformation and custom jitter</span></span></span>
 <span class="r-in"><span><span class="fu">create_scatter_plot</span><span class="op">(</span></span></span>
-<span class="r-in"><span>    data <span class="op">=</span> <span class="va">df3</span>,</span></span>
-<span class="r-in"><span>    x_var <span class="op">=</span> <span class="st">"insurance"</span>,</span></span>
-<span class="r-in"><span>    y_var <span class="op">=</span> <span class="st">"business_days_until_appointment"</span>,</span></span>
-<span class="r-in"><span>    y_transform <span class="op">=</span> <span class="st">"sqrt"</span>,  <span class="co"># Square root transformation</span></span></span>
-<span class="r-in"><span>    dpi <span class="op">=</span> <span class="fl">150</span>,</span></span>
-<span class="r-in"><span>    output_dir <span class="op">=</span> <span class="st">"ortho_sports_med/Figures"</span>,</span></span>
-<span class="r-in"><span>    file_prefix <span class="op">=</span> <span class="st">"ortho_sports_vs_insurance_sqrt"</span>,</span></span>
-<span class="r-in"><span>    jitter_width <span class="op">=</span> <span class="fl">0.3</span>,</span></span>
-<span class="r-in"><span>    jitter_height <span class="op">=</span> <span class="fl">0.1</span>,</span></span>
-<span class="r-in"><span>    x_label <span class="op">=</span> <span class="st">"Insurance"</span>,</span></span>
-<span class="r-in"><span>    y_label <span class="op">=</span> <span class="st">"Square Root (Waiting Times in Days)"</span>,</span></span>
-<span class="r-in"><span>    plot_title <span class="op">=</span> <span class="st">"Square Root Transformed Scatter Plot"</span></span></span>
+<span class="r-in"><span>  data <span class="op">=</span> <span class="va">df3</span>,</span></span>
+<span class="r-in"><span>  x_var <span class="op">=</span> <span class="st">"insurance"</span>,</span></span>
+<span class="r-in"><span>  y_var <span class="op">=</span> <span class="st">"business_days_until_appointment"</span>,</span></span>
+<span class="r-in"><span>  y_transform <span class="op">=</span> <span class="st">"sqrt"</span>, <span class="co"># Square root transformation</span></span></span>
+<span class="r-in"><span>  dpi <span class="op">=</span> <span class="fl">150</span>,</span></span>
+<span class="r-in"><span>  output_dir <span class="op">=</span> <span class="st">"ortho_sports_med/Figures"</span>,</span></span>
+<span class="r-in"><span>  file_prefix <span class="op">=</span> <span class="st">"ortho_sports_vs_insurance_sqrt"</span>,</span></span>
+<span class="r-in"><span>  jitter_width <span class="op">=</span> <span class="fl">0.3</span>,</span></span>
+<span class="r-in"><span>  jitter_height <span class="op">=</span> <span class="fl">0.1</span>,</span></span>
+<span class="r-in"><span>  x_label <span class="op">=</span> <span class="st">"Insurance"</span>,</span></span>
+<span class="r-in"><span>  y_label <span class="op">=</span> <span class="st">"Square Root (Waiting Times in Days)"</span>,</span></span>
+<span class="r-in"><span>  plot_title <span class="op">=</span> <span class="st">"Square Root Transformed Scatter Plot"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'df3' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Example 3: Scatter plot without any transformation and increased transparency</span></span></span>
 <span class="r-in"><span><span class="fu">create_scatter_plot</span><span class="op">(</span></span></span>
-<span class="r-in"><span>    data <span class="op">=</span> <span class="va">df3</span>,</span></span>
-<span class="r-in"><span>    x_var <span class="op">=</span> <span class="st">"insurance"</span>,</span></span>
-<span class="r-in"><span>    y_var <span class="op">=</span> <span class="st">"business_days_until_appointment"</span>,</span></span>
-<span class="r-in"><span>    y_transform <span class="op">=</span> <span class="st">"none"</span>,  <span class="co"># No transformation</span></span></span>
-<span class="r-in"><span>    dpi <span class="op">=</span> <span class="fl">200</span>,</span></span>
-<span class="r-in"><span>    output_dir <span class="op">=</span> <span class="st">"ortho_sports_med/Figures"</span>,</span></span>
-<span class="r-in"><span>    file_prefix <span class="op">=</span> <span class="st">"ortho_sports_vs_insurance_none"</span>,</span></span>
-<span class="r-in"><span>    point_alpha <span class="op">=</span> <span class="fl">0.8</span>,</span></span>
-<span class="r-in"><span>    x_label <span class="op">=</span> <span class="st">"Insurance"</span>,</span></span>
-<span class="r-in"><span>    y_label <span class="op">=</span> <span class="st">"Waiting Times in Days"</span>,</span></span>
-<span class="r-in"><span>    plot_title <span class="op">=</span> <span class="st">"Scatter Plot Without Transformation"</span></span></span>
+<span class="r-in"><span>  data <span class="op">=</span> <span class="va">df3</span>,</span></span>
+<span class="r-in"><span>  x_var <span class="op">=</span> <span class="st">"insurance"</span>,</span></span>
+<span class="r-in"><span>  y_var <span class="op">=</span> <span class="st">"business_days_until_appointment"</span>,</span></span>
+<span class="r-in"><span>  y_transform <span class="op">=</span> <span class="st">"none"</span>, <span class="co"># No transformation</span></span></span>
+<span class="r-in"><span>  dpi <span class="op">=</span> <span class="fl">200</span>,</span></span>
+<span class="r-in"><span>  output_dir <span class="op">=</span> <span class="st">"ortho_sports_med/Figures"</span>,</span></span>
+<span class="r-in"><span>  file_prefix <span class="op">=</span> <span class="st">"ortho_sports_vs_insurance_none"</span>,</span></span>
+<span class="r-in"><span>  point_alpha <span class="op">=</span> <span class="fl">0.8</span>,</span></span>
+<span class="r-in"><span>  x_label <span class="op">=</span> <span class="st">"Insurance"</span>,</span></span>
+<span class="r-in"><span>  y_label <span class="op">=</span> <span class="st">"Waiting Times in Days"</span>,</span></span>
+<span class="r-in"><span>  plot_title <span class="op">=</span> <span class="st">"Scatter Plot Without Transformation"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'df3' not found</span>
 </code></pre></div>

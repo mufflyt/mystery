@@ -155,8 +155,8 @@ linear fit line. Default is TRUE.</p></dd>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Example 1: Default settings</span></span></span>
 <span class="r-in"><span><span class="va">scatterplot</span> <span class="op">&lt;-</span> <span class="fu">create_insurance_by_insurance_scatter_plot</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  df <span class="op">=</span> <span class="va">df3</span>,  <span class="co"># Input data frame</span></span></span>
-<span class="r-in"><span>  unique_variable <span class="op">=</span> <span class="st">"phone"</span>  <span class="co"># Unique identifier variable</span></span></span>
+<span class="r-in"><span>  df <span class="op">=</span> <span class="va">df3</span>, <span class="co"># Input data frame</span></span></span>
+<span class="r-in"><span>  unique_variable <span class="op">=</span> <span class="st">"phone"</span> <span class="co"># Unique identifier variable</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'df3' not found</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">scatterplot</span><span class="op">)</span></span></span>
@@ -164,14 +164,14 @@ linear fit line. Default is TRUE.</p></dd>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Example 2: Customized axis labels and output directory</span></span></span>
 <span class="r-in"><span><span class="va">scatterplot</span> <span class="op">&lt;-</span> <span class="fu">create_insurance_by_insurance_scatter_plot</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  df <span class="op">=</span> <span class="va">df3</span>,  <span class="co"># Input data frame</span></span></span>
-<span class="r-in"><span>  unique_variable <span class="op">=</span> <span class="st">"npi"</span>,  <span class="co"># Unique identifier variable</span></span></span>
-<span class="r-in"><span>  insurance1 <span class="op">=</span> <span class="st">"medicaid"</span>,  <span class="co"># First insurance type</span></span></span>
-<span class="r-in"><span>  insurance2 <span class="op">=</span> <span class="st">"blue cross/blue shield"</span>,  <span class="co"># Second insurance type</span></span></span>
-<span class="r-in"><span>  x_label <span class="op">=</span> <span class="st">"Log Time to Appointment (BCBS)"</span>,  <span class="co"># Custom x-axis label</span></span></span>
-<span class="r-in"><span>  y_label <span class="op">=</span> <span class="st">"Log Time to Appointment (Medicaid)"</span>,  <span class="co"># Custom y-axis label</span></span></span>
-<span class="r-in"><span>  plot_title <span class="op">=</span> <span class="st">"Custom Waiting Times Comparison"</span>,  <span class="co"># Custom plot title</span></span></span>
-<span class="r-in"><span>  output_directory <span class="op">=</span> <span class="st">"custom_figures"</span>  <span class="co"># Custom output directory</span></span></span>
+<span class="r-in"><span>  df <span class="op">=</span> <span class="va">df3</span>, <span class="co"># Input data frame</span></span></span>
+<span class="r-in"><span>  unique_variable <span class="op">=</span> <span class="st">"npi"</span>, <span class="co"># Unique identifier variable</span></span></span>
+<span class="r-in"><span>  insurance1 <span class="op">=</span> <span class="st">"medicaid"</span>, <span class="co"># First insurance type</span></span></span>
+<span class="r-in"><span>  insurance2 <span class="op">=</span> <span class="st">"blue cross/blue shield"</span>, <span class="co"># Second insurance type</span></span></span>
+<span class="r-in"><span>  x_label <span class="op">=</span> <span class="st">"Log Time to Appointment (BCBS)"</span>, <span class="co"># Custom x-axis label</span></span></span>
+<span class="r-in"><span>  y_label <span class="op">=</span> <span class="st">"Log Time to Appointment (Medicaid)"</span>, <span class="co"># Custom y-axis label</span></span></span>
+<span class="r-in"><span>  plot_title <span class="op">=</span> <span class="st">"Custom Waiting Times Comparison"</span>, <span class="co"># Custom plot title</span></span></span>
+<span class="r-in"><span>  output_directory <span class="op">=</span> <span class="st">"custom_figures"</span> <span class="co"># Custom output directory</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'df3' not found</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">scatterplot</span><span class="op">)</span></span></span>
@@ -179,13 +179,13 @@ linear fit line. Default is TRUE.</p></dd>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Example 3: High-resolution plot with adjusted aesthetics</span></span></span>
 <span class="r-in"><span><span class="va">scatterplot</span> <span class="op">&lt;-</span> <span class="fu">create_insurance_by_insurance_scatter_plot</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  df <span class="op">=</span> <span class="va">df3</span>,  <span class="co"># Input data frame</span></span></span>
-<span class="r-in"><span>  unique_variable <span class="op">=</span> <span class="st">"phone"</span>,  <span class="co"># Unique identifier variable</span></span></span>
-<span class="r-in"><span>  dpi <span class="op">=</span> <span class="fl">300</span>,  <span class="co"># High resolution</span></span></span>
-<span class="r-in"><span>  point_size <span class="op">=</span> <span class="fl">4</span>,  <span class="co"># Larger point size</span></span></span>
-<span class="r-in"><span>  point_alpha <span class="op">=</span> <span class="fl">0.8</span>,  <span class="co"># Less transparency</span></span></span>
-<span class="r-in"><span>  height <span class="op">=</span> <span class="fl">10</span>,  <span class="co"># Custom height</span></span></span>
-<span class="r-in"><span>  width <span class="op">=</span> <span class="fl">15</span>  <span class="co"># Custom width</span></span></span>
+<span class="r-in"><span>  df <span class="op">=</span> <span class="va">df3</span>, <span class="co"># Input data frame</span></span></span>
+<span class="r-in"><span>  unique_variable <span class="op">=</span> <span class="st">"phone"</span>, <span class="co"># Unique identifier variable</span></span></span>
+<span class="r-in"><span>  dpi <span class="op">=</span> <span class="fl">300</span>, <span class="co"># High resolution</span></span></span>
+<span class="r-in"><span>  point_size <span class="op">=</span> <span class="fl">4</span>, <span class="co"># Larger point size</span></span></span>
+<span class="r-in"><span>  point_alpha <span class="op">=</span> <span class="fl">0.8</span>, <span class="co"># Less transparency</span></span></span>
+<span class="r-in"><span>  height <span class="op">=</span> <span class="fl">10</span>, <span class="co"># Custom height</span></span></span>
+<span class="r-in"><span>  width <span class="op">=</span> <span class="fl">15</span> <span class="co"># Custom width</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'df3' not found</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">scatterplot</span><span class="op">)</span></span></span>

@@ -231,7 +231,7 @@
 <p>This cleans the NPI numbers before it goes into <code>tyler::retrieve_clinician_data</code> because if one incorrect NPI number is inserted then it screws up the entire search. Saves each find as csv file.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">input_csv_path</span> <span class="op">&lt;-</span> <span class="st">"~/Dropbox (Personal)/workforce/subspecialists_only.csv"</span>  <span class="co"># Replace with the path to your CSV file</span></span>
-<span><span class="va">valid_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/validate_and_remove_invalid_npi.html">validate_and_remove_invalid_npi</a></span><span class="op">(</span><span class="va">input_csv_path</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">valid_df</span> <span class="op">&lt;-</span> <span class="fu">validate_and_remove_invalid_npi</span><span class="op">(</span><span class="va">input_csv_path</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>Search result saved as<span class="sc">:</span> data<span class="sc">/</span>search_results_1053601807_20231119192903.csv                                </span>
 <span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>Search result saved as<span class="sc">:</span> data<span class="sc">/</span>search_results_1528351640_20231119192911.csv                                </span>
 <span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>✖ No results <span class="cf">for</span> npi <span class="ot">=</span> <span class="dv">1063703494</span></span>
