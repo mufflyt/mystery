@@ -1,122 +1,152 @@
 ---
 title: "Sampling Spine Surgeons and Assigning Cases"
-author: "Tyler Muffly"
+author: "Tyler Muffly, MD"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Sampling Spine Surgeons and Assigning Cases}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
 ---
 
-<!-- ```{r setup, include=FALSE} -->
-<!-- knitr::opts_chunk$set(echo = TRUE) -->
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
 
-<!-- library(tyler) -->
-<!-- library(dplyr) -->
-<!-- library(tidyr) -->
-<!-- library(readxl) -->
-<!-- library(logger) -->
-<!-- library(stringr) -->
-<!-- ``` -->
+library(tyler)
+library(dplyr)
+library(tidyr)
+library(readxl)
+library(logger)
+library(stringr)
+```
 
-<!-- ## Overview -->
-<!-- This vignette demonstrates how to: -->
+## Overview
+This vignette demonstrates a structured workflow for managing data related to spine surgeons. The key objectives are:
 
-<!-- * Load and process data for physicians -->
-<!-- * Expand the dataset to assign multiple insurance scenarios to each physician. -->
-<!-- * Add identifying information (e.g., row numbers) and create a combined descriptive column. -->
-<!-- * Distribute cases among lab assistants using a splitting function. -->
+* Data Loading and Cleaning: Import a dataset of spine surgeons and clean it for analysis.
+* Dataset Expansion: Assign multiple insurance scenarios to each physician to simulate real-world variability.
+* Case Assignment: Distribute cases among lab assistants using a priority-based splitting mechanism.
+* Efficient Scaling: Highlight tools and methods to manage large-scale assignments with ease.
 
-<!-- ## Step 1: Load and Prepare the Data -->
-<!-- We start by loading a dataset of spine surgeons from an Excel file. We clean and transform the data to standardize names, map state abbreviations to full state names, and add time zones. -->
+This vignette will guide you through a step-by-step process to achieve these goals using the `tyler` package and `tidyverse` tools.
 
-<!-- ```{r cars} -->
-<!-- # Load the data -->
-<!-- sample_specialists <- readxl::read_xlsx("ortho_spine/data/from_nick_after_phase1/Spine Physician List.xlsx") %>% -->
-<!--   dplyr::rename( -->
-<!--     phone_number = `Correct Number`, -->
-<!--     specialty_primary = taxonomies_desc, -->
-<!--     NPI = npi -->
-<!--   ) %>% -->
-<!--   dplyr::filter(`Include (Y/N)` == "Y") %>% -->
-<!--   dplyr::select(-`Include (Y/N)`, -`Reason for Exclusion`) %>% -->
-<!--   dplyr::mutate( -->
-<!--     last = stringr::str_to_title(last), -->
-<!--     first = stringr::str_to_title(first), -->
-<!--     full_name = paste("Dr.", first, last), -->
-<!--     addresses_state = dplyr::case_when( -->
-<!--       `State Code` %in% state.abb ~ state.name[match(`State Code`, state.abb)], -->
-<!--       TRUE ~ `State Code` -->
-<!--     ), -->
-<!--     timezone = dplyr::case_when( -->
-<!--       addresses_state %in% c("Maine", "New Hampshire", "Vermont", "Massachusetts", "Rhode Island",  -->
-<!--                              "Connecticut", "New York", "New Jersey", "Delaware", "Maryland",  -->
-<!--                              "Pennsylvania", "Virginia", "West Virginia", "North Carolina",  -->
-<!--                              "South Carolina", "Georgia", "Florida", "Ohio", "Indiana", "Michigan") ~ "Eastern Time", -->
-<!--       addresses_state %in% c("Wisconsin", "Illinois", "Missouri", "North Dakota", "South Dakota",  -->
-<!--                              "Nebraska", "Kansas", "Minnesota", "Iowa", "Kentucky", "Tennessee",  -->
-<!--                              "Alabama", "Mississippi", "Arkansas", "Louisiana", "Texas", "Oklahoma") ~ "Central Time", -->
-<!--       addresses_state %in% c("Montana", "Idaho", "Wyoming", "Utah", "Colorado", "New Mexico", "Arizona") ~ "Mountain Time", -->
-<!--       addresses_state %in% c("California", "Nevada", "Oregon", "Washington") ~ "Pacific Time", -->
-<!--       addresses_state == "Hawaii" ~ "Hawaii-Aleutian Time", -->
-<!--       addresses_state == "Alaska" ~ "Alaska Time", -->
-<!--       TRUE ~ "Unknown Timezone" -->
-<!--     ), -->
-<!--     NPI = paste("NPI:", NPI), -->
-<!--     combined_info = paste(full_name, ",", phone_number, ",", addresses_state, ",", timezone, ",", NPI) -->
-<!--   ) %>% -->
-<!--   dplyr::relocate(combined_info, .before = everything()) -->
+## Step 1: Load and Prepare the Data
+### Description
+The dataset of spine surgeons is loaded from an Excel file. The following steps are performed:
 
-<!-- glimpse(sample_specialists) -->
-<!-- ``` -->
+* Filtering and Cleaning: Exclude physicians not marked for inclusion and clean up column names.
+* Name Standardization: Ensure consistency by capitalizing first and last names.
+* State and Time Zone Mapping: Convert state abbreviations to full names and assign appropriate time zones.
+* Data Enrichment: Combine multiple fields into a single descriptive column for ease of reference.
 
-<!-- ## Step 2: Expand Data by Insurance Scenarios -->
-<!-- Using the phase2_sample_surgeons function, we assign multiple insurance scenarios to each physician while retaining all original columns. -->
+```{r cars}
+# Load the data
+sample_specialists <- readxl::read_xlsx("~/Dropbox (Personal)/tyler/inst/extdata/Spine Physician List.xlsx") %>%
+  dplyr::rename(
+    phone_number = `Correct Number`,
+    specialty_primary = taxonomies_desc,
+    NPI = npi
+  ) %>%
+  dplyr::filter(`Include (Y/N)` == "Y") %>%
+  dplyr::select(-`Include (Y/N)`, -`Reason for Exclusion`) %>%
+  dplyr::mutate(
+    last = stringr::str_to_title(last),
+    first = stringr::str_to_title(first),
+    full_name = paste("Dr.", first, last),
+    addresses_state = dplyr::case_when(
+      `State Code` %in% state.abb ~ state.name[match(`State Code`, state.abb)],
+      TRUE ~ `State Code`
+    ),
+    timezone = dplyr::case_when(
+      addresses_state %in% c("Maine", "New Hampshire", "Vermont", "Massachusetts", "Rhode Island",
+                             "Connecticut", "New York", "New Jersey", "Delaware", "Maryland",
+                             "Pennsylvania", "Virginia", "West Virginia", "North Carolina",
+                             "South Carolina", "Georgia", "Florida", "Ohio", "Indiana", "Michigan") ~ "Eastern Time",
+      addresses_state %in% c("Wisconsin", "Illinois", "Missouri", "North Dakota", "South Dakota",
+                             "Nebraska", "Kansas", "Minnesota", "Iowa", "Kentucky", "Tennessee",
+                             "Alabama", "Mississippi", "Arkansas", "Louisiana", "Texas", "Oklahoma") ~ "Central Time",
+      addresses_state %in% c("Montana", "Idaho", "Wyoming", "Utah", "Colorado", "New Mexico", "Arizona") ~ "Mountain Time",
+      addresses_state %in% c("California", "Nevada", "Oregon", "Washington") ~ "Pacific Time",
+      addresses_state == "Hawaii" ~ "Hawaii-Aleutian Time",
+      addresses_state == "Alaska" ~ "Alaska Time",
+      TRUE ~ "Unknown Timezone"
+    ),
+    NPI = paste("NPI:", NPI),
+    combined_info = paste(full_name, ",", phone_number, ",", addresses_state, ",", timezone, ",", NPI)
+  ) %>%
+  dplyr::relocate(combined_info, .before = everything())
 
-<!-- ```{r pressure, echo=FALSE} -->
-<!-- # Assign multiple insurance scenarios -->
-<!-- phase2_sample_surgeons_output <- phase2_sample_surgeons( -->
-<!--   data = sample_specialists, -->
-<!--   insurance_types = c("Medicare", "Medicaid", "BCBS"), -->
-<!--   ensure_unique_phone_numbers = TRUE, -->
-<!--   output_csv_path = "data/phase_2", -->
-<!--   seed = 1978 -->
-<!-- ) %>% -->
-<!--   dplyr::mutate(combined_info = paste0(combined_info, ", ", insurance)) -->
+glimpse(sample_specialists)
+```
 
-<!-- glimpse(phase2_sample_surgeons_output) -->
-<!-- ``` -->
+## Step 2: Expand Data by Insurance Scenarios
+### Description
+To account for variability in physician behavior under different insurance scenarios, each physician is assigned multiple insurance categories (e.g., Medicare, Medicaid, BCBS). This step is critical for simulating real-world conditions.
+
+Key Points:
+* Function Used: `phase2_sample_surgeons` from the `tyler` package.
+* Input Parameters:
+* `data`: The cleaned dataset of physicians.
+* `insurance_types`: A vector of insurance categories.
+* `seed`: Ensures reproducibility for randomized assignments.
+* Output: A new dataset with multiple rows per physician, each representing a unique insurance scenario.
+
+```{r pressure, echo=FALSE}
+# Assign multiple insurance scenarios
+phase2_sample_surgeons_output <- tyler::phase2_sample_surgeons(
+  data = sample_specialists,
+  insurance_types = c("Medicare", "Medicaid", "BCBS"),
+  ensure_unique_phone_numbers = TRUE,
+  output_csv_path = "data/phase_2",
+  seed = 1978
+) %>%
+  dplyr::mutate(combined_info = paste0(combined_info, ", ", insurance))
+
+glimpse(phase2_sample_surgeons_output)
+```
 
 
-<!-- ## Step 3: Assign Cases to Lab Assistants -->
-<!-- The split_calls_to_lab_assistants_and_save_by_priority function assigns cases to lab assistants. Each assistant receives cases randomly based on the insurance column. -->
+## Step 3: Assign Cases to Lab Assistants
+### Description
+To manage workloads effectively, cases are assigned to lab assistants based on specific criteria. The process ensures a fair distribution of work and creates a systematic record of assignments.
 
-<!-- ```{r} -->
-<!-- # Define lab assistants -->
-<!-- assistant_names <- c( -->
-<!--   "Amy Du", "Bret Hatzinger", "Paul Botolin", "Jasmine Hartman Budnik", -->
-<!--   "Miranda Manfre", "Jason Sidrak", "Daniel Stokes", "Ryan Tseng", -->
-<!--   "Tristan Seawalt", "Christopher Hawryluk", "Lind" -->
-<!-- ) -->
+Key Points:
+* Function Used: `phase0_split_calls_to_lab_assistants_and_save_by_priority`
+* Input Parameters:
+* `assistant_names`: A vector of lab assistant names.
+* `split_column`: The column (e.g., insurance type) used to distribute cases.
+* `output_folder`: Directory where the assignments are saved.
+* `seed_value`: Ensures reproducibility.
+Output: Files saved for each assistant, detailing their assigned cases.
 
-<!-- # Assign cases and save -->
-<!-- split_calls_to_lab_assistants_and_save_by_priority( -->
-<!--   input_data_or_path = phase2_sample_surgeons_output, -->
-<!--   output_folder = "ortho_spine/data/caller_assignments", -->
-<!--   assistant_names = assistant_names, -->
-<!--   seed_value = 1978, -->
-<!--   complete_file_prefix = "complete_version_", -->
-<!--   split_file_prefix = "", -->
-<!--   recursive_create = TRUE, -->
-<!--   split_column = "insurance", -->
-<!--   priority_values = NULL -->
-<!-- ) -->
-<!-- ``` -->
+```{r}
+# Define lab assistants
+assistant_names <- c(
+  "Amy Du", "Bret Hatzinger", "Paul Botolin", "Jasmine Hartman Budnik",
+  "Miranda Manfre", "Jason Sidrak", "Daniel Stokes", "Ryan Tseng",
+  "Tristan Seawalt", "Christopher Hawryluk", "Lind"
+)
 
-<!-- ## Conclusion -->
-<!-- This vignette demonstrates how to: -->
+# Assign cases and save
+tyler::phase0_split_calls_to_lab_assistants_and_save_by_priority(
+  input_data_or_path = phase2_sample_surgeons_output,
+  output_folder = "inst/extdata/caller_assignments",
+  assistant_names = assistant_names,
+  seed_value = 1978,
+  complete_file_prefix = "complete_version_",
+  split_file_prefix = "",
+  recursive_create = TRUE,
+  split_column = "insurance",
+  priority_values = NULL
+)
+```
 
-<!-- * Load and process spine surgeon data. -->
-<!-- * Expand the dataset with multiple insurance scenarios. -->
-<!-- * Assign cases to lab assistants and save the results for further analysis. -->
-<!-- * Use this workflow to scale and manage physician assignments efficiently in your studies or projects. -->
+## Conclusion
+This vignette demonstrates a streamlined workflow for managing spine surgeon data, simulating real-world scenarios, and distributing workloads efficiently. Key takeaways include:
+
+* Data Loading and Cleaning: Standardizing and preparing datasets is critical for downstream analysis.
+* Dataset Expansion: Assigning multiple insurance scenarios to physicians enables robust testing and simulations.
+* Case Assignment: Distributing cases among lab assistants ensures fair and systematic workload management.
+
+Using this workflow, researchers can effectively scale and manage large datasets, ensuring reproducibility and efficiency in their projects.

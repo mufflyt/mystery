@@ -78,7 +78,7 @@ output_data <- geocode_unique_addresses(
 ```
 
 * Sometimes the data needs to have separate `lat` and `long` columns.  This code can do that:
-```
+```r
 geocoded_data1 <- geocoded_data %>%
         dplyr::mutate(lat = sf::st_coordinates(.)[, "Y"],
                long = sf::st_coordinates(.)[, "X"])

@@ -2,10 +2,11 @@
 library(testthat)
 library(ggplot2)
 library(logger)
-library(mockery)  # Add this line to load the mockery package
+library(mockery) # Add this line to load the mockery package
 
 # Sample plot for testing
-test_plot <- ggplot(mtcars, aes(mpg, wt)) + geom_point()
+test_plot <- ggplot(mtcars, aes(mpg, wt)) +
+  geom_point()
 
 # Begin tests
 test_that("Plot is saved successfully with specified parameters", {
@@ -20,17 +21,19 @@ test_that("Plot is saved successfully with specified parameters", {
   }
 
   # Call the save_plot function
-  save_plot(plot = test_plot,
-            file_name = file_name,
-            save_directory = temp_dir,
-            plot_width = 6,
-            plot_height = 4,
-            resolution_dpi = 300,
-            size_units = "in",
-            scale_factor = 1,
-            file_format = NULL,
-            background_color = "white",
-            verbose_output = FALSE)
+  save_plot(
+    plot = test_plot,
+    file_name = file_name,
+    save_directory = temp_dir,
+    plot_width = 6,
+    plot_height = 4,
+    resolution_dpi = 300,
+    size_units = "in",
+    scale_factor = 1,
+    file_format = NULL,
+    background_color = "white",
+    verbose_output = FALSE
+  )
 
   # Check if the file has been created
   expect_true(file.exists(full_path))
@@ -48,10 +51,12 @@ test_that("Function creates directory if it does not exist", {
   }
 
   # Call the save_plot function
-  save_plot(plot = test_plot,
-            file_name = file_name,
-            save_directory = temp_dir,
-            verbose_output = FALSE)
+  save_plot(
+    plot = test_plot,
+    file_name = file_name,
+    save_directory = temp_dir,
+    verbose_output = FALSE
+  )
 
   # Check if the directory and file have been created
   expect_true(dir.exists(temp_dir))
@@ -64,10 +69,12 @@ test_that("Function handles unsupported file extensions", {
 
   # Expect an error due to unsupported file extension
   expect_error(
-    save_plot(plot = test_plot,
-              file_name = file_name,
-              save_directory = temp_dir,
-              verbose_output = FALSE),
+    save_plot(
+      plot = test_plot,
+      file_name = file_name,
+      save_directory = temp_dir,
+      verbose_output = FALSE
+    ),
     "Unsupported file extension"
   )
 })
@@ -83,10 +90,12 @@ test_that("Function uses correct file format based on file extension", {
   }
 
   # Call the save_plot function
-  save_plot(plot = test_plot,
-            file_name = file_name,
-            save_directory = temp_dir,
-            verbose_output = FALSE)
+  save_plot(
+    plot = test_plot,
+    file_name = file_name,
+    save_directory = temp_dir,
+    verbose_output = FALSE
+  )
 
   # Check if the file has been created
   expect_true(file.exists(full_path))
@@ -103,14 +112,16 @@ test_that("Function throws error when required packages are missing", {
   }
 
   # Use mockery to stub requireNamespace within save_plot
-  stub(save_plot, 'requireNamespace', mock_requireNamespace)
+  stub(save_plot, "requireNamespace", mock_requireNamespace)
 
   # Expect an error due to missing 'logger' package
   expect_error(
-    save_plot(plot = test_plot,
-              file_name = "test_plot.png",
-              save_directory = tempdir(),
-              verbose_output = FALSE),
+    save_plot(
+      plot = test_plot,
+      file_name = "test_plot.png",
+      save_directory = tempdir(),
+      verbose_output = FALSE
+    ),
     "The logger package is required but is not installed"
   )
 })
@@ -128,11 +139,13 @@ test_that("Function handles custom background color", {
   }
 
   # Call the save_plot function with a custom background color
-  save_plot(plot = test_plot,
-            file_name = file_name,
-            save_directory = temp_dir,
-            background_color = "transparent",
-            verbose_output = FALSE)
+  save_plot(
+    plot = test_plot,
+    file_name = file_name,
+    save_directory = temp_dir,
+    background_color = "transparent",
+    verbose_output = FALSE
+  )
 
   # Check if the file has been created
   expect_true(file.exists(full_path))
@@ -149,11 +162,13 @@ test_that("Function scales the plot correctly", {
   }
 
   # Call the save_plot function with a scale factor
-  save_plot(plot = test_plot,
-            file_name = file_name,
-            save_directory = temp_dir,
-            scale_factor = 2,
-            verbose_output = FALSE)
+  save_plot(
+    plot = test_plot,
+    file_name = file_name,
+    save_directory = temp_dir,
+    scale_factor = 2,
+    verbose_output = FALSE
+  )
 
   # Check if the file has been created
   expect_true(file.exists(full_path))
@@ -207,4 +222,3 @@ test_that("Function uses default values when optional arguments are not specifie
   # Check if the file has been created
   expect_true(file.exists(full_path))
 })
-

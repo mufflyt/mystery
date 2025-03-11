@@ -1,0 +1,230 @@
+---
+title: "Analyzing Physician Demographics with tyler"
+author: "Tyler Muffly"
+date: "2024-01-20" 
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{analyzing_physician_demographics}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Introduction
+
+The `tyler` package provides tools for health services researchers to analyze physician demographics, specialties, and practice locations using public data sources. This vignette demonstrates a complete workflow for:
+
+1. Finding and validating physician NPI numbers
+2. Retrieving detailed physician information from multiple data sources 
+3. Analyzing practice settings and locations
+4. Enriching the data with demographic information
+
+## Setup
+
+```r
+library(tyler)
+library(dplyr)
+library(stringr)
+```
+
+## Example Dataset: ACOG Presidents
+
+For this demonstration, we'll analyze the demographics and practice characteristics of ACOG (American College of Obstetricians and Gynecologists) presidents. The package includes this dataset:
+
+```r
+data(acog_presidents)
+head(acog_presidents)
+```
+
+## 1. Finding NPI Numbers
+
+The first step is finding NPI numbers for our physicians:
+
+```r
+# Prepare input data
+input_presidents <- acog_presidents %>%
+  filter(!is.na(first) & !is.na(last)) %>%
+  select(first, last)
+
+# Search NPPES Registry
+npi_results <- phase0_search_batch_npi(
+  name_data = input_presidents,
+  max_results = 3
+)
+```
+
+### Filtering for Specialists
+
+We can filter the results to only include OBGYNs using taxonomy codes:
+
+```r
+# Get OBGYN taxonomy codes
+obgyn_taxonomy_codes <- taxonomy %>%
+  filter(str_detect(Classification, regex("Obstetrics|Gynecology", ignore_case = TRUE))) %>%
+  select(Code, Specialization)
+
+# Filter NPI results 
+npi_results_obgyn <- npi_results %>%
+  filter(taxonomies_code %in% obgyn_taxonomy_codes$Code) %>%
+  distinct(npi, .keep_all = TRUE)
+```
+
+## 2. Retrieving Detailed Provider Data 
+
+Next, we'll query the National Downloadable File for comprehensive provider information:
+
+```r
+NDF_data <- phase0_national_downloadable_file(
+  npi_numbers = npi_results_obgyn$npi,
+  batch_size = 10,
+  user_agent = "Researcher Name <email@institution.edu>"
+)
+```
+
+## 3. Enriching with Demographics
+
+The package provides functions to add demographic information:
+
+```r
+# Add predicted gender based on first names
+enriched_data <- phase0_genderize_physicians(
+  physician_data = NDF_data,
+  first_name_column = "NDF_first",
+  last_name_column = "NDF_last"
+)
+
+# Classify practice settings
+enriched_data <- phase0_create_academic_column(
+  enriched_data, 
+  address_columns = c("NDF_addresses_address_1")
+)
+```
+
+## 4. Geocoding Practice Locations
+
+For spatial analysis, we can geocode practice addresses:
+
+```r
+# Requires Google Maps API key
+geocoded_data <- phase0_geocode(
+  address_table = enriched_data,
+  api_key = Sys.getenv("GOOGLE_MAPS_API_KEY"),
+  address_column_names = c(
+    "addresses_address_1", "addresses_city", 
+    "addresses_state", "addresses_postal_code"
+  )
+)
+```
+
+## Output Data Structure
+
+The final dataset includes rich physician information:
+
+- **Demographics**: Gender, estimated age range
+- **Credentials**: MD/DO status, specialties, board certifications  
+- **Practice**: Academic vs private setting, location details
+- **Geographic**: Coordinates, rurality indicators
+- **Medicare/Medicaid**: Program participation, expansion state status
+
+## Best Practices
+
+1. Always provide a descriptive user agent when querying APIs
+2. Handle rate limits appropriately (built into package functions)
+3. Validate NPI numbers before detailed lookups
+4. Consider privacy implications when working with provider data
+5. Document data sources and timestamps in your analysis
+
+## Detailed Data Source Information
+
+### NPPES Registry
+
+The National Plan and Provider Enumeration System (NPPES) is the authoritative registry for National Provider Identifier (NPI) numbers in the United States. 
+
+#### NPPES Data Structure
+- **NPI Types**: 
+  - Type 1: Individual providers
+  - Type 2: Organizational providers
+- **Core Data Elements**:
+  - Basic demographics (name, gender)
+  - Practice locations
+  - Taxonomy codes (specialties)
+  - Contact information
+
+#### API Query Details
+The `phase0_search_batch_npi()` function constructs API queries like:
+```r
+# Example API endpoint structure
+https://npiregistry.cms.hhs.gov/api/?version=2.1
+  &first_name=JANE
+  &last_name=DOE
+  &limit=1
+  &skip=0
+```
+
+### National Downloadable File (NDF)
+
+The CMS National Downloadable File provides comprehensive Medicare provider data, updated quarterly.
+
+#### NDF Data Structure
+The file contains multiple related tables:
+
+1. **Basic Provider Information**
+   - NPI
+   - Name and credentials
+   - Primary specialty
+   - Gender
+   - Medical school
+
+2. **Practice Locations**
+   - Multiple addresses per provider
+   - Practice type indicators
+   - Medicare enrollment status
+
+3. **Group Affiliations**
+   - Organization relationships
+   - Group practice indicators
+
+4. **Medicare Program Information**
+   - Participation status
+   - Assignment indicators
+   - EHR program participation
+
+#### Query Process
+The `phase0_national_downloadable_file()` function:
+
+1. **Authentication and Setup**
+   ```r
+   # Function requires a user agent for tracking
+   user_agent <- httr::user_agent(user_agent_string)
+   
+   # Configures API connection
+   base_url <- "https://data.cms.gov/provider-data/api/1/datastore/sql"
+   ```
+
+2. **Query Construction**
+   ```r
+   # Example query structure
+   query <- sprintf(
+     "SELECT * FROM provider_data WHERE npi IN (%s) AND type = 'individual'",
+     paste(npi_numbers, collapse = ",")
+   )
+   ```
+
+#### Rate Limiting and Quotas
+
+- **NPPES**: 
+  - 20 requests per second
+  - No daily limit
+  - IP-based rate limiting
+
+- **NDF**: 
+  - 5,000 requests per hour
+  - Token-based authentication
+  - Requires user agent identification
+
+The package automatically handles these limits with exponential backoff and request batching.
+
+## Further Resources
+
+- [NPPES NPI Registry](https://npiregistry.cms.hhs.gov/)
+- [CMS Provider Data](https://data.cms.gov/provider-data/)
+- [Package Documentation](https://github.com/mufflyt/tyler)

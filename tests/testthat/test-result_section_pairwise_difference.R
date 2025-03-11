@@ -44,7 +44,9 @@ test_that("result_section_pairwise_difference calculates correct medians and tre
 
   # Check if medians match
   for (group in unique(test_data$scenario)) {
-    computed_median <- medians %>% dplyr::filter(scenario == group) %>% dplyr::pull(Median)
+    computed_median <- medians %>%
+      dplyr::filter(scenario == group) %>%
+      dplyr::pull(Median)
     expect_equal(
       result$pairwise_trends %>%
         dplyr::filter(Group1 == group | Group2 == group) %>%
@@ -96,7 +98,7 @@ test_that("result_section_pairwise_difference handles non-numeric variables grac
   expect_error(
     result_section_pairwise_difference(
       scenario_data = test_data,
-      numeric_var = "scenario",  # Non-numeric variable
+      numeric_var = "scenario", # Non-numeric variable
       x_var = "measurement"
     ),
     "not numeric"

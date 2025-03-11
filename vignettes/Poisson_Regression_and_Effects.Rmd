@@ -48,9 +48,10 @@ df <- data.frame(
 
 ```{r knitr options, include=FALSE, collapse = TRUE, warning = FALSE}
 knitr::opts_chunk$set(
-  message=FALSE, echo=TRUE, include = TRUE, fig.width = 6, fig.height = 4, progress = TRUE, warning = FALSE, collapse = FALSE)
+  message = FALSE, echo = TRUE, include = TRUE, fig.width = 6, fig.height = 4, progress = TRUE, warning = FALSE, collapse = FALSE
+)
 
-options(scipen=999)
+options(scipen = 999)
 ```
 Here, we've simulated data where the outcome variable, business_days_until_appointment, follows a Poisson distribution, a suitable model for count data like this. The insurance column includes two types of insurance, Medicaid and Blue Cross/Blue Shield, while the scenario column includes different medical situations.
 

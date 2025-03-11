@@ -98,7 +98,7 @@ geocoded_data1 <- geocoded_data %>%
 readr::write_csv(geocoded_data1, "/NPPES_November_filtered_data_for_geocoding_geocoded_addresses_not_sf.csv")
 ```
 
-
+# Thi was an OLD way of doing things:  
 We do a join between the postmastr file `postmastr_clinician_data.csv` and the geocoded results file `geocoded_data_to_match_house_number`.  This is because the HERE API does not allow you to pass a master ID number into the API and all the data is washed out during geocoding.  The `postmastr` package allows you to parse the addresses on the `clinician_data` so that we can match the addresses together based on: state, house number, and zip code.  
 
 This was all done in exploratory.io and then read back into `Gathering data.R`.  

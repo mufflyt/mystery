@@ -68,8 +68,8 @@ create_temp_csv <- function(data, file_name = "temp_npi_data.csv") {
 # Tests
 test_that("Processes data frame input correctly", {
   cat("Running test: Processes data frame input correctly\n")
-  mockery::stub(search_and_process_npi, 'npi::npi_search', mock_npi_search)
-  mockery::stub(search_and_process_npi, 'npi::npi_flatten', mock_npi_flatten)
+  mockery::stub(search_and_process_npi, "npi::npi_search", mock_npi_search)
+  mockery::stub(search_and_process_npi, "npi::npi_flatten", mock_npi_flatten)
 
   result <- search_and_process_npi(sample_data)
 
@@ -90,11 +90,11 @@ test_that("Handles empty input data frame", {
 test_that("Handles invalid NPIs gracefully", {
   cat("Running test: Handles invalid NPIs gracefully\n")
   invalid_data <- data.frame(first = c("Invalid"), last = c("Name"), stringsAsFactors = FALSE)
-  mockery::stub(search_and_process_npi, 'npi::npi_search', function(first_name, last_name) {
+  mockery::stub(search_and_process_npi, "npi::npi_search", function(first_name, last_name) {
     cat("Mock search for invalid NPI\n")
     return(NULL)
   })
-  mockery::stub(search_and_process_npi, 'npi::npi_flatten', function(npi_obj, cols) {
+  mockery::stub(search_and_process_npi, "npi::npi_flatten", function(npi_obj, cols) {
     cat("Mock flatten for invalid NPI object\n")
     return(NULL)
   })
@@ -114,8 +114,8 @@ test_that("Processes various names correctly", {
     list(first = "Invalid", last = "Name")
   )
 
-  mockery::stub(search_and_process_npi, 'npi::npi_search', mock_npi_search)
-  mockery::stub(search_and_process_npi, 'npi::npi_flatten', mock_npi_flatten)
+  mockery::stub(search_and_process_npi, "npi::npi_search", mock_npi_search)
+  mockery::stub(search_and_process_npi, "npi::npi_flatten", mock_npi_flatten)
 
   for (test_case in test_cases) {
     data <- data.frame(first = test_case$first, last = test_case$last, stringsAsFactors = FALSE)
@@ -141,8 +141,8 @@ test_that("Handles large datasets efficiently", {
     stringsAsFactors = FALSE
   )
 
-  mockery::stub(search_and_process_npi, 'npi::npi_search', mock_npi_search)
-  mockery::stub(search_and_process_npi, 'npi::npi_flatten', mock_npi_flatten)
+  mockery::stub(search_and_process_npi, "npi::npi_search", mock_npi_search)
+  mockery::stub(search_and_process_npi, "npi::npi_flatten", mock_npi_flatten)
 
   start_time <- Sys.time()
   result <- search_and_process_npi(large_data)
@@ -174,8 +174,8 @@ test_that("Processes various names correctly", {
   )
 
   # Stub the search and flatten functions with mock versions
-  mockery::stub(search_and_process_npi, 'npi::npi_search', mock_npi_search)
-  mockery::stub(search_and_process_npi, 'npi::npi_flatten', mock_npi_flatten)
+  mockery::stub(search_and_process_npi, "npi::npi_search", mock_npi_search)
+  mockery::stub(search_and_process_npi, "npi::npi_flatten", mock_npi_flatten)
 
   # Iterate over each test case
   for (test_case in test_cases) {
@@ -194,6 +194,3 @@ test_that("Processes various names correctly", {
     }
   }
 })
-
-
-
