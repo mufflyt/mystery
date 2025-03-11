@@ -111,4 +111,3 @@ test_that("Function returns accurate failing and successful combination counts",
 
   logger::log_info("Combination count test passed.")
 })
-

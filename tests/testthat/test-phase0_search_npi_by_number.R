@@ -15,7 +15,7 @@ mock_npi_search <- function(number) {
       basic = list(tibble::tibble(npi = number, name = paste0("Dr. ", number))),
       taxonomies = list(tibble::tibble(code = "207R00000X", desc = "Internal Medicine"))
     ),
-    class = "npi_results"  # Assign the class `npi_results`
+    class = "npi_results" # Assign the class `npi_results`
   )
 }
 
@@ -66,7 +66,7 @@ test_that("Filters invalid NPIs", {
 # Test: Function handles empty valid NPI list gracefully
 test_that("Handles empty valid NPI list gracefully", {
   empty_df <- tibble(npi = c(NA, "invalidNPI"))
-  mockery::stub(phase0_search_npi_by_number, 'npi::npi_search', mock_npi_search)
+  mockery::stub(phase0_search_npi_by_number, "npi::npi_search", mock_npi_search)
 
   result <- phase0_search_npi_by_number(empty_df)
   expect_true(nrow(result) == 0)

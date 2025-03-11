@@ -4,7 +4,7 @@ library(readr)
 library(dplyr)
 library(mockery)
 library(purrr)
-#library(tidyr)
+# library(tidyr)
 library(conflicted)
 
 # Resolve conflicts for the 'matches' function
@@ -55,8 +55,8 @@ mock_validate_and_remove_invalid_npi <- function(df) {
 # Tests
 test_that("Retrieves clinician data for valid NPIs", {
   temp_csv <- create_temp_csv(sample_data_valid)
-  mockery::stub(retrieve_clinician_data, 'provider::clinicians', mock_clinicians)
-  mockery::stub(retrieve_clinician_data, 'validate_and_remove_invalid_npi', mock_validate_and_remove_invalid_npi)
+  mockery::stub(retrieve_clinician_data, "provider::clinicians", mock_clinicians)
+  mockery::stub(retrieve_clinician_data, "validate_and_remove_invalid_npi", mock_validate_and_remove_invalid_npi)
   result <- retrieve_clinician_data(temp_csv)
   expect_equal(nrow(result), 2) # Only valid NPIs with clinician data should remain
   expect_true("name" %in% colnames(result))
@@ -66,16 +66,16 @@ test_that("Retrieves clinician data for valid NPIs", {
 
 test_that("Handles invalid NPIs", {
   temp_csv <- create_temp_csv(sample_data_invalid)
-  mockery::stub(retrieve_clinician_data, 'provider::clinicians', mock_clinicians)
-  mockery::stub(retrieve_clinician_data, 'validate_and_remove_invalid_npi', mock_validate_and_remove_invalid_npi)
+  mockery::stub(retrieve_clinician_data, "provider::clinicians", mock_clinicians)
+  mockery::stub(retrieve_clinician_data, "validate_and_remove_invalid_npi", mock_validate_and_remove_invalid_npi)
   result <- retrieve_clinician_data(temp_csv)
   expect_equal(nrow(result), 0) # No valid NPIs should remain
 })
 
 test_that("Handles mixed valid and invalid NPIs", {
   temp_csv <- create_temp_csv(sample_data_mixed)
-  mockery::stub(retrieve_clinician_data, 'provider::clinicians', mock_clinicians)
-  mockery::stub(retrieve_clinician_data, 'validate_and_remove_invalid_npi', mock_validate_and_remove_invalid_npi)
+  mockery::stub(retrieve_clinician_data, "provider::clinicians", mock_clinicians)
+  mockery::stub(retrieve_clinician_data, "validate_and_remove_invalid_npi", mock_validate_and_remove_invalid_npi)
   result <- retrieve_clinician_data(temp_csv)
   expect_equal(nrow(result), 2) # Only valid NPIs with clinician data should remain
   expect_true("name" %in% colnames(result))
@@ -84,8 +84,8 @@ test_that("Handles mixed valid and invalid NPIs", {
 })
 
 test_that("Handles dataframe input correctly", {
-  mockery::stub(retrieve_clinician_data, 'provider::clinicians', mock_clinicians)
-  mockery::stub(retrieve_clinician_data, 'validate_and_remove_invalid_npi', mock_validate_and_remove_invalid_npi)
+  mockery::stub(retrieve_clinician_data, "provider::clinicians", mock_clinicians)
+  mockery::stub(retrieve_clinician_data, "validate_and_remove_invalid_npi", mock_validate_and_remove_invalid_npi)
   result <- retrieve_clinician_data(sample_data_mixed)
   expect_equal(nrow(result), 2) # Only valid NPIs with clinician data should remain
   expect_true("name" %in% colnames(result))

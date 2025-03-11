@@ -53,8 +53,10 @@ test_that("Function assigns cases in order to generalists and all cases to speci
   data <- data.frame(
     city = rep("CityA", 6),
     state_code = rep("State1", 6),
-    specialty_primary = c("General Dermatology", "General Dermatology", "General Dermatology",
-                          "Pediatric Dermatology", "Pediatric Dermatology", "Pediatric Dermatology"),
+    specialty_primary = c(
+      "General Dermatology", "General Dermatology", "General Dermatology",
+      "Pediatric Dermatology", "Pediatric Dermatology", "Pediatric Dermatology"
+    ),
     stringsAsFactors = FALSE
   )
 

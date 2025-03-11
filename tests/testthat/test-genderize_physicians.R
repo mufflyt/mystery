@@ -19,4 +19,3 @@ sample_data <- data.frame(
   last_name = c("Doe", "Smith", "Brown", "Wilson", "Taylor"),
   stringsAsFactors = FALSE
 )
-

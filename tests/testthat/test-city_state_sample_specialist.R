@@ -9,14 +9,14 @@ test_data <- data.frame(
   state_code = rep(c("SC", "NY", "CA"), each = 10),
   specialty_primary = c(
     # Abbeville, SC
-    rep("General Dermatology", 5),    # 5 General Dermatology
-    rep(NA, 5),                       # 5 missing specialties
+    rep("General Dermatology", 5), # 5 General Dermatology
+    rep(NA, 5), # 5 missing specialties
     # New York, NY
-    rep("General Dermatology", 3),    # 3 General Dermatology
-    rep("Pediatric Dermatology", 7),  # 7 Pediatric Dermatology
+    rep("General Dermatology", 3), # 3 General Dermatology
+    rep("Pediatric Dermatology", 7), # 7 Pediatric Dermatology
     # Los Angeles, CA
-    rep("General Dermatology", 4),    # 4 General Dermatology
-    rep("Pediatric Dermatology", 6)   # 6 Pediatric Dermatology
+    rep("General Dermatology", 4), # 4 General Dermatology
+    rep("Pediatric Dermatology", 6) # 6 Pediatric Dermatology
   ),
   phone_number = c(
     # Abbeville, SC - All have the same phone number

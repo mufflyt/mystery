@@ -69,7 +69,7 @@ test_that("Retrieves Census data for valid FIPS codes", {
   valid_fips <- c("01", "02")
 
   # Stub the getCensus function
-  stub(get_census_data, 'censusapi::getCensus', mock_getCensus)
+  stub(get_census_data, "censusapi::getCensus", mock_getCensus)
 
   result <- get_census_data(valid_fips)
 
@@ -92,7 +92,7 @@ test_that("Handles invalid FIPS codes gracefully", {
   invalid_fips <- c("ZZ", "XX")
 
   # Stub the getCensus function to return NULL for invalid FIPS
-  stub(get_census_data, 'censusapi::getCensus', function(...) NULL)
+  stub(get_census_data, "censusapi::getCensus", function(...) NULL)
 
   result <- get_census_data(invalid_fips)
 

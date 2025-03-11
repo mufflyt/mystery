@@ -29,19 +29,35 @@ test_that("most_common_gender_training_academic handles large datasets correctly
   )
 
   # Calculate expected result
-  gender_info <- df %>% filter(!is.na(gender)) %>% count(gender) %>% arrange(desc(n), gender) %>% slice(1)
+  gender_info <- df %>%
+    filter(!is.na(gender)) %>%
+    count(gender) %>%
+    arrange(desc(n), gender) %>%
+    slice(1)
   most_gender <- tolower(gender_info$gender)
   proportion_gender <- round((gender_info$n / nrow(df)) * 100, 1)
 
-  specialty_info <- df %>% filter(!is.na(specialty)) %>% count(specialty) %>% arrange(desc(n), specialty) %>% slice(1)
+  specialty_info <- df %>%
+    filter(!is.na(specialty)) %>%
+    count(specialty) %>%
+    arrange(desc(n), specialty) %>%
+    slice(1)
   most_specialty <- specialty_info$specialty
   proportion_specialty <- round((specialty_info$n / nrow(df)) * 100, 1)
 
-  training_info <- df %>% filter(!is.na(Provider.Credential.Text)) %>% count(Provider.Credential.Text) %>% arrange(desc(n), Provider.Credential.Text) %>% slice(1)
+  training_info <- df %>%
+    filter(!is.na(Provider.Credential.Text)) %>%
+    count(Provider.Credential.Text) %>%
+    arrange(desc(n), Provider.Credential.Text) %>%
+    slice(1)
   most_training <- training_info$Provider.Credential.Text
   proportion_training <- round((training_info$n / nrow(df)) * 100, 1)
 
-  academic_info <- df %>% filter(!is.na(academic_affiliation)) %>% count(academic_affiliation) %>% arrange(desc(n), academic_affiliation) %>% slice(1)
+  academic_info <- df %>%
+    filter(!is.na(academic_affiliation)) %>%
+    count(academic_affiliation) %>%
+    arrange(desc(n), academic_affiliation) %>%
+    slice(1)
   most_academic <- tolower(academic_info$academic_affiliation)
   proportion_academic <- round((academic_info$n / nrow(df)) * 100, 1)
 
@@ -57,4 +73,3 @@ test_that("most_common_gender_training_academic handles large datasets correctly
   result <- most_common_gender_training_academic(df)
   expect_equal(result, expected)
 })
-

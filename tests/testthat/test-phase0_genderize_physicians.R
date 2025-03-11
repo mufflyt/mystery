@@ -39,9 +39,12 @@ test_that("Function logs correct messages during processing", {
   write.csv(data.frame(first_name = c("Chris", "Pat")), input_file, row.names = FALSE)
 
   # Capture logs during execution
-  log_output <- capture.output({
-    result <- try(phase0_genderize_physicians(input_file, output_dir = tempdir()))
-  }, type = "message")
+  log_output <- capture.output(
+    {
+      result <- try(phase0_genderize_physicians(input_file, output_dir = tempdir()))
+    },
+    type = "message"
+  )
 
   # Check for specific log messages
   expect_true(any(grepl("Starting genderize_physicians function", log_output)))

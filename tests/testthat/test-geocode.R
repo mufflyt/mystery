@@ -5,14 +5,16 @@ library(mockery)
 
 # Mock the ggmap::geocode function for testing
 mock_geocode <- function(address, key) {
-  return(data.frame(lat = 37.7749, lon = -122.4194))  # Mock coordinates (San Francisco, CA)
+  return(data.frame(lat = 37.7749, lon = -122.4194)) # Mock coordinates (San Francisco, CA)
 }
 
 # Sample data for testing
 sample_data <- data.frame(
-  address = c("1600 Amphitheatre Parkway, Mountain View, CA",
-              "1 Infinite Loop, Cupertino, CA",
-              "1601 Willow Road, Menlo Park, CA"),
+  address = c(
+    "1600 Amphitheatre Parkway, Mountain View, CA",
+    "1 Infinite Loop, Cupertino, CA",
+    "1601 Willow Road, Menlo Park, CA"
+  ),
   stringsAsFactors = FALSE
 )
 
@@ -31,7 +33,7 @@ test_that("Reads input file correctly", {
 
 # Test if the function handles missing file correctly
 test_that("Handles missing file correctly", {
-  mockery::stub(phase0_geocode, 'file.exists', function(file) FALSE)
+  mockery::stub(phase0_geocode, "file.exists", function(file) FALSE)
   expect_error(phase0_geocode("nonexistent_file.csv", "fake_api_key"), "Input file not found.")
 })
 

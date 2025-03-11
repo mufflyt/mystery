@@ -109,7 +109,7 @@ test_that("Final arrangement removes temporary columns and is ordered by state_c
 
   arranged <- arrange_final_columns(arrange_data)
 
-  expect_false("temp_id" %in% colnames(arranged))  # No additional message needed
+  expect_false("temp_id" %in% colnames(arranged)) # No additional message needed
   expect_equal(arranged$state_code, c("CA", "CO", "NY"), info = "Data should be ordered by state_code")
   expect_equal(arranged$npi, c(3, 1, 2), info = "Data should be ordered by NPI within state_code")
 
@@ -117,7 +117,7 @@ test_that("Final arrangement removes temporary columns and is ordered by state_c
 })
 
 
-#passed
+# passed
 test_that("Final arrangement removes temporary columns and is ordered by state_code and NPI", {
   # Sample data for arranging columns
   arrange_data <- tibble::tibble(

@@ -55,10 +55,11 @@ create_and_plot_interaction <- function(data_path, response_variable, variable_o
   # Fit the model with interaction
   cat("Fitting the model...\n")
   glmer_model <- lme4::glmer(model_formula,
-                             data = data,
-                             family = poisson(link = "log"),
-                             nAGQ = 0,
-                             verbose = 0L)
+    data = data,
+    family = poisson(link = "log"),
+    nAGQ = 0,
+    verbose = 0L
+  )
   cat("Model fitted successfully.\n\n")
 
   # Log model summary
@@ -68,12 +69,15 @@ create_and_plot_interaction <- function(data_path, response_variable, variable_o
 
   # Create the effects plot
   cat("Creating effects plot...\n")
-  eff <- tryCatch({
-    effects::allEffects(glmer_model, typical = mean, xlevels = 20)
-  }, error = function(e) {
-    cat("Error creating effects plot:", e$message, "\n")
-    return(NULL)
-  })
+  eff <- tryCatch(
+    {
+      effects::allEffects(glmer_model, typical = mean, xlevels = 20)
+    },
+    error = function(e) {
+      cat("Error creating effects plot:", e$message, "\n")
+      return(NULL)
+    }
+  )
 
   if (is.null(eff)) {
     cat("Effects plot could not be created. Falling back to manual effects calculation...\n")
@@ -81,7 +85,7 @@ create_and_plot_interaction <- function(data_path, response_variable, variable_o
     # Manual effects calculation
     effect_data <- data %>%
       group_by(int_var, var_interest) %>%
-      summarise(mean_pred = mean(response_var, na.rm = TRUE), .groups = 'drop')
+      summarise(mean_pred = mean(response_var, na.rm = TRUE), .groups = "drop")
 
     cat("Manual effects calculation successful.\n")
 

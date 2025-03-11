@@ -59,9 +59,11 @@ test_that("Single property with multiple values retrieves relevant data", {
   expect_true(is.data.frame(result), "Result should be a data frame")
   expect_true(ncol(result) > 0, "Data frame should have columns")
   expect_true(nrow(result) > 0, "Data frame should have rows")
-  expect_true(any(result$pri_spec == "OBSTETRICS/GYNECOLOGY") &&
-                any(result$pri_spec == "OTOLARYNGOLOGY"),
-              "Data should contain specified values")
+  expect_true(
+    any(result$pri_spec == "OBSTETRICS/GYNECOLOGY") &&
+      any(result$pri_spec == "OTOLARYNGOLOGY"),
+    "Data should contain specified values"
+  )
   logger::log_info("Single property, multiple values test passed.")
 })
 

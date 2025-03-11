@@ -10,12 +10,12 @@ test_that("Handles no matching data", {
   taxonomy <- "Nonexistent Taxonomy"
 
   # Stub the npi_search and npi_flatten functions
-  stub(search_by_taxonomy, 'npi::npi_search', function(...) {
+  stub(search_by_taxonomy, "npi::npi_search", function(...) {
     cat("Mock npi_search called\n")
     NULL
   })
 
-  stub(search_by_taxonomy, 'npi::npi_flatten', function(result) {
+  stub(search_by_taxonomy, "npi::npi_flatten", function(result) {
     cat("Mock npi_flatten called\n")
     result
   })
@@ -51,7 +51,7 @@ test_that("Function validates input columns", {
 # Test: Processes a valid dataframe correctly
 test_that("Processes valid dataframe correctly", {
   # Mock the npi_search function
-  mockery::stub(phase0_search_batch_npi, 'npi::npi_search', mock_npi_search)
+  mockery::stub(phase0_search_batch_npi, "npi::npi_search", mock_npi_search)
 
   result <- phase0_search_batch_npi(sample_name_data, max_results = 5)
   expect_true(nrow(result) > 0)
@@ -64,7 +64,7 @@ test_that("Processes valid dataframe correctly", {
 # Test: Saves the output file correctly when csv_path is specified
 test_that("Saves output file correctly when csv_path is specified", {
   temp_file <- tempfile(fileext = ".csv")
-  mockery::stub(phase0_search_batch_npi, 'npi::npi_search', mock_npi_search)
+  mockery::stub(phase0_search_batch_npi, "npi::npi_search", mock_npi_search)
 
   # Run function with file-saving enabled
   result <- phase0_search_batch_npi(sample_name_data, max_results = 5, csv_path = temp_file)

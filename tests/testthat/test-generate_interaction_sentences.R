@@ -7,10 +7,10 @@ library(testthat)
 # Create synthetic data for testing
 set.seed(123)
 df3_filtered <- data.frame(
-  business_days_until_appointment = rpois(200, lambda = 15),  # Poisson-distributed waiting times
+  business_days_until_appointment = rpois(200, lambda = 15), # Poisson-distributed waiting times
   scenario = factor(sample(c("HIP scenario", "KNEE scenario", "SHOULDER scenario"), 200, replace = TRUE)),
   insurance = factor(sample(c("Blue Cross/Blue Shield", "Medicaid"), 200, replace = TRUE)),
-  last = factor(rep(1:20, each = 10))  # Random effect grouping variable
+  last = factor(rep(1:20, each = 10)) # Random effect grouping variable
 )
 
 # Define a helper function to create the interaction model
@@ -32,7 +32,6 @@ generate_interaction_sentences <- function(model, factor1, factor2, output_forma
 
 # Run tests inside the test_that() block
 test_that("Function handles unsupported output formats correctly", {
-
   # Create the interaction model inside the test
   interaction_model <- create_interaction_model(df3_filtered)
 
@@ -45,7 +44,6 @@ test_that("Function handles unsupported output formats correctly", {
 
 # Additional test for supported output format
 test_that("Function handles supported output formats correctly", {
-
   # Create the interaction model inside the test
   interaction_model <- create_interaction_model(df3_filtered)
 

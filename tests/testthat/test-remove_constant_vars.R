@@ -61,4 +61,3 @@ test_that("Data frame with all constant variables is empty afterwards", {
   # Check that all columns are removed
   expect_equal(ncol(result), 0)
 })
-

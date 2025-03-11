@@ -34,7 +34,7 @@ test_that("Function samples generalists and specialists correctly by city-state"
   if (nrow(result) > 0) {
     sampled_groups <- result %>%
       dplyr::group_by(city, state_code, specialty_primary) %>%
-      dplyr::summarize(count = n(), .groups = 'drop')
+      dplyr::summarize(count = n(), .groups = "drop")
 
     expect_true(all(sampled_groups$count <= 2), info = "Each sampled group should have at most the specified sample size")
   } else {
@@ -88,7 +88,7 @@ test_that("Function respects same_phone_number parameter", {
   if (nrow(result) > 0) {
     expect_true(length(unique(result$phone_number)) == 1, "Should only sample rows with the same phone number")
   } else {
-    expect_equal(nrow(result), 0)  # No message in expect_equal
+    expect_equal(nrow(result), 0) # No message in expect_equal
   }
 
   logger::log_info("Same phone number sampling test passed.")
@@ -124,11 +124,10 @@ test_that("Function correctly logs input parameters and writes CSV output", {
     expect_true("city" %in% colnames(csv_result), "CSV should contain 'city' column")
     expect_true(nrow(csv_result) > 0, "CSV file should have rows")
   } else {
-    expect_equal(nrow(result), 0)  # No message in expect_equal
+    expect_equal(nrow(result), 0) # No message in expect_equal
   }
 
   # Clean up
   unlink(temp_output_path)
   logger::log_info("CSV output logging test passed.")
 })
-

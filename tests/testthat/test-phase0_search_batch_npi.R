@@ -31,7 +31,7 @@ test_that("Function validates input columns", {
 
 # Test that the function processes a valid dataframe correctly
 test_that("Processes valid dataframe correctly", {
-  mockery::stub(phase0_search_batch_npi, 'npi::npi_search', mock_npi_search)
+  mockery::stub(phase0_search_batch_npi, "npi::npi_search", mock_npi_search)
   result <- phase0_search_batch_npi(sample_names, limit = 5)
   expect_true(nrow(result) > 0)
   expect_true("npi" %in% colnames(result))
@@ -42,7 +42,7 @@ test_that("Processes valid dataframe correctly", {
 # Test if the function saves the output file correctly when write_csv_path is specified
 test_that("Saves output file correctly when write_csv_path is specified", {
   temp_file <- tempfile(fileext = ".csv")
-  mockery::stub(phase0_search_batch_npi, 'npi::npi_search', mock_npi_search)
+  mockery::stub(phase0_search_batch_npi, "npi::npi_search", mock_npi_search)
 
   # Run function with file-saving enabled
   result <- phase0_search_batch_npi(sample_names, limit = 5, write_csv_path = temp_file)
@@ -73,4 +73,3 @@ test_that("Saves output file correctly when write_csv_path is specified", {
 #   expect_error_free(result <- phase0_search_batch_npi(sample_names, limit = 5))
 #   expect_true(nrow(result) == 0)
 # })
-
