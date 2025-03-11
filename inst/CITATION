@@ -1,0 +1,8 @@
+citation <- bibentry(
+  bibtype = "Manual",
+  title = "Tyler: A Package for XYZ",
+  author = c(person("Tyler", "Muffly"), person("Coauthor", "Name")),
+  year = "2025",
+  note = "Version 1.2.0",
+  url = "https://www.github.com/mufflyt/tyler"
+)

@@ -56,7 +56,7 @@ income_data <- income_data %>%
   dplyr::mutate(
     state = case_when(
       state %in% state.abb ~ state.name[match(state, state.abb)], # US state abbreviations
-      state %in% names(territory_map) ~ territory_map[state],    # Non-US territories
+      state %in% names(territory_map) ~ territory_map[state], # Non-US territories
       TRUE ~ state # Unchanged if no match
     )
   )
@@ -70,19 +70,21 @@ income_data <- income_data %>%
 log_info("Adding metadata columns...")
 income_data <- income_data %>%
   dplyr::mutate(
-    date_time_created = Sys.time(),  # Add the date and time column
-    survey = survey                  # Add the survey column
+    date_time_created = Sys.time(), # Add the date and time column
+    survey = survey # Add the survey column
   ) %>%
-  dplyr::select(-year, everything(), year)  # Move year to the end
+  dplyr::select(-year, everything(), year) # Move year to the end
 
 # Step 7: Validate that the final dataset has the necessary columns
 required_columns <- c("zip_code", "state", "median_income", "year", "date_time_created", "survey")
 if (!all(required_columns %in% colnames(household_income))) {
-  stop("The final income data is missing required columns: ",
-       paste(setdiff(required_columns, colnames(household_income)), collapse = ", "))
+  stop(
+    "The final income data is missing required columns: ",
+    paste(setdiff(required_columns, colnames(household_income)), collapse = ", ")
+  )
 }
 
 # Print a preview of the dataset
 print(head(household_income))
 
-#readr::write_rds(income_data, "/Users/tylermuffly/Dropbox (Personal)/Mystery shopper/mystery_shopper/data/reference/income_data_2022.rds")
+# readr::write_rds(income_data, "/Users/tylermuffly/Dropbox (Personal)/Mystery shopper/mystery_shopper/data/reference/income_data_2022.rds")

@@ -2,7 +2,7 @@ library(tidycensus)
 library(dplyr)
 library(tidyr)
 
-#census_api_key("your_api_key", install = TRUE)
+# census_api_key("your_api_key", install = TRUE)
 
 year <- 2022
 survey <- "acs5"
@@ -14,7 +14,7 @@ men_and_women_by_zip <- get_acs(
     total_men = "B01001_002E",
     total_women = "B01001_026E"
   ),
-  year = year,  # Replace with desired year
+  year = year, # Replace with desired year
   survey = survey
 ) %>%
   # Reshape the data for a cleaner format
@@ -27,12 +27,13 @@ men_and_women_by_zip <- get_acs(
   )
 
 men_and_women_by_zip <- men_and_women_by_zip %>%
-  mutate(total_population = total_men + total_women,
-         year = year,
-         survey = survey,
-         date_time_created = Sys.time(),
-         acs_codes = "Men: B01001_002, Women: B01001_026")
+  mutate(
+    total_population = total_men + total_women,
+    year = year,
+    survey = survey,
+    date_time_created = Sys.time(),
+    acs_codes = "Men: B01001_002, Women: B01001_026"
+  )
 
 # Check the dataset
 head(men_and_women_by_zip)
-

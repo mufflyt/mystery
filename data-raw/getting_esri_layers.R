@@ -3,7 +3,7 @@ install_github("yonghah/esri2sf")
 library("esri2sf")
 
 # USE THIS FOR SEARCH
-#https://www.arcgis.com/home/search.html?restrict=false&sortField=relevance&sortOrder=desc#content
+# https://www.arcgis.com/home/search.html?restrict=false&sortField=relevance&sortOrder=desc#content
 # https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services
 
 # RUCA
@@ -86,7 +86,7 @@ sf::st_write(df, "data-raw/ruca_from_esri.shp")
 # The estimate is controlled. A statistical test for sampling variability is not appropriate.
 # The data for this geographic area cannot be displayed because the number of sample cases is too small.
 url <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/arcgis/rest/services/ACS_Health_Insurance_by_Age_by_Race_Boundaries/FeatureServer/1"
-df<- esri2sf(url)
+df <- esri2sf(url)
 df
 plot(df)
 
@@ -95,7 +95,7 @@ plot(df)
 # https://www.arcgis.com/home/item.html?id=cab3fe0ee8304888a47a58355a472904
 
 url <- "https://services.arcgis.com/P3ePLMYs2RVChkJx/arcgis/rest/services/ACS_Median_Income_by_Race_and_Age_Selp_Emp_Centroids/FeatureServer/1"
-df<- esri2sf(url)
+df <- esri2sf(url)
 df
 plot(df)
 
@@ -104,7 +104,7 @@ plot(df)
 # https://www.arcgis.com/home/item.html?id=4ae399a6db4944998812765397e72c5e
 # No hospital names just the lat and long.
 url <- "https://services2.arcgis.com/FiaPA4ga0iQKduv3/arcgis/rest/services/Medicare_Hospitals/FeatureServer/0"
-df<- esri2sf(url)
+df <- esri2sf(url)
 df
 plot(df)
 
@@ -120,7 +120,7 @@ url <- "https://services2.arcgis.com/j80Jz20at6Bi0thr/arcgis/rest/services/Medic
 url <- "https://services.arcgis.com/hRUr1F8lE8Jq2uJo/arcgis/rest/services/Medicare_Providers/FeatureServer/0"
 
 
-#FQHC
+# FQHC
 url <- "https://services1.arcgis.com/ZGrptGlLV2IILABw/arcgis/rest/services/FQHC_LAL_AllSites_2023/FeatureServer/0"
 
 # SVI
@@ -170,8 +170,8 @@ url <- "https://services7.arcgis.com/J9jeXlOE0ttzzuBr/arcgis/rest/services/NCI_C
 # HPV, Pap
 url <- "https://services7.arcgis.com/J9jeXlOE0ttzzuBr/arcgis/rest/services/StatesWithPaP_HPV_BRFSS/FeatureServer/0"
 
-#ZCTA
-#This feature layer, utilizing National Geospatial Data Asset (NGDA) data from the U.S. Census Bureau, displays ZIP Code Tabulation Areas. These areas are approximate areal representations of U.S. Postal Service ZIP Code service areas.
+# ZCTA
+# This feature layer, utilizing National Geospatial Data Asset (NGDA) data from the U.S. Census Bureau, displays ZIP Code Tabulation Areas. These areas are approximate areal representations of U.S. Postal Service ZIP Code service areas.
 
 url <- "https://services2.arcgis.com/FiaPA4ga0iQKduv3/arcgis/rest/services/census_zip_code_tab_areas_ogc/OGCFeatureServer/0"
 
@@ -201,5 +201,3 @@ url <- "https://services.arcgis.com/VTyQ9soqVukalItT/arcgis/rest/services/Fair_M
 # Hospital Beds
 # Definitive Healthcare information on hospital beds, includes number of licensed, staffed & ICU bed; as well as bed utilization rate. This service is for USA hospitals; provided by Definitive Healthcare & spatially enabled by Esri’s Geospatial Cloud.
 url <- "https://services.arcgis.com/ak2bo87wLfUpMrt1/arcgis/rest/services/Definitive_Healthcare_Bed_Locations/FeatureServer/0"
-
-
