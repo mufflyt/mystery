@@ -1,141 +1,170 @@
 #' Geocode Unique Addresses with Detailed Logging
 #'
-#' This function geocodes unique addresses in a dataset using the Google Maps API, appending
-#' latitude and longitude information to each unique address. Extensive logging provides
-#' updates on each step, including function inputs, data transformations, and outputs. The
-#' geocoded data can optionally be saved to a specified output file.
+#' This function geocodes unique addresses in a dataset using the Google Maps API,
+#' appending latitude and longitude information to each unique address. It provides
+#' detailed logging for each step, including validations, transformations, geocoding
+#' operations, and saving results.
 #'
-#' @param file_path A character string specifying the path to the input file, which must be a CSV, RDS, or XLSX file containing a column named 'address' with the addresses to be geocoded.
-#' @param google_maps_api_key A character string containing your Google Maps API key. This key is required to access the Google Maps geocoding service.
-#' @param save_to_file_path Optional. A character string specifying the path where the geocoded data will be saved as a CSV file. If NULL, the data is not saved to a file.
+#' @param address_table A data frame containing address-related columns to be united
+#' for geocoding. The data frame must include all columns specified in
+#' address_column_names.
+#' @param address_column_names A character vector specifying the column names in
+#' address_table that should be united to form a complete address for geocoding.
+#' All columns in this vector must exist in address_table.
+#' @param api_key A character string containing your Google Maps API key. Defaults
+#' to the value of GOOGLE_MAPS_API_KEY in the .Renviron file.
+#' @param save_file_path Optional. A character string specifying the path where the
+#' geocoded data will be saved as a CSV file. If NULL, the data is not saved to a
+#' file. Default is NULL.
+#' @param enable_verbose Logical. If TRUE, detailed logging will be printed to the
+#' console during execution. Default is TRUE.
 #'
-#' @return A tibble with geocoded address data, including latitude and longitude columns.
+#' @returns A [tibble][tibble::tibble-package] with the columns:
+#'   - complete_address: Combined address column used for geocoding.
+#'   - latitude: Geocoded latitude for the address.
+#'   - longitude: Geocoded longitude for the address.
+#'   - All original columns from address_table.
 #'
-#' @importFrom ggmap geocode
-#' @importFrom readr read_csv write_csv
-#' @importFrom dplyr mutate select
+#' @importFrom ggmap geocode register_google
+#' @importFrom dplyr mutate
+#' @importFrom tidyr unite
 #' @importFrom purrr map_dbl
 #' @importFrom logger log_info log_error
-#' @importFrom progress progress_bar
+#' @importFrom assertthat assert_that
+#' @importFrom glue glue
+#' @importFrom readr write_csv
 #'
 #' @examples
-#' \dontrun{
-#' # Example 1: Basic usage with input file and Google Maps API key
-#' # Here we geocode addresses from "addresses.csv" without saving to an output file
-#' google_maps_api_key <- "YOUR_API_KEY"
-#' file_path <- "addresses.csv"
-#' geocoded_data <- phase0_geocode(file_path, google_maps_api_key)
+#' # Example 1: Basic usage with verbose logging and no file saving
+#' addresses <- tibble::tibble(
+#'   street = c("1600 Amphitheatre Parkway", "1 Infinite Loop"),
+#'   city = c("Mountain View", "Cupertino"),
+#'   state = c("CA", "CA"),
+#'   zip_code = c("94043", "95014")
+#' )
 #'
-#' # Output:
-#' # Geocoding unique addresses...
-#' # Starting phase0_geocode function
-#' # Input file path: addresses.csv
-#' # Output file path: NULL
-#' # Reading data from addresses.csv
-#' # Initializing geocoding process with Google Maps API
-#' # ...
-#' # Geocoding complete.
+#' geocoded_addresses <- phase0_geocode(
+#'   address_table = addresses,
+#'   address_column_names = c("street", "city", "state", "zip_code"),
+#'   api_key = Sys.getenv("GOOGLE_MAPS_API_KEY"),
+#'   enable_verbose = TRUE
+#' )
+#' print(geocoded_addresses)
 #'
-#' # Example 2: Specifying an output file path to save the geocoded results
-#' save_to_file_path <- "geocoded_addresses.csv"
-#' geocoded_data <- phase0_geocode(file_path, google_maps_api_key, save_to_file_path)
+#' # Example 2: Save geocoded data to a CSV file
+#' addresses <- tibble::tibble(
+#'   street = c("1600 Amphitheatre Parkway", "1 Infinite Loop"),
+#'   city = c("Mountain View", "Cupertino"),
+#'   state = c("CA", "CA"),
+#'   zip_code = c("94043", "95014")
+#' )
 #'
-#' # Output:
-#' # Geocoding unique addresses...
-#' # Starting phase0_geocode function
-#' # Input file path: addresses.csv
-#' # Output file path: geocoded_addresses.csv
-#' # Reading data from addresses.csv
-#' # Initializing geocoding process with Google Maps API
-#' # ...
-#' # File saved successfully to geocoded_addresses.csv
+#' geocoded_addresses <- phase0_geocode(
+#'   address_table = addresses,
+#'   address_column_names = c("street", "city", "state", "zip_code"),
+#'   api_key = Sys.getenv("GOOGLE_MAPS_API_KEY"),
+#'   save_file_path = "geocoded_addresses.csv",
+#'   enable_verbose = TRUE
+#' )
+#' print(geocoded_addresses)
 #'
-#' # Example 3: Geocoding with a dataset that lacks the 'address' column
-#' # This example demonstrates error handling for a missing 'address' column.
-#' file_path <- "invalid_addresses.csv" # Assume this file does not have 'address' column
-#' try(phase0_geocode(file_path, google_maps_api_key))
+#' # Example 3: Minimal logging and no file saving
+#' addresses <- tibble::tibble(
+#'   street = c("1600 Amphitheatre Parkway", "1 Infinite Loop"),
+#'   city = c("Mountain View", "Cupertino"),
+#'   state = c("CA", "CA"),
+#'   zip_code = c("94043", "95014")
+#' )
 #'
-#' # Output:
-#' # Geocoding unique addresses...
-#' # Starting phase0_geocode function
-#' # Input file path: invalid_addresses.csv
-#' # Output file path: NULL
-#' # Reading data from invalid_addresses.csv
-#' # Error: The dataset must have a column named 'address' for geocoding
-#' }
+#' geocoded_addresses <- phase0_geocode(
+#'   address_table = addresses,
+#'   address_column_names = c("street", "city", "state", "zip_code"),
+#'   api_key = Sys.getenv("GOOGLE_MAPS_API_KEY"),
+#'   enable_verbose = FALSE
+#' )
+#' print(geocoded_addresses)
 #'
 #' @export
-phase0_geocode <- function(file_path, google_maps_api_key, save_to_file_path = NULL) {
-  # Log function start and inputs
-  logger::log_info("Starting phase0_geocode function")
-  logger::log_info("Input file path: {file_path}")
-  logger::log_info("Google Maps API key provided: {if (!is.null(google_maps_api_key)) 'Yes' else 'No'}")
-  logger::log_info("Output file path: {save_to_file_path}")
+phase0_geocode <- function(address_table,
+                           address_column_names,
+                           api_key = Sys.getenv("GOOGLE_MAPS_API_KEY"),
+                           save_file_path = NULL,
+                           enable_verbose = TRUE) {
+  # Define logging behavior
+  log_message <- if (enable_verbose) logger::log_info else function(...) {}
 
-  # Load data and log data loading step
-  address_dataset <- load_address_data(file_path)
-  logger::log_info("Data loaded with {nrow(address_dataset)} rows and {ncol(address_dataset)} columns")
+  # Log function initialization
+  log_message("Initializing phase0_geocode function")
 
-  # Check if 'address' column exists
-  if (!"address" %in% colnames(address_dataset)) {
-    logger::log_error("The dataset must have a column named 'address' for geocoding")
-    stop("The dataset must have a column named 'address' for geocoding.")
+  # Validate inputs
+  assertthat::assert_that(is.data.frame(address_table), msg = "The input 'address_table' must be a data frame.")
+  log_message("Input 'address_table' validated as a data frame.")
+
+  assertthat::assert_that(is.character(address_column_names), msg = "The 'address_column_names' must be a character vector.")
+  log_message("Input 'address_column_names' validated as a character vector.")
+
+  # Check API key availability
+  if (api_key == "") {
+    logger::log_error("API key missing. Ensure it is set in the 'GOOGLE_MAPS_API_KEY' environment variable or passed explicitly.")
+    stop("Google Maps API key is required.")
+  }
+  log_message("API key provided and valid.")
+
+  # Register Google Maps API key
+  ggmap::register_google(key = api_key)
+  log_message("Google Maps API key registered successfully.")
+
+  # Check for missing columns in the address table
+  missing_columns <- setdiff(address_column_names, colnames(address_table))
+  if (length(missing_columns) > 0) {
+    logger::log_error(glue("The following required columns are missing: {paste(missing_columns, collapse = ', ')}"))
+    stop(glue("The input 'address_table' is missing columns: {paste(missing_columns, collapse = ', ')}"))
+  }
+  log_message("All specified address columns found in 'address_table'.")
+
+  # Unite address columns into a single column named 'complete_address'
+  united_table <- address_table %>%
+    tidyr::unite("complete_address", all_of(address_column_names), sep = ", ", na.rm = TRUE, , remove = FALSE)
+  log_message("Address columns united into a single column named 'complete_address'.")
+
+  # Perform geocoding
+  geocoded_table <- add_geocoding_columns(united_table, api_key, enable_verbose)
+  log_message("Geocoding completed successfully. Latitude and longitude columns added.")
+
+  # Save the geocoded table if a save path is provided
+  if (!is.null(save_file_path)) {
+    save_geocoded_table(geocoded_table, save_file_path, enable_verbose)
   }
 
-  # Geocode each address and log each transformation step
-  geocoded_addresses <- add_geocode_columns(address_dataset, google_maps_api_key)
-  logger::log_info("Geocoding completed. Added latitude and longitude columns")
+  # Log function completion
+  log_message("phase0_geocode function completed.")
+  log_message(glue("The geocoded table contains {nrow(geocoded_table)} rows and {ncol(geocoded_table)} columns."))
 
-  # Save to CSV if output path is provided, log file location
-  if (!is.null(save_to_file_path)) {
-    save_geocoded_data(geocoded_addresses, save_to_file_path)
-  }
-
-  # Log function completion and output details
-  logger::log_info("phase0_geocode function completed successfully")
-  logger::log_info("Output data has {nrow(geocoded_addresses)} rows and {ncol(geocoded_addresses)} columns")
-
-  # Return the geocoded data frame
-  return(geocoded_addresses)
+  return(geocoded_table)
 }
 
-# Helper function to load data with logging
-# @noRd
-load_address_data <- function(file_path) {
-  if (!file.exists(file_path)) {
-    logger::log_error("Input file not found: {file_path}")
-    stop("Input file not found.")
-  }
-  logger::log_info("Reading data from {file_path}")
-  address_data <- readr::read_csv(file_path, show_col_types = FALSE)
-  return(address_data)
-}
+# Helper function to geocode addresses
+add_geocoding_columns <- function(table_with_addresses, api_key, enable_verbose = TRUE) {
+  log_message <- if (enable_verbose) logger::log_info else function(...) {}
+  log_message("Starting geocoding process.")
 
-# Helper function to geocode addresses and add latitude/longitude columns
-# @noRd
-add_geocode_columns <- function(address_dataset, google_maps_api_key) {
-  logger::log_info("Initializing geocoding process with Google Maps API")
-
-  progress_bar <- progress::progress_bar$new(total = nrow(address_dataset), format = "[:bar] :percent :elapsed :eta :rate")
-
-  geocoded_dataset <- address_dataset %>%
+  geocoded_table <- table_with_addresses %>%
     dplyr::mutate(
-      latitude = purrr::map_dbl(address, ~ {
-        geocode_result <- ggmap::geocode(.x, key = google_maps_api_key)
-        progress_bar$tick()
-        logger::log_info("Geocoded address: {.x} -> Lat: {geocode_result$lat}, Lon: {geocode_result$lon}")
+      latitude = purrr::map_dbl(complete_address, ~ {
+        geocode_result <- ggmap::geocode(.x, key = api_key)
+        log_message(glue::glue("Geocoded '{.x}': Lat = {geocode_result$lat}, Lon = {geocode_result$lon}"))
         geocode_result$lat
       }),
-      longitude = purrr::map_dbl(address, ~ ggmap::geocode(.x, key = google_maps_api_key)$lon)
+      longitude = purrr::map_dbl(complete_address, ~ ggmap::geocode(.x, key = api_key)$lon)
     )
 
-  return(geocoded_dataset)
+  return(geocoded_table)
 }
 
-# Helper function to save geocoded data to CSV with logging
-# @noRd
-save_geocoded_data <- function(geocoded_dataset, save_to_file_path) {
-  logger::log_info("Saving geocoded data to {save_to_file_path}")
-  readr::write_csv(geocoded_dataset, save_to_file_path)
-  logger::log_info("File saved successfully to {save_to_file_path}")
+# Helper function to save the geocoded table
+save_geocoded_table <- function(geocoded_table, file_path, enable_verbose = TRUE) {
+  log_message <- if (enable_verbose) logger::log_info else function(...) {}
+  log_message(glue("Saving geocoded table to file: {file_path}"))
+  readr::write_csv(geocoded_table, file_path)
+  log_message("File saved successfully.")
 }
