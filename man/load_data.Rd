@@ -19,8 +19,37 @@ A data frame with the 'ID' column renamed to 'id_number'.
 \description{
 This function loads data from an RDS file, renames the 'ID' column to 'id_number', and logs every step of the process.
 }
+\details{
+This function performs the following steps:
+\itemize{
+\item Constructs the full file path from \code{data_dir} and \code{file_name}.
+\item Validates the existence of the RDS file at the specified path.
+\item Loads the data from the RDS file.
+\item Renames the 'ID' column to 'id_number'.
+\item Logs detailed information about each step if \code{verbose = TRUE}.
+}
+}
 \examples{
-# Example: Load data from a specified directory with logging
+# Example 1: Load data from a specified directory with logging
+\dontrun{
 df <- load_data(data_dir = "data", file_name = "Phase_2.rds", verbose = TRUE)
+}
+
+# Example 2: Load data without logging
+\dontrun{
+df <- load_data(data_dir = "data", file_name = "Phase_2.rds", verbose = FALSE)
+}
+
+# Example 3: Handle missing file error
+\dontrun{
+tryCatch(
+  {
+    df <- load_data(data_dir = "invalid_path", file_name = "missing_file.rds", verbose = TRUE)
+  },
+  error = function(e) {
+    cat("Error encountered:", e$message, "\n")
+  }
+)
+}
 
 }

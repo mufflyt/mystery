@@ -30,5 +30,5 @@ print(expanded_df)
 # Example 3: Convert an empty list
 empty_list <- list()
 expanded_df_empty <- convert_list_to_df_expanded(empty_list)
-print(expanded_df_empty)  # Should return an empty data frame
+print(expanded_df_empty) # Should return an empty data frame
 }

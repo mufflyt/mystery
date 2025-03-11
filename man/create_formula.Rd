@@ -66,7 +66,7 @@ dataset <- data.frame(
 create_formula(dataset, exclude_columns = c("phone_number", "specialty"))
 # Example usage:
 response_variable <- "days"
-random_effect_term <- "name"  # Change this to the desired random effect variable
+random_effect_term <- "name" # Change this to the desired random effect variable
 df3_filtered <- data.frame(days = c(5, 10, 15), age = c(30, 40, 50), name = c("A", "B", "C"))
 formula <- create_formula(df3_filtered, response_variable, random_effect_term)
 formula

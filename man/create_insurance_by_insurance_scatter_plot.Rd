@@ -72,33 +72,33 @@ It includes options for adding a linear fit with confidence intervals and logs t
 \examples{
 # Example 1: Default settings
 scatterplot <- create_insurance_by_insurance_scatter_plot(
-  df = df3,  # Input data frame
-  unique_variable = "phone"  # Unique identifier variable
+  df = df3, # Input data frame
+  unique_variable = "phone" # Unique identifier variable
 )
 print(scatterplot)
 
 # Example 2: Customized axis labels and output directory
 scatterplot <- create_insurance_by_insurance_scatter_plot(
-  df = df3,  # Input data frame
-  unique_variable = "npi",  # Unique identifier variable
-  insurance1 = "medicaid",  # First insurance type
-  insurance2 = "blue cross/blue shield",  # Second insurance type
-  x_label = "Log Time to Appointment (BCBS)",  # Custom x-axis label
-  y_label = "Log Time to Appointment (Medicaid)",  # Custom y-axis label
-  plot_title = "Custom Waiting Times Comparison",  # Custom plot title
-  output_directory = "custom_figures"  # Custom output directory
+  df = df3, # Input data frame
+  unique_variable = "npi", # Unique identifier variable
+  insurance1 = "medicaid", # First insurance type
+  insurance2 = "blue cross/blue shield", # Second insurance type
+  x_label = "Log Time to Appointment (BCBS)", # Custom x-axis label
+  y_label = "Log Time to Appointment (Medicaid)", # Custom y-axis label
+  plot_title = "Custom Waiting Times Comparison", # Custom plot title
+  output_directory = "custom_figures" # Custom output directory
 )
 print(scatterplot)
 
 # Example 3: High-resolution plot with adjusted aesthetics
 scatterplot <- create_insurance_by_insurance_scatter_plot(
-  df = df3,  # Input data frame
-  unique_variable = "phone",  # Unique identifier variable
-  dpi = 300,  # High resolution
-  point_size = 4,  # Larger point size
-  point_alpha = 0.8,  # Less transparency
-  height = 10,  # Custom height
-  width = 15  # Custom width
+  df = df3, # Input data frame
+  unique_variable = "phone", # Unique identifier variable
+  dpi = 300, # High resolution
+  point_size = 4, # Larger point size
+  point_alpha = 0.8, # Less transparency
+  height = 10, # Custom height
+  width = 15 # Custom width
 )
 print(scatterplot)
 }

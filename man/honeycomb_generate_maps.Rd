@@ -38,3 +38,19 @@ Each ggplot object is a hexagon map showing physician distribution.
 This function generates hexagon maps for ACOG districts, using physician location data.
 It provides extensive logging, error handling, and defaults to sample data if no inputs are provided.
 }
+\examples{
+\dontrun{
+# Generate hexagon maps with default inputs
+maps <- honeycomb_generate_maps()
+print(maps[[1]])
+
+# Generate hexagon maps for a specific ACOG district
+maps <- honeycomb_generate_maps(target_district = "District I")
+print(maps[[1]])
+
+# Customize hex grid size and process all districts
+maps <- honeycomb_generate_maps(hex_grid_size = c(0.5, 0.5))
+print(maps[[1]])
+}
+
+}

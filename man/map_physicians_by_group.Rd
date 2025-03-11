@@ -11,25 +11,35 @@ map_physicians_by_group(
 )
 }
 \arguments{
-\item{state_counts}{A tibble containing the counts of physicians per state or subdivision.}
+\item{state_counts}{A tibble containing the counts of physicians per state or subdivision. Must include columns \code{region} and \code{count}.}
 
-\item{output_file_prefix}{A prefix for the output PNG file of the choropleth map (default is "choropleth_map").}
+\item{output_file_prefix}{A character string specifying the prefix for the output PNG file of the choropleth map. Default is "choropleth_map".}
 
-\item{group_by}{A string indicating whether the counts are grouped by "state" or "subdivision" (default is "state").}
+\item{group_by}{A character string indicating whether the counts are grouped by "state" or "subdivision". Default is "state".}
 }
 \value{
 A ggplot2 object representing the choropleth map.
 }
 \description{
-This function generates a choropleth map based on the physician counts and saves the map as a PNG file.
+This function generates a choropleth map based on physician counts and saves the map as a PNG file.
 }
 \examples{
 # Example 1: Map physicians by state
+\dontrun{
 state_counts <- count_physicians_by_group(taxonomy_and_aaos_data)
 map_physicians_by_group(state_counts)
+}
 
 # Example 2: Map physicians by U.S. Census Bureau subdivision
+\dontrun{
 subdivision_counts <- count_physicians_by_group(taxonomy_and_aaos_data, group_by = "subdivision")
 map_physicians_by_group(subdivision_counts, group_by = "subdivision")
+}
+
+# Example 3: Save the map with a custom output file prefix
+\dontrun{
+state_counts <- count_physicians_by_group(taxonomy_and_aaos_data)
+map_physicians_by_group(state_counts, output_file_prefix = "custom_map_prefix")
+}
 
 }

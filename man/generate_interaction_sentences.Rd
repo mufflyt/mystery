@@ -48,7 +48,8 @@ where available.
 \examples{
 # Example: Generate interaction sentences for a Poisson model
 interaction_model <- glm(wait_time ~ insurance_type * scenario,
-                         data = poisson_data, family = poisson)
+  data = poisson_data, family = poisson
+)
 
 interaction_sentences <- generate_interaction_sentences(
   interaction_model = interaction_model,
