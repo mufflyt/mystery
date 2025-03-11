@@ -6,9 +6,13 @@
 #' each step, including function start, input validation, NPI query status,
 #' data transformation, and file saving.
 #'
-#' @param df A data frame with columns ...
-#' @param limit Number of results per query.
-#' @param write_csv_path File path for saving the results as a CSV.
+#' For additional details on the NPPES API and its data dictionary, see:
+#' \url{https://www.cms.gov/regulations-and-guidance/administrative-simplification/nationalprovidentstand/downloads/data_dissemination_file-code_values.pdf}.
+#'
+#' @param df A data frame with columns `first` and `last`, representing the
+#'   first and last names to query in the NPI registry.
+#' @param limit Number of results per query. Defaults to 5.
+#' @param write_csv_path File path for saving the results as a CSV. Default is NULL.
 #'
 #' @return A dataframe containing flattened NPI results, including columns for
 #' the queried `first` and `last` names. If no results are found, an empty
@@ -50,6 +54,7 @@ phase0_search_batch_npi <- function(df,
   # Log function start and inputs
   logger::log_info("Starting phase0_search_batch_npi function...")
   logger::log_info("Input dataframe has {nrow(df)} rows and {ncol(df)} columns.")
+  logger::log_info("Using NPPES API Data Dictionary: https://www.cms.gov/regulations-and-guidance/administrative-simplification/nationalprovidentstand/downloads/data_dissemination_file-code_values.pdf.")
   logger::log_info("Limit set to: {limit}")
   if (!is.null(write_csv_path)) {
     logger::log_info("Output CSV path specified: {write_csv_path}")
@@ -64,6 +69,7 @@ phase0_search_batch_npi <- function(df,
   # Combine results
   combined_results <- dplyr::bind_rows(results_list)
   logger::log_info("Combined results into one dataframe with {nrow(combined_results)} rows.")
+  logger::log_info("For detailed data code definitions, refer to: https://www.cms.gov/regulations-and-guidance/administrative-simplification/nationalprovidentstand/downloads/data_dissemination_file-code_values.pdf.")
 
   if (nrow(combined_results) == 0) {
     logger::log_warn("No results found for any of the input names. Returning an empty tibble.")
@@ -80,74 +86,4 @@ phase0_search_batch_npi <- function(df,
 
   logger::log_info("phase0_search_batch_npi function completed successfully.")
   return(final_results)
-}
-
-#' @noRd
-validate_input <- function(df) {
-  if (!all(c("first", "last") %in% colnames(df))) {
-    logger::log_error("Dataframe is missing 'first' and/or 'last' columns.")
-    stop("The dataframe must have 'first' and 'last' columns.")
-  }
-  logger::log_info("Input dataframe validated successfully.")
-}
-
-#' @noRd
-perform_npi_search <- function(df, limit) {
-  results_list <- list()
-  for (i in seq_len(nrow(df))) {
-    first_name <- df$first[i]
-    last_name <- df$last[i]
-    logger::log_info("Querying NPI for: {first_name} {last_name}")
-
-    try(
-      {
-        results <- npi::npi_search(first_name = first_name, last_name = last_name, limit = limit)
-
-        if (!is.null(results)) {
-          results$first_name_searched <- first_name
-          results$last_name_searched <- last_name
-          results_list[[i]] <- results
-          logger::log_info("Results found for: {first_name} {last_name}")
-        } else {
-          logger::log_info("No results found for: {first_name} {last_name}")
-        }
-      },
-      silent = TRUE
-    )
-  }
-  results_list
-}
-
-#' @noRd
-process_and_flatten_results <- function(combined_results) {
-  custom_columns <- dplyr::select(combined_results, npi, first_name_searched, last_name_searched)
-  logger::log_info("Extracted custom columns for tracking searched names.")
-
-  flattened_results <- tryCatch(
-    npi::npi_flatten(dplyr::select(combined_results, -first_name_searched, -last_name_searched)),
-    error = function(e) {
-      logger::log_error("Error in flattening results: {e$message}")
-      stop("Failed to flatten the results.")
-    }
-  )
-  logger::log_info("Flattened NPI search results.")
-
-  final_results <- dplyr::left_join(flattened_results, custom_columns, by = "npi")
-  logger::log_info("Rejoined custom columns. Final dataframe has {nrow(final_results)} rows and {ncol(final_results)} columns.")
-
-  final_results
-}
-
-#' @noRd
-save_results <- function(final_results, write_csv_path) {
-  tryCatch(
-    {
-      readr::write_csv(final_results, write_csv_path)
-      logger::log_info("Data saved to file: {write_csv_path}")
-    },
-    error = function(e) {
-      logger::log_error("Error saving file to {write_csv_path}: {e$message}")
-      stop("Failed to save the output CSV.")
-    }
-  )
 }

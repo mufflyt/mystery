@@ -58,6 +58,7 @@
 #'
 #' # Print interpretation
 #' # print(overdispersion_result_overdisp$interpretation)
+#' @export
 results_section_poisson_overdispersion_testing <- function(poisson_model) {
   # Log function start
   logger::log_info("Starting overdispersion calculation.")
