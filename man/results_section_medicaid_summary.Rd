@@ -12,45 +12,41 @@ results_section_medicaid_summary(
 )
 }
 \arguments{
-\item{significant_predictors}{A data frame containing significant predictor variables, their directions, and formatted p-values.
-It should have columns: "Variable", "Direction", and "Formatted_P_Value".}
+\item{significant_predictors}{A data frame containing significant predictor
+variables, their directions, and formatted p-values. It should have columns: "Variable", "Direction", and "Formatted_P_Value".}
 
-\item{medicaid_acceptance_rate}{A numeric value representing the Medicaid acceptance rate (in percentage).}
+\item{medicaid_acceptance_rate}{A numeric value representing the
+Medicaid acceptance rate (in percentage).}
 
-\item{accepted_medicaid_count}{An integer representing the count of physicians accepting Medicaid.}
+\item{accepted_medicaid_count}{An integer representing the count of
+physicians accepting Medicaid.}
 
-\item{total_medicaid_physicians_count}{An integer representing the total count of physicians considered for Medicaid.}
+\item{total_medicaid_physicians_count}{An integer representing the
+total count of physicians considered for Medicaid.}
 }
 \value{
 A character string representing the summary sentence.
 }
 \description{
-This function generates a summary sentence for the results section based on significant predictor variables and Medicaid acceptance rates.
-It logs the process, performs error checking, and includes default behavior for robust execution.
+This function generates a summary sentence for the results section
+based on significant predictor variables
+and Medicaid acceptance rates. It logs the process, performs error
+checking, and includes default behavior
+for robust execution.
 }
 \examples{
-# Example 1: Basic usage with two significant predictors
-significant_vars <- data.frame(
-  Variable = c("Specialty", "Region"),
-  Direction = c("positively associated", "negatively associated"),
-  Formatted_P_Value = c("<0.01", "0.02")
-)
-results_section_medicaid_summary(significant_vars, 45.6, 100, 200)
-# Output: Physicians who accepted Medicaid were Specialty positively
-associated (p = <0.01) and Region negatively associated (p = 0.02).
-The Medicaid acceptance rate was 45.6\% (n = 100/N = 200).
-
 # Example 2: Using larger physician counts and different acceptance rate
 significant_vars <- data.frame(
   Variable = c("Experience", "Training Level"),
   Direction = c("positively associated", "negatively associated"),
   Formatted_P_Value = c("<0.05", "0.01")
 )
-results_section_medicaid_summary(significant_vars, 35.2, 500, 1200)
-# Output: Physicians who accepted Medicaid were
-Experience positively associated (p = <0.05) and Training Level
-negatively associated (p = 0.01). The Medicaid acceptance rate
-was 35.2\% (n = 500/N = 1,200).
+results_section_medicaid_summary(
+  significant_vars,
+  medicaid_acceptance_rate = 35.2,
+  accepted_medicaid_count = 500,
+  total_medicaid_physicians_count = 1200
+)
 
 # Example 3: Using a single significant predictor and a high acceptance rate
 significant_vars <- data.frame(
@@ -59,6 +55,4 @@ significant_vars <- data.frame(
   Formatted_P_Value = c("<0.001")
 )
 results_section_medicaid_summary(significant_vars, 60.0, 750, 1250)
-# Output: Physicians who accepted Medicaid were Age positively associated
-(p = <0.001). The Medicaid acceptance rate was 60.0\% (n = 750/N = 1,250).
 }

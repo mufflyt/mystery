@@ -61,7 +61,8 @@ test_that("check_normality handles mixed data types correctly", {
 
   # Call the function and expect an error or specific behavior
   expect_error(check_normality(df_mixed, "business_days_until_appointment"),
-               regexp = "numeric")
+    regexp = "numeric"
+  )
 })
 
 test_that("check_normality works correctly for small sample size", {
@@ -70,5 +71,6 @@ test_that("check_normality works correctly for small sample size", {
 
   # Call the function and expect an error
   expect_error(check_normality(df_small_sample, "business_days_until_appointment"),
-               regexp = "Sample size must be at least 3")
+    regexp = "Sample size must be at least 3"
+  )
 })

@@ -41,7 +41,7 @@ results <- results_section_wait_time_median_stats(
   group_var = "Subspecialty",
   round_digits = 1
 )
-results$stat_summary  # Contains statistical data
-results$sentence_summary  # Contains summary sentences
+results$stat_summary # Contains statistical data
+results$sentence_summary # Contains summary sentences
 
 }

@@ -17,4 +17,4 @@ test_that("Output file is created", {
 })
 
 # Cleanup after tests
-unlink(test_filepath)  # Remove the temporary file
+unlink(test_filepath) # Remove the temporary file

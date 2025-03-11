@@ -14,5 +14,3 @@ test_that("MaxTable returns empty when input is empty", {
   empty_vec <- factor(character(0))
   expect_equal(MaxTable(empty_vec, mult = TRUE), character(0))
 })
-
-

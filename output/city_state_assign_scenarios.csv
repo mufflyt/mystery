@@ -1,6 +1,3 @@
-city,state_code,specialty_primary,case_assigned
-Sample City,SC,General Dermatology,Gamma
-Sample City,SC,General Dermatology,Beta
-Sample City,SC,General Dermatology,Beta
-Sample City,SC,General Dermatology,Alpha
-Sample City,SC,General Dermatology,Alpha
+version https://git-lfs.github.com/spec/v1
+oid sha256:974123c52382c2fdabe35c56571dce789832903cb8b8f31d55d015d299a94b26
+size 251

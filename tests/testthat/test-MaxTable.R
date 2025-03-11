@@ -2,8 +2,8 @@ library(testthat)
 # Assuming your package is loaded which contains the MaxTable function
 
 # Define necessary vectors
-vec <- factor(c("A", "B", "C", "B", "B"))  # B appears most frequently
-empty_vec <- factor(character(0))          # Empty factor
+vec <- factor(c("A", "B", "C", "B", "B")) # B appears most frequently
+empty_vec <- factor(character(0)) # Empty factor
 
 # Tests for MaxTable
 test_that("MaxTable converts non-factor to factor and computes correctly", {
@@ -23,7 +23,7 @@ test_that("MaxTable handles basic input correctly", {
 })
 
 test_that("MaxTable converts non-factor to factor and computes correctly", {
-  vec <- c("A", "B", "A", "C", "B", "B")  # Not initially a factor
+  vec <- c("A", "B", "A", "C", "B", "B") # Not initially a factor
   expect_equal(MaxTable(vec), "B")
   expect_equal(MaxTable(vec, mult = TRUE), c("B"))
 })
