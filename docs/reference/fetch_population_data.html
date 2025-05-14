@@ -103,7 +103,7 @@ Default is <code>c("CO")</code>.</p></dd>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Example 1: Default behavior (Colorado, year 2022, default race variables)</span></span></span>
 <span class="r-in"><span><span class="va">population_tibble</span> <span class="op">&lt;-</span> <span class="fu">fetch_population_data</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:04] Starting `fetch_population_data` function.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:45:51] Starting `fetch_population_data` function.</span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> `glue` failed in `formatter_glue` on:</span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-err co"><span class="r-pr">#&gt;</span>  'glue' chr [1:4] "Function phase0_search_npi_by_number called with inputs: records_per_chunk = 2022, save_directory = B02001_002E" ...</span>
@@ -122,7 +122,7 @@ Default is <code>c("CO")</code>.</p></dd>
 <span class="r-in"><span>  state <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CO"</span>, <span class="st">"CA"</span><span class="op">)</span>, years <span class="op">=</span> <span class="fl">2015</span><span class="op">:</span><span class="fl">2020</span>,</span></span>
 <span class="r-in"><span>  race_vars <span class="op">=</span> <span class="va">race_vars</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:04] Starting `fetch_population_data` function.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:45:51] Starting `fetch_population_data` function.</span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> Variables must be length 1 or 6</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">multi_state_population</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'multi_state_population' not found</span>
@@ -130,7 +130,7 @@ Default is <code>c("CO")</code>.</p></dd>
 <span class="r-in"><span><span class="co"># Example 3: Use a custom set of race variables</span></span></span>
 <span class="r-in"><span><span class="va">custom_race_vars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Asian"</span> <span class="op">=</span> <span class="st">"B02001_005E"</span>, <span class="st">"Hispanic"</span> <span class="op">=</span> <span class="st">"B03003_003E"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">custom_population</span> <span class="op">&lt;-</span> <span class="fu">fetch_population_data</span><span class="op">(</span>state <span class="op">=</span> <span class="st">"TX"</span>, years <span class="op">=</span> <span class="fl">2018</span>, race_vars <span class="op">=</span> <span class="va">custom_race_vars</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:04] Starting `fetch_population_data` function.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:45:51] Starting `fetch_population_data` function.</span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> `glue` failed in `formatter_glue` on:</span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-err co"><span class="r-pr">#&gt;</span>  'glue' chr [1:2] "Function phase0_search_npi_by_number called with inputs: records_per_chunk = 2018, save_directory = B02001_005E" ...</span>

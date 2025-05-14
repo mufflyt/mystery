@@ -98,20 +98,20 @@ the function is built to work out-of-the-box with example input, default chunkin
 <span class="r-in"><span><span class="va">clinician_info</span> <span class="op">&lt;-</span> <span class="fu">phase0_search_npi_by_number</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  npi_dataframe <span class="op">=</span> <span class="va">npi_list</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:16] Function phase0_search_npi_by_number called with inputs: records_per_chunk = 10, save_directory = /Users/tylermuffly/Dropbox (Personal)/tyler/docs/reference</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:16] Filtered NPI data. Number of valid NPIs: 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:16] Fetching data for NPI: 1447273792</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:04] Function phase0_search_npi_by_number called with inputs: records_per_chunk = 10, save_directory = /Users/tylermuffly/Dropbox (Personal)/tyler/docs/reference</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:04] Filtered NPI data. Number of valid NPIs: 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:04] Fetching data for NPI: 1447273792</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 10 records requested</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Requesting records 0-10...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:18] Successfully retrieved and flattened data for NPI: 1447273792</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:18] Fetching data for NPI: 1023030814</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:06] Successfully retrieved and flattened data for NPI: 1447273792</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:06] Fetching data for NPI: 1023030814</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 10 records requested</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Requesting records 0-10...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:20] Successfully retrieved and flattened data for NPI: 1023030814</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:20] Data retrieved for 2 NPIs</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:20] Combined all clinician information. Total rows: 6, Total columns: 16</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:20] Saved chunk of clinician information to /Users/tylermuffly/Dropbox (Personal)/tyler/docs/reference/npi_results_20250311054520_chunk_1.csv</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:20] Function phase0_search_npi_by_number completed successfully.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:08] Successfully retrieved and flattened data for NPI: 1023030814</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:08] Data retrieved for 2 NPIs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:08] Combined all clinician information. Total rows: 6, Total columns: 16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:08] Saved chunk of clinician information to /Users/tylermuffly/Dropbox (Personal)/tyler/docs/reference/npi_results_20250311064608_chunk_1.csv</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:08] Function phase0_search_npi_by_number completed successfully.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Example 2: Custom chunk size and directory</span></span></span>
 <span class="r-in"><span><span class="va">temp_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span></span>
@@ -120,21 +120,21 @@ the function is built to work out-of-the-box with example input, default chunkin
 <span class="r-in"><span>  records_per_chunk <span class="op">=</span> <span class="fl">5</span>,</span></span>
 <span class="r-in"><span>  save_directory <span class="op">=</span> <span class="va">temp_dir</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:20] Function phase0_search_npi_by_number called with inputs: records_per_chunk = 5, save_directory = /var/folders/t6/jct906nn019fnrg7qr_b438w0000gn/T//RtmpjhOkiB</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:20] Filtered NPI data. Number of valid NPIs: 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:20] Fetching data for NPI: 1447273792</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:08] Function phase0_search_npi_by_number called with inputs: records_per_chunk = 5, save_directory = /var/folders/t6/jct906nn019fnrg7qr_b438w0000gn/T//Rtmp38Kqc6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:08] Filtered NPI data. Number of valid NPIs: 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:08] Fetching data for NPI: 1447273792</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 10 records requested</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Requesting records 0-10...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:21] Successfully retrieved and flattened data for NPI: 1447273792</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:21] Fetching data for NPI: 1023030814</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:09] Successfully retrieved and flattened data for NPI: 1447273792</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:09] Fetching data for NPI: 1023030814</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 10 records requested</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Requesting records 0-10...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:23] Successfully retrieved and flattened data for NPI: 1023030814</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:23] Data retrieved for 2 NPIs</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:23] Combined all clinician information. Total rows: 6, Total columns: 16</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:23] Saved chunk of clinician information to /var/folders/t6/jct906nn019fnrg7qr_b438w0000gn/T//RtmpjhOkiB/npi_results_20250311054523_chunk_1.csv</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:23] Saved chunk of clinician information to /var/folders/t6/jct906nn019fnrg7qr_b438w0000gn/T//RtmpjhOkiB/npi_results_20250311054523_chunk_6.csv</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:23] Function phase0_search_npi_by_number completed successfully.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:11] Successfully retrieved and flattened data for NPI: 1023030814</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:11] Data retrieved for 2 NPIs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:11] Combined all clinician information. Total rows: 6, Total columns: 16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:11] Saved chunk of clinician information to /var/folders/t6/jct906nn019fnrg7qr_b438w0000gn/T//Rtmp38Kqc6/npi_results_20250311064611_chunk_1.csv</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:11] Saved chunk of clinician information to /var/folders/t6/jct906nn019fnrg7qr_b438w0000gn/T//Rtmp38Kqc6/npi_results_20250311064611_chunk_6.csv</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:11] Function phase0_search_npi_by_number completed successfully.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Example 3: Handle larger dataset with logging</span></span></span>
 <span class="r-in"><span><span class="va">npi_large</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
@@ -145,47 +145,47 @@ the function is built to work out-of-the-box with example input, default chunkin
 <span class="r-in"><span>  records_per_chunk <span class="op">=</span> <span class="fl">2</span>,</span></span>
 <span class="r-in"><span>  save_directory <span class="op">=</span> <span class="st">"npi_results"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:23] Function phase0_search_npi_by_number called with inputs: records_per_chunk = 2, save_directory = npi_results</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:23] Filtered NPI data. Number of valid NPIs: 3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:23] Fetching data for NPI: 1447273792</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:11] Function phase0_search_npi_by_number called with inputs: records_per_chunk = 2, save_directory = npi_results</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:11] Filtered NPI data. Number of valid NPIs: 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:11] Fetching data for NPI: 1447273792</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 10 records requested</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Requesting records 0-10...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:25] Successfully retrieved and flattened data for NPI: 1447273792</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:25] Fetching data for NPI: 1023030814</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:13] Successfully retrieved and flattened data for NPI: 1447273792</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:13] Fetching data for NPI: 1023030814</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 10 records requested</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Requesting records 0-10...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:27] Successfully retrieved and flattened data for NPI: 1023030814</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:27] Fetching data for NPI: 1750380234</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:14] Successfully retrieved and flattened data for NPI: 1023030814</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:14] Fetching data for NPI: 1750380234</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 10 records requested</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Requesting records 0-10...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ERROR [2025-03-11 05:45:28] Error retrieving data for NPI 1750380234: `df` must be an npi_results S3 object, not tbl_df.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:28] Data retrieved for 2 NPIs</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:28] Combined all clinician information. Total rows: 6, Total columns: 16</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:28] Saved chunk of clinician information to npi_results/npi_results_20250311054528_chunk_1.csv</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:28] Saved chunk of clinician information to npi_results/npi_results_20250311054528_chunk_3.csv</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:28] Saved chunk of clinician information to npi_results/npi_results_20250311054528_chunk_5.csv</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:28] Function phase0_search_npi_by_number completed successfully.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ERROR [2025-03-11 06:46:16] Error retrieving data for NPI 1750380234: `df` must be an npi_results S3 object, not tbl_df.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:16] Data retrieved for 2 NPIs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:16] Combined all clinician information. Total rows: 6, Total columns: 16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:16] Saved chunk of clinician information to npi_results/npi_results_20250311064616_chunk_1.csv</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:16] Saved chunk of clinician information to npi_results/npi_results_20250311064616_chunk_3.csv</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:16] Saved chunk of clinician information to npi_results/npi_results_20250311064616_chunk_5.csv</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:16] Function phase0_search_npi_by_number completed successfully.</span>
 <span class="r-in"><span><span class="co"># Example 1: Basic usage with default chunk size and current directory</span></span></span>
 <span class="r-in"><span><span class="va">npi_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>npi <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"1234567890"</span>, <span class="st">"1098765432"</span>, <span class="st">"1987654321"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">phase0_search_npi_by_number</span><span class="op">(</span>npi_dataframe <span class="op">=</span> <span class="va">npi_list</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:28] Function phase0_search_npi_by_number called with inputs: records_per_chunk = 10, save_directory = /Users/tylermuffly/Dropbox (Personal)/tyler/docs/reference</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:28] Filtered NPI data. Number of valid NPIs: 3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:28] Fetching data for NPI: 1234567890</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:16] Function phase0_search_npi_by_number called with inputs: records_per_chunk = 10, save_directory = /Users/tylermuffly/Dropbox (Personal)/tyler/docs/reference</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:16] Filtered NPI data. Number of valid NPIs: 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:16] Fetching data for NPI: 1234567890</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 10 records requested</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Requesting records 0-10...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ERROR [2025-03-11 05:45:30] Error retrieving data for NPI 1234567890: `df` must be an npi_results S3 object, not tbl_df.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:30] Fetching data for NPI: 1098765432</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ERROR [2025-03-11 06:46:18] Error retrieving data for NPI 1234567890: `df` must be an npi_results S3 object, not tbl_df.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:18] Fetching data for NPI: 1098765432</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 10 records requested</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Requesting records 0-10...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ERROR [2025-03-11 05:45:32] Error retrieving data for NPI 1098765432: `df` must be an npi_results S3 object, not tbl_df.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:32] Fetching data for NPI: 1987654321</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ERROR [2025-03-11 06:46:20] Error retrieving data for NPI 1098765432: `df` must be an npi_results S3 object, not tbl_df.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:20] Fetching data for NPI: 1987654321</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 10 records requested</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Requesting records 0-10...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ERROR [2025-03-11 05:45:33] Error retrieving data for NPI 1987654321: `df` must be an npi_results S3 object, not tbl_df.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:33] Data retrieved for 0 NPIs</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:33] Combined all clinician information. Total rows: 0, Total columns: 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:33] No clinician information to save.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:33] Function phase0_search_npi_by_number completed successfully.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ERROR [2025-03-11 06:46:21] Error retrieving data for NPI 1987654321: `df` must be an npi_results S3 object, not tbl_df.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:21] Data retrieved for 0 NPIs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:21] Combined all clinician information. Total rows: 0, Total columns: 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:21] No clinician information to save.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:21] Function phase0_search_npi_by_number completed successfully.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Null data.table (0 rows and 0 cols)</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

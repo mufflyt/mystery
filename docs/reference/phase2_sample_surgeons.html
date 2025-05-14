@@ -119,21 +119,21 @@ is <code>NULL</code>.</p></dd>
 <span class="r-in"><span><span class="va">expanded_data</span> <span class="op">&lt;-</span> <span class="fu">phase2_sample_surgeons</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  data <span class="op">=</span> <span class="va">physicians</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:34] Starting phase2_sample_surgeons() with inputs:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:34] Insurance types: Medicare</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:34] Insurance types: Medicaid</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:34] Insurance types: BCBS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:34] Ensure unique phone numbers: TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:34] </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:34] Seed: 1978</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:34] Specialty column: specialty_primary</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:34] NPI column: NPI</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:34] Seed set to 1978.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:34] Ensuring unique phone numbers in the dataset.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:34] Number of rows after ensuring unique phone numbers: 2.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:34] Expanding physicians by insurance types...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:34] Expanded data includes insurance types. Total rows: 6.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:34] Completed phase2_sample_surgeons(). Returning expanded data.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:22] Starting phase2_sample_surgeons() with inputs:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:22] Insurance types: Medicare</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:22] Insurance types: Medicaid</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:22] Insurance types: BCBS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:22] Ensure unique phone numbers: TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:22] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:22] Seed: 1978</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:22] Specialty column: specialty_primary</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:22] NPI column: NPI</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:22] Seed set to 1978.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:22] Ensuring unique phone numbers in the dataset.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:22] Number of rows after ensuring unique phone numbers: 2.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:22] Expanding physicians by insurance types...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:22] Expanded data includes insurance types. Total rows: 6.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:22] Completed phase2_sample_surgeons(). Returning expanded data.</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">expanded_data</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 4</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   specialty_primary NPI        phone_number insurance</span>
@@ -151,21 +151,21 @@ is <code>NULL</code>.</p></dd>
 <span class="r-in"><span>  insurance_types <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Private"</span>, <span class="st">"Public"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  output_csv_path <span class="op">=</span> <span class="st">"output/"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:34] Starting phase2_sample_surgeons() with inputs:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:34] Insurance types: Private</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:34] Insurance types: Public</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:34] Ensure unique phone numbers: TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:34] Output CSV path: output/</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:34] Seed: 1978</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:34] Specialty column: specialty_primary</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:34] NPI column: NPI</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:34] Seed set to 1978.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:34] Ensuring unique phone numbers in the dataset.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:34] Number of rows after ensuring unique phone numbers: 2.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:34] Expanding physicians by insurance types...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:34] Expanded data includes insurance types. Total rows: 4.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:34] Saved expanded data to: output//phase2_sample_surgeons_by_insurance_2025-03-11_05-45-34.csv.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:34] Completed phase2_sample_surgeons(). Returning expanded data.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:22] Starting phase2_sample_surgeons() with inputs:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:22] Insurance types: Private</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:22] Insurance types: Public</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:22] Ensure unique phone numbers: TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:22] Output CSV path: output/</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:22] Seed: 1978</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:22] Specialty column: specialty_primary</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:22] NPI column: NPI</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:22] Seed set to 1978.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:22] Ensuring unique phone numbers in the dataset.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:22] Number of rows after ensuring unique phone numbers: 2.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:22] Expanding physicians by insurance types...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:22] Expanded data includes insurance types. Total rows: 4.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:22] Saved expanded data to: output//phase2_sample_surgeons_by_insurance_2025-03-11_06-46-22.csv.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:22] Completed phase2_sample_surgeons(). Returning expanded data.</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">expanded_data</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 4 × 4</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   specialty_primary NPI        phone_number insurance</span>
@@ -186,21 +186,21 @@ is <code>NULL</code>.</p></dd>
 <span class="r-in"><span>  ensure_unique_phone_numbers <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>  seed <span class="op">=</span> <span class="fl">42</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:34] Starting phase2_sample_surgeons() with inputs:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:34] Insurance types: Medicare</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:34] Insurance types: Medicaid</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:34] Insurance types: BCBS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:34] Ensure unique phone numbers: TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:34] </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:34] Seed: 42</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:34] Specialty column: specialty_primary</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:34] NPI column: NPI</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:34] Seed set to 42.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:34] Ensuring unique phone numbers in the dataset.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:34] Number of rows after ensuring unique phone numbers: 2.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:34] Expanding physicians by insurance types...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:34] Expanded data includes insurance types. Total rows: 6.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:34] Completed phase2_sample_surgeons(). Returning expanded data.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:22] Starting phase2_sample_surgeons() with inputs:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:22] Insurance types: Medicare</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:22] Insurance types: Medicaid</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:22] Insurance types: BCBS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:22] Ensure unique phone numbers: TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:22] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:22] Seed: 42</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:22] Specialty column: specialty_primary</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:22] NPI column: NPI</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:22] Seed set to 42.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:22] Ensuring unique phone numbers in the dataset.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:22] Number of rows after ensuring unique phone numbers: 2.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:22] Expanding physicians by insurance types...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:22] Expanded data includes insurance types. Total rows: 6.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:46:22] Completed phase2_sample_surgeons(). Returning expanded data.</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">expanded_data</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 4</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   specialty_primary NPI        phone_number insurance</span>

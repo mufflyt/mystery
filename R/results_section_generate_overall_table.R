@@ -1,199 +1,216 @@
-#' Generate Overall Table with Error Handling and Logging
+#' Generate overall table with optional stratification
 #'
-#' This function generates an overall table summarizing the demographics of the Table 1 data.
-#' It logs all key steps, including inputs, outputs, data transformations, and file paths. The function
-#' supports RDS, CSV, and XLS file formats and creates an overall summary table saved as a PDF file.
+#' Generate an overall table summarizing demographics, with optional stratification
+#' by a specified variable. This function creates a publication-ready table suitable
+#' for inclusion in manuscripts and reports.
 #'
-#' @param input_file_path A string representing the path to the data file (RDS, CSV, or XLS format).
-#' @param output_directory A string representing the directory where the output table file will be saved.
-#' @param title A string specifying the title for the overall table summary (default is "Overall Table Summary").
-#' @param selected_columns An optional vector of selected columns to include in the table. Default is NULL.
-#' @param label_translations An optional named list for label translations to use in the table summary.
-#' @return Nothing is returned. The function saves the output table as a PDF file.
-#' @importFrom arsenal tableby write2pdf
-#' @importFrom readr read_rds read_csv
-#' @importFrom fs dir_create dir_exists
-#' @importFrom dplyr select all_of
-#' @importFrom logger log_info log_error
-#' @importFrom glue glue
-#' @importFrom tools file_ext
-#' @export
+#' @param input_file_path The path to the data file (in RDS, CSV, or XLS format).
+#' @param output_directory The directory where the output table file will be saved.
+#' @param title The title for the table (default is "Overall Table Summary").
+#' @param strata_var Optional character string naming the stratification variable.
+#'   If provided, the table will be stratified by this variable.
+#' @param selected_columns Optional vector of selected columns to include in the table.
+#'   If NULL, all columns (except strata_var if provided) will be used.
+#' @param label_translations Optional named list for label translations to provide
+#'   more descriptive variable names in the output table.
+#'
+#' @return Invisibly returns the summary object from arsenal::tableby.
+#'
+#' @details
+#' This function creates a table summarizing demographics and other variables in a dataset.
+#' If a stratification variable is provided, the table will show statistics separately
+#' for each level of that variable, with statistical tests comparing the groups.
+#' If no stratification variable is provided, an overall summary table is created.
+#'
+#' The function handles special characters in variable names and limits the number
+#' of columns to avoid formula length issues. The output is saved as a PDF file
+#' with a timestamp in the filename.
 #'
 #' @examples
 #' \dontrun{
-#' generate_overall_table("data/Table1.rds", "output_tables")
-#' generate_overall_table("data/Table1.csv", "output_tables", selected_columns = c("age", "gender"))
-#' label_translations <- list(age = "Age (years)", gender = "Gender")
-#' generate_overall_table("data/Table1.xlsx", "output_tables",
-#'   title = "Demographic Summary",
-#'   label_translations = label_translations
+#' # Generate a simple overall table without stratification
+#' generate_overall_table(
+#'   input_file_path = "data/urodynamics_data.rds",
+#'   output_directory = "tables",
+#'   title = "Demographics Summary"
+#' )
+#'
+#' # Generate a table stratified by "Was the procedure cancelled?"
+#' generate_overall_table(
+#'   input_file_path = "data/urodynamics_data.rds",
+#'   output_directory = "tables",
+#'   title = "Demographics Stratified by Procedure Cancellation Status",
+#'   strata_var = "Was the procedure cancelled?"
+#' )
+#'
+#' # Generate a table with specific columns and label translations
+#' label_trans <- list(
+#'   "Age:" = "Patient Age (years)",
+#'   "BMI" = "Body Mass Index (kg/m²)"
+#' )
+#' generate_overall_table(
+#'   input_file_path = "data/urodynamics_data.rds",
+#'   output_directory = "tables",
+#'   selected_columns = c("Age:", "BMI", "Race:", "Tobacco use:"),
+#'   label_translations = label_trans
 #' )
 #' }
-generate_overall_table <- function(input_file_path, output_directory, title = "Overall Table Summary",
-                                   selected_columns = NULL, label_translations = NULL) {
-  log_info("Starting generate_overall_table function...")
-  log_inputs(input_file_path, output_directory, title, selected_columns, label_translations)
-
-  # Ensure output directory exists
-  ensure_output_directory(output_directory)
-
-  # Read input data
-  data_input <- read_input_data(input_file_path)
-
-  # Validate data and select columns
-  selected_data <- validate_and_select_columns(data_input, selected_columns)
-
-  # Generate the overall table
-  overall_table <- generate_table(selected_data)
-
-  # Generate a filename and save the table as a PDF
-  save_table_as_pdf(overall_table, output_directory, title, label_translations)
-
-  log_info("Overall table generation completed.")
-}
-
-# Helper Functions
-
-#' Save Arsenal Table to PDF
 #'
-#' This function saves an Arsenal table as a PDF.
-#'
-#' @param object An Arsenal table object.
-#' @param filename The file path for saving the PDF.
+#' @importFrom arsenal write2pdf tableby
+#' @importFrom readr read_rds
+#' @importFrom easyr read.any
+#' @importFrom fs dir_create dir_exists
+#' @importFrom logger log_info log_error log_debug log_warn
+#' @importFrom stats as.formula
 #' @export
-tm_write2pdf <- function(object, filename) {
-  arsenal::write2pdf(object, filename, keep.md = TRUE, quiet = TRUE)
-}
+generate_overall_table <- function(input_file_path,
+                                   output_directory,
+                                   title = "Overall Table Summary",
+                                   strata_var = NULL,
+                                   selected_columns = NULL,
+                                   label_translations = NULL) {
+  # Set up logger
+  logger::log_formatter(logger::formatter_glue)
+  logger::log_threshold(logger::INFO)
 
+  # Log function start and inputs
+  logger::log_info("Starting generate_overall_table function...")
+  logger::log_info("Function call details:")
+  logger::log_info("  - Input file: {input_file_path}")
+  logger::log_info("  - Output directory: {output_directory}")
+  logger::log_info("  - Title: {title}")
 
-#' @noRd
-log_inputs <- function(input_file_path, output_directory, title, selected_columns, label_translations) {
-  log_info("Input file path: {input_file_path}")
-  log_info("Output directory: {output_directory}")
-  log_info("Title: {title}")
-  log_info("Selected columns: {selected_columns}")
-  log_info("Label translations: {label_translations}")
-}
+  if (!is.null(strata_var)) {
+    logger::log_info("  - Stratification variable: {strata_var}")
+  } else {
+    logger::log_info("  - No stratification variable provided (overall table)")
+  }
 
-#' @noRd
-ensure_output_directory <- function(output_directory) {
+  # Ensure the output directory exists
   if (!fs::dir_exists(output_directory)) {
-    log_info("Creating output directory at {output_directory}")
+    logger::log_info("Creating output directory: {output_directory}")
     fs::dir_create(output_directory)
   }
-}
 
-#' @noRd
-read_input_data <- function(input_file_path) {
-  file_extension <- tools::file_ext(input_file_path)
-  log_info("Reading data from file: {input_file_path} (file extension: {file_extension})")
+  # Read the data
+  logger::log_info("Reading data from file: {input_file_path}")
+  tryCatch({
+    data <- readr::read_rds(input_file_path)
+  }, error = function(e) {
+    logger::log_error("Error reading RDS file: {e$message}")
+    logger::log_info("Attempting to read with easyr::read.any...")
+    data <- easyr::read.any(input_file_path)
+  })
 
-  if (!requireNamespace("readxl", quietly = TRUE)) {
-    warning("The 'readxl' package is needed.   Please install it.")
+  # Check if the data is empty
+  if (nrow(data) == 0 || ncol(data) == 0) {
+    error_msg <- "The input data is empty."
+    logger::log_error(error_msg)
+    stop(error_msg)
   }
 
-  data_input <- tryCatch(
-    {
-      switch(file_extension,
-        "rds" = readr::read_rds(input_file_path),
-        "csv" = readr::read_csv(input_file_path),
-        "xlsx" = readxl::read_excel(input_file_path),
-        {
-          log_error("Unsupported file format: {file_extension}")
-          stop("Unsupported file format: ", file_extension)
-        }
-      )
-    },
-    error = function(e) {
-      log_error("Error reading data from {input_file_path}: {e$message}")
-      stop("Error reading data.")
+  # Validate stratification variable if provided
+  if (!is.null(strata_var)) {
+    if (!strata_var %in% names(data)) {
+      error_msg <- paste0("Stratification variable '", strata_var, "' not found in the dataset.")
+      logger::log_error(error_msg)
+      stop(error_msg)
     }
-  )
-
-  if (nrow(data_input) == 0 || ncol(data_input) == 0) {
-    log_error("The input data is empty.")
-    stop("The input data is empty.")
   }
 
-  data_input
-}
+  # Check if selected_columns argument is provided
+  if (is.null(selected_columns)) {
+    # If not provided, use all columns in the data except the strata variable (if any)
+    logger::log_info("Using all columns in the data for the table.")
+    selected_columns <- names(data)
+    if (!is.null(strata_var)) {
+      selected_columns <- setdiff(selected_columns, strata_var)
+    }
+  }
 
-#' @noRd
-validate_and_select_columns <- function(data_input, selected_columns) {
-  if (!is.null(selected_columns)) {
-    log_info("Selecting specific columns: {selected_columns}")
-    selected_data <- tryCatch(
-      {
-        dplyr::select(data_input, dplyr::all_of(selected_columns))
-      },
-      error = function(e) {
-        log_error("Error selecting columns: {e$message}")
-        stop("Error selecting columns.")
-      }
-    )
+  # Use at most 30 columns to avoid formula being too complex
+  if (length(selected_columns) > 30) {
+    logger::log_warn("Too many variables selected. Limiting to first 30 columns.")
+    selected_columns <- selected_columns[1:30]
+  }
+
+  # Prepare the formula for arsenal::tableby with backticks to handle special characters
+  if (!is.null(strata_var)) {
+    # Stratified table: strata_var ~ var1 + var2 + var3
+    formula_str <- paste0("`", strata_var, "`", " ~ ", paste(paste0("`", selected_columns, "`"), collapse = " + "))
+    logger::log_info("Creating stratified table with formula: {formula_str}")
   } else {
-    log_info("Using all columns for the table.")
-    selected_data <- data_input
+    # Overall table: ~ var1 + var2 + var3
+    formula_str <- paste0("~ ", paste(paste0("`", selected_columns, "`"), collapse = " + "))
+    logger::log_info("Creating overall table with formula: {formula_str}")
   }
 
-  log_info("Data summary:")
-  print(str(selected_data))
-  selected_data
-}
+  formula_obj <- stats::as.formula(formula_str)
 
-#' @noRd
-generate_table <- function(selected_data) {
-  log_info("Generating the overall table with arsenal::tableby")
-  tryCatch(
-    {
-      arsenal::tableby(
-        ~.,
-        data = selected_data,
-        control = tableby.control(
-          test = FALSE,
-          total = FALSE,
-          digits = 0L,
-          digits.p = 2L,
-          digits.count = 0L,
-          numeric.simplify = FALSE,
-          cat.simplify = FALSE,
-          numeric.stats = c("median", "q1q3"),
-          cat.stats = c("countpct"),
-          stats.labels = list(
-            Nmiss = "N Missing",
-            meansd = "Mean (SD)",
-            median = "Median",
-            medianq1q3 = "Median (Q1, Q3)",
-            q1q3 = "Q1, Q3",
-            range = "Range",
-            countpct = "Count (Pct)"
-          )
-        )
-      )
-    },
-    error = function(e) {
-      log_error("Error generating table with arsenal::tableby: {e$message}")
-      stop("Error generating overall table.")
-    }
+  # Configure arsensal::tableby control parameters
+  logger::log_info("Configuring table control parameters...")
+  control_params <- arsenal::tableby.control(
+    test = !is.null(strata_var),  # Include statistical tests only for stratified tables
+    total = !is.null(strata_var), # Include total column only for stratified tables
+    digits = 1L,
+    digits.p = 3L,
+    digits.count = 0L,
+    numeric.stats = c("median", "q1q3"),
+    cat.stats = c("countpct"),
+    stats.labels = list(
+      Nmiss = "N Missing",
+      meansd = "Mean (SD)",
+      medianq1q3 = "Median (Q1, Q3)",
+      q1q3 = "Q1, Q3",
+      countpct = "Count (%)"
+    )
   )
-}
 
-#' @noRd
-save_table_as_pdf <- function(overall_table, output_directory, title, label_translations) {
-  overall_summary <- summary(
+  # Generate the table using arsenal::tableby
+  logger::log_info("Generating the table using arsenal::tableby...")
+  overall_table <- tryCatch({
+    arsenal::tableby(
+      formula_obj,
+      data = data,
+      control = control_params
+    )
+  }, error = function(e) {
+    logger::log_error("Error generating the table: {e$message}")
+    stop(paste("Error generating the table:", e$message))
+  })
+
+  # Generate the summary of the table
+  logger::log_info("Generating the summary of the table...")
+  table_summary <- summary(
     overall_table,
     text = TRUE,
     labelTranslations = label_translations,
     title = title,
-    pfootnote = FALSE
+    pfootnote = !is.null(strata_var)  # Include p-value footnote only for stratified tables
   )
 
-  log_info("Overall table summary:")
-  print(overall_summary)
-
+  # Access the current date and time
   date_time <- format(Sys.time(), "%Y-%m-%d_%H-%M-%S")
-  filename <- file.path(output_directory, paste("arsenal_overall_table", date_time, ".pdf", sep = ""))
 
-  log_info("Saving the overall table as a PDF: {filename}")
-  tm_write2pdf(overall_summary, filename)
+  # Create the filename with function name and date-time
+  if (!is.null(strata_var)) {
+    # For stratified tables
+    filename <- file.path(output_directory, paste0("stratified_table_",
+                                                   gsub("[^a-zA-Z0-9]", "", strata_var),
+                                                   "_", date_time))
+  } else {
+    # For overall tables
+    filename <- file.path(output_directory, paste0("overall_table_", date_time))
+  }
+  logger::log_info("Output filename: {filename}")
+
+  # Save the table as a PDF
+  logger::log_info("Saving the table as a PDF: {filename}")
+  arsenal::write2pdf(table_summary, filename, keep.md = TRUE, quiet = TRUE)
+
+  # Log function end
+  logger::log_info("Table generation completed.")
+
+  # Return the summary object invisibly
+  return(invisible(table_summary))
 }

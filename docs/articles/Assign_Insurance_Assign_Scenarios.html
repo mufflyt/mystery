@@ -197,22 +197,22 @@ vector of insurance categories. * <code>seed</code>: Ensures
 reproducibility for randomized assignments. * Output: A new dataset with
 multiple rows per physician, each representing a unique insurance
 scenario.</p>
-<pre><code><span><span class="co">## INFO [2025-03-11 05:45:56] Starting phase2_sample_surgeons() with inputs:</span></span>
-<span><span class="co">## INFO [2025-03-11 05:45:56] Insurance types: Medicare</span></span>
-<span><span class="co">## INFO [2025-03-11 05:45:56] Insurance types: Medicaid</span></span>
-<span><span class="co">## INFO [2025-03-11 05:45:56] Insurance types: BCBS</span></span>
-<span><span class="co">## INFO [2025-03-11 05:45:56] Ensure unique phone numbers: TRUE</span></span>
-<span><span class="co">## INFO [2025-03-11 05:45:56] Output CSV path: data/phase_2</span></span>
-<span><span class="co">## INFO [2025-03-11 05:45:56] Seed: 1978</span></span>
-<span><span class="co">## INFO [2025-03-11 05:45:56] Specialty column: specialty_primary</span></span>
-<span><span class="co">## INFO [2025-03-11 05:45:56] NPI column: NPI</span></span>
-<span><span class="co">## INFO [2025-03-11 05:45:56] Seed set to 1978.</span></span>
-<span><span class="co">## INFO [2025-03-11 05:45:56] Ensuring unique phone numbers in the dataset.</span></span>
-<span><span class="co">## INFO [2025-03-11 05:45:56] Number of rows after ensuring unique phone numbers: 310.</span></span>
-<span><span class="co">## INFO [2025-03-11 05:45:56] Expanding physicians by insurance types...</span></span>
-<span><span class="co">## INFO [2025-03-11 05:45:56] Expanded data includes insurance types. Total rows: 930.</span></span>
-<span><span class="co">## INFO [2025-03-11 05:45:56] Saved expanded data to: data/phase_2/phase2_sample_surgeons_by_insurance_2025-03-11_05-45-56.csv.</span></span>
-<span><span class="co">## INFO [2025-03-11 05:45:56] Completed phase2_sample_surgeons(). Returning expanded data.</span></span></code></pre>
+<pre><code><span><span class="co">## INFO [2025-03-11 06:46:45] Starting phase2_sample_surgeons() with inputs:</span></span>
+<span><span class="co">## INFO [2025-03-11 06:46:45] Insurance types: Medicare</span></span>
+<span><span class="co">## INFO [2025-03-11 06:46:45] Insurance types: Medicaid</span></span>
+<span><span class="co">## INFO [2025-03-11 06:46:45] Insurance types: BCBS</span></span>
+<span><span class="co">## INFO [2025-03-11 06:46:45] Ensure unique phone numbers: TRUE</span></span>
+<span><span class="co">## INFO [2025-03-11 06:46:45] Output CSV path: data/phase_2</span></span>
+<span><span class="co">## INFO [2025-03-11 06:46:45] Seed: 1978</span></span>
+<span><span class="co">## INFO [2025-03-11 06:46:45] Specialty column: specialty_primary</span></span>
+<span><span class="co">## INFO [2025-03-11 06:46:45] NPI column: NPI</span></span>
+<span><span class="co">## INFO [2025-03-11 06:46:45] Seed set to 1978.</span></span>
+<span><span class="co">## INFO [2025-03-11 06:46:45] Ensuring unique phone numbers in the dataset.</span></span>
+<span><span class="co">## INFO [2025-03-11 06:46:45] Number of rows after ensuring unique phone numbers: 310.</span></span>
+<span><span class="co">## INFO [2025-03-11 06:46:45] Expanding physicians by insurance types...</span></span>
+<span><span class="co">## INFO [2025-03-11 06:46:45] Expanded data includes insurance types. Total rows: 930.</span></span>
+<span><span class="co">## INFO [2025-03-11 06:46:45] Saved expanded data to: data/phase_2/phase2_sample_surgeons_by_insurance_2025-03-11_06-46-45.csv.</span></span>
+<span><span class="co">## INFO [2025-03-11 06:46:45] Completed phase2_sample_surgeons(). Returning expanded data.</span></span></code></pre>
 <pre><code><span><span class="co">## Rows: 930</span></span>
 <span><span class="co">## Columns: 28</span></span>
 <span><span class="co">## $ combined_info            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "Dr. Thomas Derian , 919-479-4160 , North Car…</span></span>
@@ -282,29 +282,29 @@ detailing their assigned cases.</p>
 <span>  split_column <span class="op">=</span> <span class="st">"insurance"</span>,</span>
 <span>  priority_values <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## INFO [2025-03-11 05:45:56] Starting phase0_split_calls_to_lab_assistants_and_save_by_priority() with inputs:</span></span>
-<span><span class="co">## INFO [2025-03-11 05:45:56] Output folder: inst/extdata/caller_assignments</span></span>
-<span><span class="co">## INFO [2025-03-11 05:45:56] Assistant names: Amy Du, Bret Hatzinger, Paul Botolin, Jasmine Hartman Budnik, Miranda Manfre, Jason Sidrak, Daniel Stokes, Ryan Tseng, Tristan Seawalt, Christopher Hawryluk, Lind</span></span>
-<span><span class="co">## INFO [2025-03-11 05:45:56] Seed value: 1978</span></span>
-<span><span class="co">## INFO [2025-03-11 05:45:56] Split column: insurance</span></span>
-<span><span class="co">## INFO [2025-03-11 05:45:56] Priority values: None</span></span>
-<span><span class="co">## INFO [2025-03-11 05:45:56] Loaded input data with 930 rows and 28 columns.</span></span>
-<span><span class="co">## INFO [2025-03-11 05:45:56] Validated presence of split column: insurance.</span></span>
-<span><span class="co">## INFO [2025-03-11 05:45:56] Assigned lab assistants to rows in the dataset.</span></span>
-<span><span class="co">## INFO [2025-03-11 05:45:56] Added row numbers and updated combined_info column.</span></span>
-<span><span class="co">## INFO [2025-03-11 05:45:56] Saved complete dataset to: inst/extdata/caller_assignments/complete_version_2025-03-11_05-45-56.csv.</span></span>
-<span><span class="co">## INFO [2025-03-11 05:45:56] Saved split data for Amy Du to: inst/extdata/caller_assignments/Amy Du_2025-03-11_05-45-56.csv.</span></span>
-<span><span class="co">## INFO [2025-03-11 05:45:56] Saved split data for Bret Hatzinger to: inst/extdata/caller_assignments/Bret Hatzinger_2025-03-11_05-45-56.csv.</span></span>
-<span><span class="co">## INFO [2025-03-11 05:45:56] Saved split data for Christopher Hawryluk to: inst/extdata/caller_assignments/Christopher Hawryluk_2025-03-11_05-45-56.csv.</span></span>
-<span><span class="co">## INFO [2025-03-11 05:45:56] Saved split data for Daniel Stokes to: inst/extdata/caller_assignments/Daniel Stokes_2025-03-11_05-45-56.csv.</span></span>
-<span><span class="co">## INFO [2025-03-11 05:45:56] Saved split data for Jasmine Hartman Budnik to: inst/extdata/caller_assignments/Jasmine Hartman Budnik_2025-03-11_05-45-56.csv.</span></span>
-<span><span class="co">## INFO [2025-03-11 05:45:56] Saved split data for Jason Sidrak to: inst/extdata/caller_assignments/Jason Sidrak_2025-03-11_05-45-56.csv.</span></span>
-<span><span class="co">## INFO [2025-03-11 05:45:56] Saved split data for Lind to: inst/extdata/caller_assignments/Lind_2025-03-11_05-45-56.csv.</span></span>
-<span><span class="co">## INFO [2025-03-11 05:45:56] Saved split data for Miranda Manfre to: inst/extdata/caller_assignments/Miranda Manfre_2025-03-11_05-45-56.csv.</span></span>
-<span><span class="co">## INFO [2025-03-11 05:45:56] Saved split data for Paul Botolin to: inst/extdata/caller_assignments/Paul Botolin_2025-03-11_05-45-56.csv.</span></span>
-<span><span class="co">## INFO [2025-03-11 05:45:56] Saved split data for Ryan Tseng to: inst/extdata/caller_assignments/Ryan Tseng_2025-03-11_05-45-56.csv.</span></span>
-<span><span class="co">## INFO [2025-03-11 05:45:56] Saved split data for Tristan Seawalt to: inst/extdata/caller_assignments/Tristan Seawalt_2025-03-11_05-45-56.csv.</span></span>
-<span><span class="co">## INFO [2025-03-11 05:45:56] Completed phase0_split_calls_to_lab_assistants_and_save_by_priority().</span></span></code></pre>
+<pre><code><span><span class="co">## INFO [2025-03-11 06:46:45] Starting phase0_split_calls_to_lab_assistants_and_save_by_priority() with inputs:</span></span>
+<span><span class="co">## INFO [2025-03-11 06:46:45] Output folder: inst/extdata/caller_assignments</span></span>
+<span><span class="co">## INFO [2025-03-11 06:46:45] Assistant names: Amy Du, Bret Hatzinger, Paul Botolin, Jasmine Hartman Budnik, Miranda Manfre, Jason Sidrak, Daniel Stokes, Ryan Tseng, Tristan Seawalt, Christopher Hawryluk, Lind</span></span>
+<span><span class="co">## INFO [2025-03-11 06:46:45] Seed value: 1978</span></span>
+<span><span class="co">## INFO [2025-03-11 06:46:45] Split column: insurance</span></span>
+<span><span class="co">## INFO [2025-03-11 06:46:45] Priority values: None</span></span>
+<span><span class="co">## INFO [2025-03-11 06:46:45] Loaded input data with 930 rows and 28 columns.</span></span>
+<span><span class="co">## INFO [2025-03-11 06:46:45] Validated presence of split column: insurance.</span></span>
+<span><span class="co">## INFO [2025-03-11 06:46:45] Assigned lab assistants to rows in the dataset.</span></span>
+<span><span class="co">## INFO [2025-03-11 06:46:45] Added row numbers and updated combined_info column.</span></span>
+<span><span class="co">## INFO [2025-03-11 06:46:45] Saved complete dataset to: inst/extdata/caller_assignments/complete_version_2025-03-11_06-46-45.csv.</span></span>
+<span><span class="co">## INFO [2025-03-11 06:46:45] Saved split data for Amy Du to: inst/extdata/caller_assignments/Amy Du_2025-03-11_06-46-45.csv.</span></span>
+<span><span class="co">## INFO [2025-03-11 06:46:45] Saved split data for Bret Hatzinger to: inst/extdata/caller_assignments/Bret Hatzinger_2025-03-11_06-46-45.csv.</span></span>
+<span><span class="co">## INFO [2025-03-11 06:46:45] Saved split data for Christopher Hawryluk to: inst/extdata/caller_assignments/Christopher Hawryluk_2025-03-11_06-46-45.csv.</span></span>
+<span><span class="co">## INFO [2025-03-11 06:46:45] Saved split data for Daniel Stokes to: inst/extdata/caller_assignments/Daniel Stokes_2025-03-11_06-46-45.csv.</span></span>
+<span><span class="co">## INFO [2025-03-11 06:46:45] Saved split data for Jasmine Hartman Budnik to: inst/extdata/caller_assignments/Jasmine Hartman Budnik_2025-03-11_06-46-45.csv.</span></span>
+<span><span class="co">## INFO [2025-03-11 06:46:45] Saved split data for Jason Sidrak to: inst/extdata/caller_assignments/Jason Sidrak_2025-03-11_06-46-45.csv.</span></span>
+<span><span class="co">## INFO [2025-03-11 06:46:45] Saved split data for Lind to: inst/extdata/caller_assignments/Lind_2025-03-11_06-46-45.csv.</span></span>
+<span><span class="co">## INFO [2025-03-11 06:46:45] Saved split data for Miranda Manfre to: inst/extdata/caller_assignments/Miranda Manfre_2025-03-11_06-46-45.csv.</span></span>
+<span><span class="co">## INFO [2025-03-11 06:46:45] Saved split data for Paul Botolin to: inst/extdata/caller_assignments/Paul Botolin_2025-03-11_06-46-45.csv.</span></span>
+<span><span class="co">## INFO [2025-03-11 06:46:45] Saved split data for Ryan Tseng to: inst/extdata/caller_assignments/Ryan Tseng_2025-03-11_06-46-45.csv.</span></span>
+<span><span class="co">## INFO [2025-03-11 06:46:45] Saved split data for Tristan Seawalt to: inst/extdata/caller_assignments/Tristan Seawalt_2025-03-11_06-46-45.csv.</span></span>
+<span><span class="co">## INFO [2025-03-11 06:46:45] Completed phase0_split_calls_to_lab_assistants_and_save_by_priority().</span></span></code></pre>
 </div>
 </div>
 <div class="section level2">

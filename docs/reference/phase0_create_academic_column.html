@@ -136,13 +136,13 @@ It demonstrates how multiple columns can be examined simultaneously, and how a n
 <span class="r-in"><span>                                           <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"clinician_info_facility_name"</span>,</span></span>
 <span class="r-in"><span>                                             <span class="st">"addresses_address_1"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                                           verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:12] Starting function 'phase0_create_academic_column'.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:12] Input data dimensions: 4 rows, 2 columns.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:12] Columns to search in: clinician_info_facility_name, addresses_address_1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:12] Academic search keywords: Medical College, University of, University, Univ, Children's, Infirmary, Medical School, Medical Center, Children, Health System, Foundation, Sch of Med, Mayo, UAB, Cancer Ctr, Penn, College of Medicine, Cancer, Cleveland Clinic, Henry Ford, Yale, Brigham, Health Sciences Center, SUNY, UCLA, UAMS, Medical Sciences, Cedars, Stanford, George Washington, Medstar, USF, GME, Emory, Morehouse, Mercer, Loyola, Duke</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:12] Private practice search keywords: LLC, INC, P.A., CORPORATION, PLLC, PARTNERSHIP, LTD, P C, PS, L L P, INCORPORATED, DO, MD, MBA, PA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:12] Transformation completed. New column 'academic' added to the data frame.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:12] Output data dimensions: 4 rows, 3 columns.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:45:59] Starting function 'phase0_create_academic_column'.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:45:59] Input data dimensions: 4 rows, 2 columns.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:45:59] Columns to search in: clinician_info_facility_name, addresses_address_1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:45:59] Academic search keywords: Medical College, University of, University, Univ, Children's, Infirmary, Medical School, Medical Center, Children, Health System, Foundation, Sch of Med, Mayo, UAB, Cancer Ctr, Penn, College of Medicine, Cancer, Cleveland Clinic, Henry Ford, Yale, Brigham, Health Sciences Center, SUNY, UCLA, UAMS, Medical Sciences, Cedars, Stanford, George Washington, Medstar, USF, GME, Emory, Morehouse, Mercer, Loyola, Duke</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:45:59] Private practice search keywords: LLC, INC, P.A., CORPORATION, PLLC, PARTNERSHIP, LTD, P C, PS, L L P, INCORPORATED, DO, MD, MBA, PA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:45:59] Transformation completed. New column 'academic' added to the data frame.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:45:59] Output data dimensions: 4 rows, 3 columns.</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">df_with_academic</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   clinician_info_facility_name addresses_address_1         academic</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1     University of California     200 Medical Ave       University</span>
@@ -161,13 +161,13 @@ It demonstrates how multiple columns can be examined simultaneously, and how a n
 <span class="r-in"><span>                                             <span class="st">"addresses_address_1"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                                           academic_keywords <span class="op">=</span> <span class="va">custom_keywords</span>,</span></span>
 <span class="r-in"><span>                                           verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:12] Starting function 'phase0_create_academic_column'.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:12] Input data dimensions: 2 rows, 2 columns.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:12] Columns to search in: clinician_info_facility_name, addresses_address_1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:12] Academic search keywords: Harvard, Stanford, Yale, Medical School</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:12] Private practice search keywords: LLC, INC, P.A., CORPORATION, PLLC, PARTNERSHIP, LTD, P C, PS, L L P, INCORPORATED, DO, MD, MBA, PA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:12] Transformation completed. New column 'academic' added to the data frame.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:12] Output data dimensions: 2 rows, 3 columns.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:45:59] Starting function 'phase0_create_academic_column'.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:45:59] Input data dimensions: 2 rows, 2 columns.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:45:59] Columns to search in: clinician_info_facility_name, addresses_address_1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:45:59] Academic search keywords: Harvard, Stanford, Yale, Medical School</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:45:59] Private practice search keywords: LLC, INC, P.A., CORPORATION, PLLC, PARTNERSHIP, LTD, P C, PS, L L P, INCORPORATED, DO, MD, MBA, PA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:45:59] Transformation completed. New column 'academic' added to the data frame.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:45:59] Output data dimensions: 2 rows, 3 columns.</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">df_with_academic</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   clinician_info_facility_name addresses_address_1         academic</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1       Harvard Medical School    1 Medical Center       University</span>
@@ -182,13 +182,13 @@ It demonstrates how multiple columns can be examined simultaneously, and how a n
 <span class="r-in"><span>                                           <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"clinician_info_facility_name"</span>,</span></span>
 <span class="r-in"><span>                                             <span class="st">"addresses_address_1"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                                           verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:12] Starting function 'phase0_create_academic_column'.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:12] Input data dimensions: 2 rows, 2 columns.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:12] Columns to search in: clinician_info_facility_name, addresses_address_1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:12] Academic search keywords: Medical College, University of, University, Univ, Children's, Infirmary, Medical School, Medical Center, Children, Health System, Foundation, Sch of Med, Mayo, UAB, Cancer Ctr, Penn, College of Medicine, Cancer, Cleveland Clinic, Henry Ford, Yale, Brigham, Health Sciences Center, SUNY, UCLA, UAMS, Medical Sciences, Cedars, Stanford, George Washington, Medstar, USF, GME, Emory, Morehouse, Mercer, Loyola, Duke</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:12] Private practice search keywords: LLC, INC, P.A., CORPORATION, PLLC, PARTNERSHIP, LTD, P C, PS, L L P, INCORPORATED, DO, MD, MBA, PA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:12] Transformation completed. New column 'academic' added to the data frame.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 05:45:12] Output data dimensions: 2 rows, 3 columns.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:45:59] Starting function 'phase0_create_academic_column'.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:45:59] Input data dimensions: 2 rows, 2 columns.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:45:59] Columns to search in: clinician_info_facility_name, addresses_address_1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:45:59] Academic search keywords: Medical College, University of, University, Univ, Children's, Infirmary, Medical School, Medical Center, Children, Health System, Foundation, Sch of Med, Mayo, UAB, Cancer Ctr, Penn, College of Medicine, Cancer, Cleveland Clinic, Henry Ford, Yale, Brigham, Health Sciences Center, SUNY, UCLA, UAMS, Medical Sciences, Cedars, Stanford, George Washington, Medstar, USF, GME, Emory, Morehouse, Mercer, Loyola, Duke</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:45:59] Private practice search keywords: LLC, INC, P.A., CORPORATION, PLLC, PARTNERSHIP, LTD, P C, PS, L L P, INCORPORATED, DO, MD, MBA, PA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:45:59] Transformation completed. New column 'academic' added to the data frame.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2025-03-11 06:45:59] Output data dimensions: 2 rows, 3 columns.</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">df_with_academic</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   clinician_info_facility_name addresses_address_1 academic</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1                           NA                  NA     &lt;NA&gt;</span>
